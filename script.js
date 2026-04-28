@@ -91,13 +91,17 @@ const setupCarousel = (carousel) => {
   const dots = carousel.querySelector('.carousel-dots');
   let index = 0;
   let cardsPerView = getCardsPerView();
+  const rows = Number(carousel.dataset.carouselRows || 1);
+  const isGroupedCarousel = rows > 1;
   let startX = 0;
   let dragDelta = 0;
   let didDrag = false;
 
   if (!track || !cards.length) return;
 
-  const maxIndex = () => Math.max(0, cards.length - cardsPerView);
+  const cardsPerPage = () => cardsPerView * rows;
+  const pageCount = () => Math.max(1, Math.ceil(cards.length / cardsPerPage()));
+  const maxIndex = () => isGroupedCarousel ? pageCount() - 1 : Math.max(0, cards.length - cardsPerView);
 
   const cardStep = () => {
     const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
@@ -106,7 +110,7 @@ const setupCarousel = (carousel) => {
 
   const renderDots = () => {
     if (!dots) return;
-    const pages = Math.max(1, Math.ceil(cards.length / cardsPerView));
+    const pages = pageCount();
     dots.innerHTML = '';
     for (let page = 0; page < pages; page += 1) {
       const dot = document.createElement('button');
@@ -114,7 +118,7 @@ const setupCarousel = (carousel) => {
       dot.className = 'carousel-dot';
       dot.setAttribute('aria-label', `Go to slide ${page + 1}`);
       dot.addEventListener('click', () => {
-        index = Math.min(page * cardsPerView, maxIndex());
+        index = isGroupedCarousel ? Math.min(page, maxIndex()) : Math.min(page * cardsPerView, maxIndex());
         updateCarousel();
       });
       dots.appendChild(dot);
@@ -123,7 +127,7 @@ const setupCarousel = (carousel) => {
 
   const updateDots = () => {
     if (!dots) return;
-    const activePage = Math.min(Math.floor(index / cardsPerView), dots.children.length - 1);
+    const activePage = Math.min(isGroupedCarousel ? index : Math.floor(index / cardsPerView), dots.children.length - 1);
     Array.from(dots.children).forEach((dot, dotIndex) => {
       dot.classList.toggle('active', dotIndex === activePage);
       dot.setAttribute('aria-current', dotIndex === activePage ? 'true' : 'false');
@@ -132,7 +136,8 @@ const setupCarousel = (carousel) => {
 
   function updateCarousel() {
     index = Math.min(Math.max(index, 0), maxIndex());
-    track.style.transform = `translate3d(${-index * cardStep()}px, 0, 0)`;
+    const columnsToMove = isGroupedCarousel ? index * cardsPerView : index;
+    track.style.transform = `translate3d(${-columnsToMove * cardStep()}px, 0, 0)`;
     previous?.toggleAttribute('disabled', index === 0);
     next?.toggleAttribute('disabled', index === maxIndex());
     updateDots();
