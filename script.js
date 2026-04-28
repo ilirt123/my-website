@@ -75,6 +75,125 @@ const scrollReviews = (direction) => {
 previousReview?.addEventListener('click', () => scrollReviews(-1));
 nextReview?.addEventListener('click', () => scrollReviews(1));
 
+const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
+
+const getCardsPerView = () => {
+  if (window.matchMedia('(max-width: 600px)').matches) return 1;
+  if (window.matchMedia('(max-width: 900px)').matches) return 2;
+  return 3;
+};
+
+const setupCarousel = (carousel) => {
+  const track = carousel.querySelector('.carousel-track');
+  const cards = Array.from(track?.children || []);
+  const previous = carousel.querySelector('.carousel-prev');
+  const next = carousel.querySelector('.carousel-next');
+  const dots = carousel.querySelector('.carousel-dots');
+  let index = 0;
+  let cardsPerView = getCardsPerView();
+  let startX = 0;
+  let dragDelta = 0;
+  let didDrag = false;
+
+  if (!track || !cards.length) return;
+
+  const maxIndex = () => Math.max(0, cards.length - cardsPerView);
+
+  const cardStep = () => {
+    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    return cards[0].getBoundingClientRect().width + gap;
+  };
+
+  const renderDots = () => {
+    if (!dots) return;
+    const pages = Math.max(1, Math.ceil(cards.length / cardsPerView));
+    dots.innerHTML = '';
+    for (let page = 0; page < pages; page += 1) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', `Go to slide ${page + 1}`);
+      dot.addEventListener('click', () => {
+        index = Math.min(page * cardsPerView, maxIndex());
+        updateCarousel();
+      });
+      dots.appendChild(dot);
+    }
+  };
+
+  const updateDots = () => {
+    if (!dots) return;
+    const activePage = Math.min(Math.floor(index / cardsPerView), dots.children.length - 1);
+    Array.from(dots.children).forEach((dot, dotIndex) => {
+      dot.classList.toggle('active', dotIndex === activePage);
+      dot.setAttribute('aria-current', dotIndex === activePage ? 'true' : 'false');
+    });
+  };
+
+  function updateCarousel() {
+    index = Math.min(Math.max(index, 0), maxIndex());
+    track.style.transform = `translate3d(${-index * cardStep()}px, 0, 0)`;
+    previous?.toggleAttribute('disabled', index === 0);
+    next?.toggleAttribute('disabled', index === maxIndex());
+    updateDots();
+  }
+
+  const move = (direction) => {
+    index += direction;
+    updateCarousel();
+  };
+
+  previous?.addEventListener('click', () => move(-1));
+  next?.addEventListener('click', () => move(1));
+
+  track.addEventListener('pointerdown', (event) => {
+    startX = event.clientX;
+    dragDelta = 0;
+    didDrag = false;
+    track.setPointerCapture?.(event.pointerId);
+  });
+
+  track.addEventListener('pointermove', (event) => {
+    if (!startX) return;
+    dragDelta = event.clientX - startX;
+    if (Math.abs(dragDelta) > 8) didDrag = true;
+  });
+
+  track.addEventListener('pointerup', () => {
+    if (Math.abs(dragDelta) > 45) {
+      move(dragDelta < 0 ? 1 : -1);
+    }
+    startX = 0;
+    dragDelta = 0;
+    window.setTimeout(() => {
+      didDrag = false;
+    }, 0);
+  });
+
+  carousel.addEventListener('click', (event) => {
+    if (didDrag) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+
+  const refresh = () => {
+    cardsPerView = getCardsPerView();
+    carousel.style.setProperty('--cards-per-view', cardsPerView);
+    index = Math.min(index, maxIndex());
+    renderDots();
+    updateCarousel();
+  };
+
+  refresh();
+  return refresh;
+};
+
+const refreshCarousels = carousels.map(setupCarousel).filter(Boolean);
+window.addEventListener('resize', () => {
+  refreshCarousels.forEach((refresh) => refresh());
+});
+
 const quoteSection = document.querySelector('#quote');
 const quoteHeading = document.querySelector('#quote .quote-copy h2');
 const quickQuoteBar = document.querySelector('.quick-quote-bar');
