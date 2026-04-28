@@ -1,5 +1,5 @@
-const button = document.querySelector('.menu-toggle');
-const nav = document.querySelector('.nav');
+const button = document.querySelector('.topbar .menu-toggle');
+const nav = document.querySelector('#primary-navigation');
 
 const closePrimaryMenu = () => {
   nav?.classList.remove('open');
@@ -24,7 +24,7 @@ window.addEventListener('resize', () => {
 });
 
 const rightMenu = document.querySelector('.right-menu');
-const moreToggle = document.querySelector('.more-toggle');
+const moreToggle = document.querySelector('.right-menu .more-toggle');
 
 const closeMoreMenu = () => {
   rightMenu?.classList.remove('open');
