@@ -1,12 +1,26 @@
 const button = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.nav');
 
+const closePrimaryMenu = () => {
+  nav?.classList.remove('open');
+  button?.setAttribute('aria-expanded', 'false');
+  button?.setAttribute('aria-label', 'Open menu');
+};
+
 button?.addEventListener('click', () => {
-  nav.classList.toggle('open');
+  const isOpen = nav?.classList.toggle('open') ?? false;
+  button.setAttribute('aria-expanded', String(isOpen));
+  button.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
 });
 
 document.querySelectorAll('.nav a').forEach((link) => {
-  link.addEventListener('click', () => nav.classList.remove('open'));
+  link.addEventListener('click', closePrimaryMenu);
+});
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 900) {
+    closePrimaryMenu();
+  }
 });
 
 const rightMenu = document.querySelector('.right-menu');
