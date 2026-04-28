@@ -95,6 +95,94 @@ if (quoteSection && quoteHeading && quickQuoteBar) {
   });
 }
 
+const quoteForm = document.querySelector('.quote-form');
+const quoteFormMessage = quoteForm?.querySelector('.form-message');
+
+const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const setQuoteFormMessage = (message, type = 'error') => {
+  if (!quoteFormMessage) return;
+  quoteFormMessage.textContent = message;
+  quoteFormMessage.className = `form-message visible ${type}`;
+};
+
+const clearQuoteFormMessage = () => {
+  if (!quoteFormMessage) return;
+  quoteFormMessage.textContent = '';
+  quoteFormMessage.className = 'form-message';
+};
+
+const getLeadField = (name) => quoteForm?.elements.namedItem(name);
+
+const validateQuoteForm = () => {
+  let isValid = true;
+
+  requiredLeadFields.forEach((name) => {
+    const field = getLeadField(name);
+    const value = field?.value?.trim() ?? '';
+    const fieldValid = value.length > 0;
+    field?.setAttribute('aria-invalid', String(!fieldValid));
+    if (!fieldValid) isValid = false;
+  });
+
+  const emailField = getLeadField('email');
+  const email = emailField?.value?.trim() ?? '';
+  if (email && !emailPattern.test(email)) {
+    emailField?.setAttribute('aria-invalid', 'true');
+    setQuoteFormMessage('Please enter a valid email address.');
+    return false;
+  }
+
+  if (!isValid) {
+    setQuoteFormMessage('Please complete all required fields.');
+  }
+
+  return isValid;
+};
+
+quoteForm?.addEventListener('input', (event) => {
+  const field = event.target;
+  if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) {
+    field.setAttribute('aria-invalid', 'false');
+  }
+  clearQuoteFormMessage();
+});
+
+quoteForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  if (!quoteForm || !validateQuoteForm()) return;
+
+  const submitButton = quoteForm.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton?.textContent ?? '';
+  submitButton?.setAttribute('disabled', 'true');
+  if (submitButton) submitButton.textContent = 'Sending...';
+  clearQuoteFormMessage();
+
+  const payload = Object.fromEntries(new FormData(quoteForm).entries());
+
+  try {
+    const response = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Lead request failed');
+    }
+
+    setQuoteFormMessage('Thank you! Your request was sent. We will contact you soon.', 'success');
+    quoteForm.reset();
+  } catch (error) {
+    setQuoteFormMessage('Sorry, your request could not be sent. Please call us at 734-657-7965.');
+  } finally {
+    submitButton?.removeAttribute('disabled');
+    if (submitButton) submitButton.textContent = originalButtonText;
+  }
+});
+
 const lightbox = document.querySelector('.image-lightbox');
 const lightboxImage = lightbox?.querySelector('img');
 const lightboxClose = document.querySelector('.lightbox-close');

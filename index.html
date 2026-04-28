@@ -43,6 +43,11 @@
     </nav>
     <div class="right-menu">
       <button class="more-toggle" type="button" aria-label="Open more menu" aria-expanded="false">&#9776;</button>
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="primary-navigation more-navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <a class="header-icon" href="#services" aria-label="Search">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M10.8 4a6.8 6.8 0 0 1 5.4 10.9l3.4 3.4-1.4 1.4-3.4-3.4A6.8 6.8 0 1 1 10.8 4Zm0 2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z"/>
@@ -58,11 +63,6 @@
           <path d="M7.6 2.3h8.8c2.9 0 5.3 2.4 5.3 5.3v8.8c0 2.9-2.4 5.3-5.3 5.3H7.6c-2.9 0-5.3-2.4-5.3-5.3V7.6c0-2.9 2.4-5.3 5.3-5.3Zm0 2A3.3 3.3 0 0 0 4.3 7.6v8.8a3.3 3.3 0 0 0 3.3 3.3h8.8a3.3 3.3 0 0 0 3.3-3.3V7.6a3.3 3.3 0 0 0-3.3-3.3H7.6Zm4.4 3.4a4.3 4.3 0 1 1 0 8.6 4.3 4.3 0 0 1 0-8.6Zm0 2a2.3 2.3 0 1 0 0 4.6 2.3 2.3 0 0 0 0-4.6Zm4.6-2.6a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/>
         </svg>
       </a>
-      <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="primary-navigation more-navigation" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
       <nav id="more-navigation" class="more-menu" aria-label="More navigation">
         <a href="#services">Services</a>
         <a class="more-sub-link" href="#service-bathroom">Bathroom</a>
@@ -423,14 +423,14 @@
             <iframe title="ALL American Tiles Metro Detroit map" src="https://www.google.com/maps?ll=42.3000,-83.2500&z=9&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
-        <form class="quote-form">
-          <label>First Name<input type="text"></label>
-          <label>Last Name<input type="text"></label>
-          <label>Email<input type="email"></label>
-          <label>Phone<input type="tel"></label>
-          <label>ZIP Code<input type="text"></label>
-          <label>Project Interest
-            <select>
+        <form class="quote-form" novalidate>
+          <label><span>First Name <span class="required-star" aria-hidden="true">*</span></span><input type="text" name="firstName" autocomplete="given-name" required aria-required="true"></label>
+          <label><span>Last Name <span class="required-star" aria-hidden="true">*</span></span><input type="text" name="lastName" autocomplete="family-name" required aria-required="true"></label>
+          <label><span>Email <span class="required-star" aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
+          <label><span>Phone Number <span class="required-star" aria-hidden="true">*</span></span><input type="tel" name="phone" autocomplete="tel" required aria-required="true"></label>
+          <label><span>ZIP Code</span><input type="text" name="zipCode" autocomplete="postal-code"></label>
+          <label><span>Project Type <span class="required-star" aria-hidden="true">*</span></span>
+            <select name="projectType" required aria-required="true">
               <option>Bathroom</option>
               <option>Kitchen</option>
               <option>Flooring</option>
@@ -438,8 +438,8 @@
               <option>Other Tile Project</option>
             </select>
           </label>
-          <label>How did you hear about us?
-            <select>
+          <label><span>How did you hear about us?</span>
+            <select name="referralSource">
               <option>Google</option>
               <option>Facebook</option>
               <option>Instagram</option>
@@ -447,8 +447,8 @@
               <option>Other</option>
             </select>
           </label>
-          <label class="full-field">What home improvement do you need?
-            <select>
+          <label class="full-field"><span>Service Needed <span class="required-star" aria-hidden="true">*</span></span>
+            <select name="serviceNeeded" required aria-required="true">
               <option>Full Bathroom</option>
               <option>Half Bathroom</option>
               <option>Shower</option>
@@ -458,8 +458,9 @@
               <option>Not Sure Yet</option>
             </select>
           </label>
-          <label class="full-field">Project Details<textarea rows="5"></textarea></label>
-          <label class="agreement-field full-field"><input type="checkbox"> I agree to be contacted by ALL American Tiles about my project request.</label>
+          <label class="full-field"><span>How can we help you? <span class="required-star" aria-hidden="true">*</span></span><textarea name="message" rows="5" required aria-required="true"></textarea></label>
+          <label class="agreement-field full-field"><input type="checkbox" name="contactConsent"> I agree to be contacted by ALL American Tiles about my project request.</label>
+          <p class="form-message" role="status" aria-live="polite"></p>
           <button type="submit">Free Estimate</button>
         </form>
       </div>
