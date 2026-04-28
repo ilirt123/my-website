@@ -1,16 +1,36 @@
 const button = document.querySelector('.topbar .menu-toggle');
 const nav = document.querySelector('#primary-navigation');
+const rightMenu = document.querySelector('.right-menu');
+const moreToggle = document.querySelector('.right-menu .more-toggle');
+
+const setMenuButtonState = (isOpen) => {
+  button?.setAttribute('aria-expanded', String(isOpen));
+  button?.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+};
 
 const closePrimaryMenu = () => {
   nav?.classList.remove('open');
-  button?.setAttribute('aria-expanded', 'false');
-  button?.setAttribute('aria-label', 'Open menu');
+  setMenuButtonState(false);
 };
 
-button?.addEventListener('click', () => {
+const closeMoreMenu = () => {
+  rightMenu?.classList.remove('open');
+  moreToggle?.setAttribute('aria-expanded', 'false');
+  setMenuButtonState(false);
+};
+
+button?.addEventListener('click', (event) => {
+  if (window.innerWidth > 900) {
+    event.stopPropagation();
+    nav?.classList.remove('open');
+    const isOpen = rightMenu?.classList.toggle('open') ?? false;
+    setMenuButtonState(isOpen);
+    return;
+  }
+
+  closeMoreMenu();
   const isOpen = nav?.classList.toggle('open') ?? false;
-  button.setAttribute('aria-expanded', String(isOpen));
-  button.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+  setMenuButtonState(isOpen);
 });
 
 document.querySelectorAll('.nav a').forEach((link) => {
@@ -20,16 +40,10 @@ document.querySelectorAll('.nav a').forEach((link) => {
 window.addEventListener('resize', () => {
   if (window.innerWidth > 900) {
     closePrimaryMenu();
+  } else {
+    closeMoreMenu();
   }
 });
-
-const rightMenu = document.querySelector('.right-menu');
-const moreToggle = document.querySelector('.right-menu .more-toggle');
-
-const closeMoreMenu = () => {
-  rightMenu?.classList.remove('open');
-  moreToggle?.setAttribute('aria-expanded', 'false');
-};
 
 moreToggle?.addEventListener('click', (event) => {
   event.stopPropagation();
