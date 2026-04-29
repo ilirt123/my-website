@@ -330,6 +330,7 @@ let lightboxZoom = 1;
 let lightboxIndex = 0;
 let lightboxStartX = 0;
 let lightboxDragDelta = 0;
+const lightboxGroups = new Map();
 
 const closeLightbox = () => {
   lightbox?.classList.remove('open');
@@ -358,30 +359,45 @@ const showLightboxImage = (index) => {
   setLightboxZoom(1);
 };
 
-const setupLightboxGroup = (selectorOrImages) => {
+const openLightboxGroup = (groupName, index) => {
+  if (!lightbox || !lightboxImage) return;
+  const groupImages = lightboxGroups.get(groupName) || [];
+  if (!groupImages.length) return;
+  galleryImages = groupImages;
+  showLightboxImage(index);
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden', 'false');
+};
+
+const setupLightboxGroup = (selectorOrImages, groupName) => {
   const groupImages = typeof selectorOrImages === 'string'
     ? Array.from(document.querySelectorAll(selectorOrImages))
     : Array.from(selectorOrImages || []);
 
+  if (!groupImages.length || !groupName) return;
+  lightboxGroups.set(groupName, groupImages);
+
   groupImages.forEach((image, index) => {
     const trigger = image.closest('.project-tile') || image;
-    trigger.addEventListener('click', (event) => {
-      if (!lightbox || !lightboxImage) return;
-      event.preventDefault();
-      galleryImages = groupImages;
-      showLightboxImage(index);
-      lightbox.classList.add('open');
-      lightbox.setAttribute('aria-hidden', 'false');
-    });
+    trigger.dataset.lightboxGroup = groupName;
+    trigger.dataset.lightboxIndex = String(index);
   });
 };
 
-setupLightboxGroup('.service-card img');
-document.querySelectorAll('.bathroom-card').forEach((card) => {
-  setupLightboxGroup(card.querySelectorAll('img'));
+setupLightboxGroup('.service-card img', 'services');
+document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
+  setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
-setupLightboxGroup('.bathroom-gallery img');
-setupLightboxGroup('.project-grid img');
+setupLightboxGroup('.bathroom-gallery img', 'recent-projects-gallery');
+setupLightboxGroup('.project-grid img', 'projects');
+
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('[data-lightbox-group][data-lightbox-index]');
+  if (!trigger) return;
+  event.preventDefault();
+  event.stopPropagation();
+  openLightboxGroup(trigger.dataset.lightboxGroup, Number(trigger.dataset.lightboxIndex));
+}, true);
 
 lightboxClose?.addEventListener('click', closeLightbox);
 lightboxZoomIn?.addEventListener('click', () => setLightboxZoom(lightboxZoom + 0.2));
