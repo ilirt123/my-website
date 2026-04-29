@@ -398,7 +398,30 @@ const setupRecentProjectsGalleryLightbox = () => {
     image.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
+      event.stopImmediatePropagation();
       openLightboxImages(recentProjectsImages, index);
+    }, true);
+  });
+};
+
+const setupProjectGalleryLightbox = () => {
+  const projectImages = Array.from(document.querySelectorAll('#projects .project-grid .project-tile img'));
+  if (!projectImages.length) return;
+
+  lightboxGroups.set('projects', projectImages);
+
+  projectImages.forEach((image, index) => {
+    const tile = image.closest('.project-tile') || image;
+    tile.dataset.lightboxGroup = 'projects';
+    tile.dataset.lightboxIndex = String(index);
+    tile.style.cursor = 'pointer';
+    image.style.cursor = 'pointer';
+
+    tile.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openLightboxImages(projectImages, index);
     }, true);
   });
 };
@@ -408,7 +431,7 @@ document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
 setupRecentProjectsGalleryLightbox();
-setupLightboxGroup('.project-grid img', 'projects');
+setupProjectGalleryLightbox();
 
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-lightbox-group][data-lightbox-index]');
