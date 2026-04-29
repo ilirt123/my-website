@@ -33,6 +33,13 @@ button?.addEventListener('click', (event) => {
   setMenuButtonState(isOpen);
 });
 
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') {
+    closePrimaryMenu();
+    closeMoreMenu();
+  }
+});
+
 document.querySelectorAll('.nav a').forEach((link) => {
   link.addEventListener('click', closePrimaryMenu);
 });
@@ -58,6 +65,10 @@ document.querySelectorAll('.more-menu a').forEach((link) => {
 document.addEventListener('click', (event) => {
   if (rightMenu && !rightMenu.contains(event.target)) {
     closeMoreMenu();
+  }
+
+  if (window.innerWidth <= 900 && nav?.classList.contains('open') && !nav.contains(event.target) && !button?.contains(event.target)) {
+    closePrimaryMenu();
   }
 });
 

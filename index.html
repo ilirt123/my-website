@@ -27,19 +27,35 @@
     <a class="brand" href="#home">
       <img class="brand-logo" src="assets/all-american-tiles-logo.jpg" alt="ALL American Tiles">
     </a>
-    <nav id="primary-navigation" class="nav">
-      <a href="#home">Home</a>
-      <div class="nav-dropdown">
-        <a href="#bathrooms">Bathrooms</a>
-        <div class="dropdown-menu">
+    <nav id="primary-navigation" class="nav icon-card-menu header-card-menu" aria-label="Primary navigation">
+      <a class="icon-nav-card" href="#home">
+        <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7h-6.1v-5.8H9.1v5.8H3v-9.7Zm2 1v6.7h2.1v-5.8h9.8v5.8H19v-6.7l-7-6.1-7 6.1Z"/></svg></span>
+        <span class="icon-card-copy"><strong>Home</strong><small>Start here</small></span>
+        <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <div class="icon-nav-card bathroom-nav-card">
+        <a class="bathroom-card-main" href="#bathrooms">
+          <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5A3.5 3.5 0 0 1 10.5 7v1H21v2h-2v3.5A6.5 6.5 0 0 1 12.5 20H11v2H9v-2H7v2H5v-2.4A6.5 6.5 0 0 1 1 13.5V10h2v3.5A4.5 4.5 0 0 0 7.5 18h5a4.5 4.5 0 0 0 4.5-4.5V10H8.5V7A1.5 1.5 0 0 0 7 5.5 1.5 1.5 0 0 0 5.5 7H3.5A3.5 3.5 0 0 1 7 3.5Z"/></svg></span>
+          <span class="icon-card-copy"><strong>Bathrooms</strong><small>Remodels and showers</small></span>
+          <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+        <div class="bathroom-subitems">
           <a href="#full-bathroom">Full Bathroom</a>
           <a href="#half-bathroom">Half Bathroom</a>
           <a href="#shower">Shower</a>
           <a href="#bathroom-gallery">Gallery</a>
         </div>
       </div>
-      <a href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Online Store</a>
-      <a class="quote-mobile" href="#quote">Free Estimate</a>
+      <a class="icon-nav-card" href="#projects">
+        <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6V4h8v2h4v15H4V6h4Zm2 0h4V5.8h-4V6Zm8 2H6v11h12V8Zm-9 4h6v2H9v-2Z"/></svg></span>
+        <span class="icon-card-copy"><strong>Projects</strong><small>Recent tile work</small></span>
+        <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
+      <a class="icon-nav-card" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">
+        <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 1-.1 0H7Zm10 0a2 2 0 1 1-.1 0h.1ZM5.2 4l.8 2h15l-2.2 8H8.1L5.3 4H2V2h4.7l.6 2h-2.1Zm3.5 8h8.6l1.1-4H7.6l1.1 4Z"/></svg></span>
+        <span class="icon-card-copy"><strong>Online Store</strong><small>Shop and order</small></span>
+        <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+      </a>
     </nav>
     <div class="right-menu">
       <button class="more-toggle" type="button" aria-label="Open more menu" aria-expanded="false">&#9776;</button>
@@ -85,8 +101,42 @@
     <section class="hero">
       <div class="hero-text-panel">
         <p class="mini-title">ALL AMERICAN TILES</p>
-        <h1>Beautiful Tile Work. Built to Last.</h1>
-        <a class="outline-btn" href="#quote">Schedule Free Estimate</a>
+        <h1>Transform Your Bathroom</h1>
+        <p class="hero-subtitle">Beautiful Tile. Expert Craftsmanship. Built to Last.</p>
+        <a class="red-btn hero-cta" href="#quote">Schedule Free Estimate</a>
+      </div>
+    </section>
+
+    <section class="icon-nav-section" aria-label="Featured navigation">
+      <div class="icon-card-menu">
+        <a class="icon-nav-card" href="#home">
+          <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7h-6.1v-5.8H9.1v5.8H3v-9.7Zm2 1v6.7h2.1v-5.8h9.8v5.8H19v-6.7l-7-6.1-7 6.1Z"/></svg></span>
+          <span class="icon-card-copy"><strong>Home</strong><small>Explore our tile services and craftsmanship.</small></span>
+          <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+        <div class="icon-nav-card bathroom-nav-card">
+          <a class="bathroom-card-main" href="#bathrooms">
+            <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5A3.5 3.5 0 0 1 10.5 7v1H21v2h-2v3.5A6.5 6.5 0 0 1 12.5 20H11v2H9v-2H7v2H5v-2.4A6.5 6.5 0 0 1 1 13.5V10h2v3.5A4.5 4.5 0 0 0 7.5 18h5a4.5 4.5 0 0 0 4.5-4.5V10H8.5V7A1.5 1.5 0 0 0 7 5.5 1.5 1.5 0 0 0 5.5 7H3.5A3.5 3.5 0 0 1 7 3.5Z"/></svg></span>
+            <span class="icon-card-copy"><strong>Bathrooms</strong><small>Full remodels, half baths, showers, and gallery ideas.</small></span>
+            <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+          </a>
+          <div class="bathroom-subitems">
+            <a href="#full-bathroom">Full Bathroom</a>
+            <a href="#half-bathroom">Half Bathroom</a>
+            <a href="#shower">Shower</a>
+            <a href="#bathroom-gallery">Gallery</a>
+          </div>
+        </div>
+        <a class="icon-nav-card" href="#projects">
+          <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6V4h8v2h4v15H4V6h4Zm2 0h4V5.8h-4V6Zm8 2H6v11h12V8Zm-9 4h6v2H9v-2Z"/></svg></span>
+          <span class="icon-card-copy"><strong>Projects</strong><small>Browse finished tile, shower, kitchen, and floor work.</small></span>
+          <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
+        <a class="icon-nav-card" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">
+          <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 1-.1 0H7Zm10 0a2 2 0 1 1-.1 0h.1ZM5.2 4l.8 2h15l-2.2 8H8.1L5.3 4H2V2h4.7l.6 2h-2.1Zm3.5 8h8.6l1.1-4H7.6l1.1 4Z"/></svg></span>
+          <span class="icon-card-copy"><strong>Online Store</strong><small>Open the ordering form and online store.</small></span>
+          <span class="card-arrow" aria-hidden="true">&rsaquo;</span>
+        </a>
       </div>
     </section>
 
