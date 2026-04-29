@@ -356,8 +356,11 @@ const showLightboxImage = (index) => {
   setLightboxZoom(1);
 };
 
-const setupLightboxGroup = (selector) => {
-  const groupImages = Array.from(document.querySelectorAll(selector));
+const setupLightboxGroup = (selectorOrImages) => {
+  const groupImages = typeof selectorOrImages === 'string'
+    ? Array.from(document.querySelectorAll(selectorOrImages))
+    : Array.from(selectorOrImages || []);
+
   groupImages.forEach((image, index) => {
     image.addEventListener('click', () => {
       if (!lightbox || !lightboxImage) return;
@@ -370,7 +373,9 @@ const setupLightboxGroup = (selector) => {
 };
 
 setupLightboxGroup('.service-card img');
-setupLightboxGroup('.bathroom-card img');
+document.querySelectorAll('.bathroom-card').forEach((card) => {
+  setupLightboxGroup(card.querySelectorAll('img'));
+});
 setupLightboxGroup('.bathroom-gallery img');
 
 lightboxClose?.addEventListener('click', closeLightbox);
