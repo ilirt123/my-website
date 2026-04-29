@@ -60,7 +60,7 @@
 .footer-menu{width:min(1120px,calc(100% - 14vw));max-width:none;padding:54px 0;grid-template-columns:1.5fr repeat(4,minmax(0,1fr));align-items:start}.footer-bottom{padding-left:7vw;padding-right:7vw}
 @media(max-width:900px){.footer-menu{width:100%;padding:44px 24px;grid-template-columns:1fr 1fr}.footer-brand{grid-column:1/-1}}
 @media(max-width:520px){.footer-menu{grid-template-columns:1fr}}
-.icon-nav-section .bathroom-subitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.icon-nav-section .bathroom-subitems a{padding-left:8px;padding-right:8px;text-align:center}.icon-nav-section .icon-nav-card{justify-content:flex-start}.icon-nav-section .bathroom-nav-card{min-height:224px}
+.icon-nav-section .bathroom-subitems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.icon-nav-section .bathroom-subitems a{padding-left:8px;padding-right:8px;text-align:center}.icon-nav-section .icon-nav-card{justify-content:flex-start}
 @media(max-width:900px){.icon-nav-section .bathroom-nav-card{min-height:auto}.icon-nav-section .icon-card-menu{max-width:640px;margin-left:auto;margin-right:auto}.icon-nav-section .icon-nav-card{width:100%}}
 @media(max-width:600px){.icon-nav-section .icon-card-menu{max-width:none;margin-left:0;margin-right:0}.icon-nav-section .bathroom-subitems{grid-template-columns:1fr}.icon-nav-section .icon-nav-card{padding:19px}.icon-nav-section .icon-card-copy small{max-width:24ch}}
 .desktop-nav{display:none}
