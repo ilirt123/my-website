@@ -390,19 +390,31 @@ const setupLightboxGroup = (selectorOrImages, groupName) => {
 };
 
 const setupRecentProjectsGalleryLightbox = () => {
-  const recentProjectsImages = Array.from(document.querySelectorAll('#bathroom-gallery .bathroom-gallery .gallery-photo img'));
+  const recentProjectsTriggers = Array.from(document.querySelectorAll('#bathroom-gallery .gallery-lightbox-trigger'));
+  const recentProjectsImages = recentProjectsTriggers.length
+    ? recentProjectsTriggers.map((trigger) => trigger.querySelector('img')).filter(Boolean)
+    : Array.from(document.querySelectorAll('#bathroom-gallery .bathroom-gallery .gallery-photo img'));
   if (!recentProjectsImages.length) return;
 
   lightboxGroups.set('recent-projects-gallery', recentProjectsImages);
 
   recentProjectsImages.forEach((image, index) => {
+    const trigger = recentProjectsTriggers[index] || image;
+    trigger.dataset.lightboxGroup = 'recent-projects-gallery';
+    trigger.dataset.lightboxIndex = String(index);
     image.style.cursor = 'zoom-in';
-    image.addEventListener('click', (event) => {
+
+    const openRecentProjectsLightbox = (event) => {
+      if (event.galleryLightboxHandled) return;
+      event.galleryLightboxHandled = true;
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
       openLightboxImages(recentProjectsImages, index);
-    }, true);
+    };
+
+    trigger.addEventListener('click', openRecentProjectsLightbox, true);
+    image.addEventListener('click', openRecentProjectsLightbox, true);
   });
 };
 
@@ -439,6 +451,18 @@ document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
 });
 setupRecentProjectsGalleryLightbox();
 setupProjectGalleryLightbox();
+
+document.addEventListener('click', (event) => {
+  const trigger = event.target.closest('#bathroom-gallery .gallery-lightbox-trigger');
+  if (!trigger) return;
+  const recentProjectsImages = lightboxGroups.get('recent-projects-gallery') || [];
+  const index = Number(trigger.dataset.lightboxIndex ?? trigger.dataset.index);
+  if (!recentProjectsImages.length || Number.isNaN(index)) return;
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  openLightboxImages(recentProjectsImages, index);
+}, true);
 
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-lightbox-group][data-lightbox-index]');
