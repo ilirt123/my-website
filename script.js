@@ -359,14 +359,17 @@ const showLightboxImage = (index) => {
   setLightboxZoom(1);
 };
 
-const openLightboxGroup = (groupName, index) => {
-  if (!lightbox || !lightboxImage) return;
-  const groupImages = lightboxGroups.get(groupName) || [];
-  if (!groupImages.length) return;
-  galleryImages = groupImages;
+const openLightboxImages = (images, index) => {
+  if (!lightbox || !lightboxImage || !images.length) return;
+  galleryImages = images;
   showLightboxImage(index);
   lightbox.classList.add('open');
   lightbox.setAttribute('aria-hidden', 'false');
+};
+
+const openLightboxGroup = (groupName, index) => {
+  const groupImages = lightboxGroups.get(groupName) || [];
+  openLightboxImages(groupImages, index);
 };
 
 const setupLightboxGroup = (selectorOrImages, groupName) => {
@@ -384,11 +387,27 @@ const setupLightboxGroup = (selectorOrImages, groupName) => {
   });
 };
 
+const setupRecentProjectsGalleryLightbox = () => {
+  const recentProjectsImages = Array.from(document.querySelectorAll('#bathroom-gallery .bathroom-gallery .gallery-photo img'));
+  if (!recentProjectsImages.length) return;
+
+  lightboxGroups.set('recent-projects-gallery', recentProjectsImages);
+
+  recentProjectsImages.forEach((image, index) => {
+    image.style.cursor = 'pointer';
+    image.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openLightboxImages(recentProjectsImages, index);
+    }, true);
+  });
+};
+
 setupLightboxGroup('.service-card img', 'services');
 document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
-setupLightboxGroup('.bathroom-gallery img', 'recent-projects-gallery');
+setupRecentProjectsGalleryLightbox();
 setupLightboxGroup('.project-grid img', 'projects');
 
 document.addEventListener('click', (event) => {
