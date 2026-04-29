@@ -1,3 +1,5 @@
+console.log("SCRIPT LOADED");
+
 const button = document.querySelector('.topbar .menu-toggle');
 const nav = document.querySelector('#primary-navigation');
 const rightMenu = document.querySelector('.right-menu');
