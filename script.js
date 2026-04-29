@@ -396,7 +396,7 @@ const setupRecentProjectsGalleryLightbox = () => {
   lightboxGroups.set('recent-projects-gallery', recentProjectsImages);
 
   recentProjectsImages.forEach((image, index) => {
-    image.style.cursor = 'pointer';
+    image.style.cursor = 'zoom-in';
     image.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -416,8 +416,8 @@ const setupProjectGalleryLightbox = () => {
     const tile = image.closest('.project-tile') || image;
     tile.dataset.lightboxGroup = 'projects';
     tile.dataset.lightboxIndex = String(index);
-    tile.style.cursor = 'pointer';
-    image.style.cursor = 'pointer';
+    tile.style.cursor = 'zoom-in';
+    image.style.cursor = 'zoom-in';
 
     tile.addEventListener('click', (event) => {
       event.preventDefault();
@@ -434,6 +434,34 @@ document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
 });
 setupRecentProjectsGalleryLightbox();
 setupProjectGalleryLightbox();
+
+document.addEventListener('click', (event) => {
+  const recentImage = event.target.closest('#bathroom-gallery .bathroom-gallery .gallery-photo img');
+  if (recentImage) {
+    const recentImages = lightboxGroups.get('recent-projects-gallery') || [];
+    const recentIndex = recentImages.indexOf(recentImage);
+    if (recentIndex >= 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openLightboxImages(recentImages, recentIndex);
+    }
+    return;
+  }
+
+  const projectTrigger = event.target.closest('#projects .project-grid .project-tile');
+  if (projectTrigger) {
+    const projectImages = lightboxGroups.get('projects') || [];
+    const projectImage = projectTrigger.querySelector('img');
+    const projectIndex = projectImages.indexOf(projectImage);
+    if (projectIndex >= 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openLightboxImages(projectImages, projectIndex);
+    }
+  }
+}, true);
 
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-lightbox-group][data-lightbox-index]');
