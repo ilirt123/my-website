@@ -452,6 +452,35 @@ document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
 setupRecentProjectsGalleryLightbox();
 setupProjectGalleryLightbox();
 
+const recentProjectsCarousel = document.querySelector('#bathroom-gallery .bathroom-gallery');
+let recentProjectsPointerStartX = 0;
+let recentProjectsPointerStartY = 0;
+
+recentProjectsCarousel?.addEventListener('pointerdown', (event) => {
+  if (!event.target.closest('.gallery-photo')) return;
+  recentProjectsPointerStartX = event.clientX;
+  recentProjectsPointerStartY = event.clientY;
+}, true);
+
+recentProjectsCarousel?.addEventListener('pointerup', (event) => {
+  const photo = event.target.closest('.gallery-photo');
+  if (!photo) return;
+  const movedX = Math.abs(event.clientX - recentProjectsPointerStartX);
+  const movedY = Math.abs(event.clientY - recentProjectsPointerStartY);
+  recentProjectsPointerStartX = 0;
+  recentProjectsPointerStartY = 0;
+  if (movedX > 8 || movedY > 8) return;
+
+  const recentProjectsImages = lightboxGroups.get('recent-projects-gallery') || [];
+  const index = Number(photo.dataset.lightboxIndex);
+  if (!recentProjectsImages.length || Number.isNaN(index)) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+  openLightboxImages(recentProjectsImages, index);
+}, true);
+
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('#bathroom-gallery .gallery-lightbox-trigger');
   if (!trigger) return;
