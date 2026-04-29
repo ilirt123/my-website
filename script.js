@@ -328,6 +328,8 @@ const lightboxNext = document.querySelector('.lightbox-next');
 let galleryImages = [];
 let lightboxZoom = 1;
 let lightboxIndex = 0;
+let lightboxStartX = 0;
+let lightboxDragDelta = 0;
 
 const closeLightbox = () => {
   lightbox?.classList.remove('open');
@@ -362,8 +364,10 @@ const setupLightboxGroup = (selectorOrImages) => {
     : Array.from(selectorOrImages || []);
 
   groupImages.forEach((image, index) => {
-    image.addEventListener('click', () => {
+    const trigger = image.closest('.project-tile') || image;
+    trigger.addEventListener('click', (event) => {
       if (!lightbox || !lightboxImage) return;
+      event.preventDefault();
       galleryImages = groupImages;
       showLightboxImage(index);
       lightbox.classList.add('open');
@@ -377,12 +381,32 @@ document.querySelectorAll('.bathroom-card').forEach((card) => {
   setupLightboxGroup(card.querySelectorAll('img'));
 });
 setupLightboxGroup('.bathroom-gallery img');
+setupLightboxGroup('.project-grid img');
 
 lightboxClose?.addEventListener('click', closeLightbox);
 lightboxZoomIn?.addEventListener('click', () => setLightboxZoom(lightboxZoom + 0.2));
 lightboxZoomOut?.addEventListener('click', () => setLightboxZoom(lightboxZoom - 0.2));
 lightboxPrev?.addEventListener('click', () => showLightboxImage(lightboxIndex - 1));
 lightboxNext?.addEventListener('click', () => showLightboxImage(lightboxIndex + 1));
+
+lightboxImage?.addEventListener('pointerdown', (event) => {
+  lightboxStartX = event.clientX;
+  lightboxDragDelta = 0;
+  lightboxImage.setPointerCapture?.(event.pointerId);
+});
+
+lightboxImage?.addEventListener('pointermove', (event) => {
+  if (!lightboxStartX) return;
+  lightboxDragDelta = event.clientX - lightboxStartX;
+});
+
+lightboxImage?.addEventListener('pointerup', () => {
+  if (Math.abs(lightboxDragDelta) > 45) {
+    showLightboxImage(lightboxIndex + (lightboxDragDelta < 0 ? 1 : -1));
+  }
+  lightboxStartX = 0;
+  lightboxDragDelta = 0;
+});
 
 lightbox?.addEventListener('click', (event) => {
   if (event.target === lightbox) {
