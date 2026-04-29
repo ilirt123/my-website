@@ -436,6 +436,7 @@ setupRecentProjectsGalleryLightbox();
 setupProjectGalleryLightbox();
 
 document.addEventListener('click', (event) => {
+  const isDesktopGalleryClick = window.matchMedia('(min-width: 901px)').matches;
   const recentImage = event.target.closest('#bathroom-gallery .bathroom-gallery .gallery-photo img');
   if (recentImage) {
     const recentImages = lightboxGroups.get('recent-projects-gallery') || [];
@@ -444,6 +445,7 @@ document.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+      if (isDesktopGalleryClick) console.log("DESKTOP IMAGE CLICKED");
       openLightboxImages(recentImages, recentIndex);
     }
     return;
@@ -458,6 +460,7 @@ document.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
+      if (isDesktopGalleryClick) console.log("DESKTOP IMAGE CLICKED");
       openLightboxImages(projectImages, projectIndex);
     }
   }
