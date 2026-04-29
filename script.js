@@ -397,3 +397,16 @@ document.addEventListener('keydown', (event) => {
     showLightboxImage(lightboxIndex + 1);
   }
 });
+
+const backToTopButton = document.querySelector('.back-to-top');
+
+const updateBackToTopButton = () => {
+  backToTopButton?.classList.toggle('visible', window.scrollY > 300);
+};
+
+backToTopButton?.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+window.addEventListener('scroll', updateBackToTopButton, { passive: true });
+updateBackToTopButton();
