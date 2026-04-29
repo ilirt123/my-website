@@ -419,12 +419,17 @@ const setupProjectGalleryLightbox = () => {
     tile.style.cursor = 'zoom-in';
     image.style.cursor = 'zoom-in';
 
-    tile.addEventListener('click', (event) => {
+    const openProjectLightbox = (event) => {
+      if (event.galleryLightboxHandled) return;
+      event.galleryLightboxHandled = true;
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
       openLightboxImages(projectImages, index);
-    }, true);
+    };
+
+    tile.addEventListener('click', openProjectLightbox, true);
+    image.addEventListener('click', openProjectLightbox, true);
   });
 };
 
@@ -434,37 +439,6 @@ document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
 });
 setupRecentProjectsGalleryLightbox();
 setupProjectGalleryLightbox();
-
-document.addEventListener('click', (event) => {
-  const isDesktopGalleryClick = window.matchMedia('(min-width: 901px)').matches;
-  const recentImage = event.target.closest('#bathroom-gallery .bathroom-gallery .gallery-photo img');
-  if (recentImage) {
-    const recentImages = lightboxGroups.get('recent-projects-gallery') || [];
-    const recentIndex = recentImages.indexOf(recentImage);
-    if (recentIndex >= 0) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      if (isDesktopGalleryClick) console.log("DESKTOP IMAGE CLICKED");
-      openLightboxImages(recentImages, recentIndex);
-    }
-    return;
-  }
-
-  const projectTrigger = event.target.closest('#projects .project-grid .project-tile');
-  if (projectTrigger) {
-    const projectImages = lightboxGroups.get('projects') || [];
-    const projectImage = projectTrigger.querySelector('img');
-    const projectIndex = projectImages.indexOf(projectImage);
-    if (projectIndex >= 0) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      if (isDesktopGalleryClick) console.log("DESKTOP IMAGE CLICKED");
-      openLightboxImages(projectImages, projectIndex);
-    }
-  }
-}, true);
 
 document.addEventListener('click', (event) => {
   const trigger = event.target.closest('[data-lightbox-group][data-lightbox-index]');
