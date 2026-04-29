@@ -455,20 +455,24 @@ setupProjectGalleryLightbox();
 const recentProjectsCarousel = document.querySelector('#bathroom-gallery .bathroom-gallery');
 let recentProjectsPointerStartX = 0;
 let recentProjectsPointerStartY = 0;
+let recentProjectsPointerPhoto = null;
 
 recentProjectsCarousel?.addEventListener('pointerdown', (event) => {
-  if (!event.target.closest('.gallery-photo')) return;
+  const photo = event.target.closest('.gallery-photo');
+  if (!photo) return;
+  recentProjectsPointerPhoto = photo;
   recentProjectsPointerStartX = event.clientX;
   recentProjectsPointerStartY = event.clientY;
 }, true);
 
 recentProjectsCarousel?.addEventListener('pointerup', (event) => {
-  const photo = event.target.closest('.gallery-photo');
+  const photo = event.target.closest('.gallery-photo') || recentProjectsPointerPhoto;
   if (!photo) return;
   const movedX = Math.abs(event.clientX - recentProjectsPointerStartX);
   const movedY = Math.abs(event.clientY - recentProjectsPointerStartY);
   recentProjectsPointerStartX = 0;
   recentProjectsPointerStartY = 0;
+  recentProjectsPointerPhoto = null;
   if (movedX > 8 || movedY > 8) return;
 
   const recentProjectsImages = lightboxGroups.get('recent-projects-gallery') || [];
