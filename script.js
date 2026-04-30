@@ -429,39 +429,11 @@ const setupRecentProjectsGalleryLightbox = () => {
   });
 };
 
-const setupProjectGalleryLightbox = () => {
-  const projectImages = Array.from(document.querySelectorAll('#projects .project-grid .project-tile img'));
-  if (!projectImages.length) return;
-
-  lightboxGroups.set('projects', projectImages);
-
-  projectImages.forEach((image, index) => {
-    const tile = image.closest('.project-tile') || image;
-    tile.dataset.lightboxGroup = 'projects';
-    tile.dataset.lightboxIndex = String(index);
-    tile.style.cursor = 'zoom-in';
-    image.style.cursor = 'zoom-in';
-
-    const openProjectLightbox = (event) => {
-      if (event.galleryLightboxHandled) return;
-      event.galleryLightboxHandled = true;
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      openLightboxImages(projectImages, index);
-    };
-
-    tile.addEventListener('click', openProjectLightbox, true);
-    image.addEventListener('click', openProjectLightbox, true);
-  });
-};
-
 setupLightboxGroup('.service-card img', 'services');
 document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
 setupRecentProjectsGalleryLightbox();
-setupProjectGalleryLightbox();
 
 const recentProjectsCarousel = document.querySelector('#bathroom-gallery .bathroom-gallery');
 let recentProjectsPointerStartX = 0;
