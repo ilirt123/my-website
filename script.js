@@ -238,6 +238,16 @@ const quoteFormMessage = quoteForm?.querySelector('.form-message');
 const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const fireLeadConversion = () => {
+  if (typeof window.gtag !== 'function') return;
+
+  window.gtag('event', 'conversion', {
+    'send_to': 'AW-16791484869/WsOrCMGMp6UcEMXz5sY-',
+    'value': 1.0,
+    'currency': 'USD',
+  });
+};
+
 const setQuoteFormMessage = (message, type = 'error') => {
   if (!quoteFormMessage) return;
   quoteFormMessage.textContent = message;
@@ -310,6 +320,7 @@ quoteForm?.addEventListener('submit', async (event) => {
       throw new Error('Lead request failed');
     }
 
+    fireLeadConversion();
     setQuoteFormMessage('Thank you! Your request was sent. We will contact you soon.', 'success');
     quoteForm.reset();
   } catch (error) {
