@@ -3,11 +3,24 @@ console.log("SCRIPT LOADED");
 const serviceAreaMapElement = document.getElementById('service-area-map');
 
 if (serviceAreaMapElement && window.L) {
-  const serviceAreaMap = L.map('service-area-map').setView([42.431, -83.225], 9);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  const mapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(serviceAreaMap);
+  });
+
+  const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri'
+  });
+
+  const serviceAreaMap = L.map('service-area-map', {
+    center: [42.42, -83.25],
+    zoom: 10,
+    layers: [mapLayer]
+  });
+
+  L.control.layers({
+    Map: mapLayer,
+    Satellite: satelliteLayer
+  }, null, { collapsed: false }).addTo(serviceAreaMap);
 
   const serviceAreaMarker = L.divIcon({
     className: '',
@@ -19,10 +32,11 @@ if (serviceAreaMapElement && window.L) {
 
   const serviceAreaLocations = [
     { name: 'Plymouth, MI', coords: [42.3714, -83.4702] },
+    { name: 'Livonia, MI', coords: [42.3684, -83.3527] },
     { name: 'Detroit, MI', coords: [42.3314, -83.0458] },
-    { name: 'Novi, MI', coords: [42.4806, -83.4755] },
     { name: 'Troy, MI', coords: [42.6064, -83.1498] },
-    { name: 'Sterling Heights, MI', coords: [42.5803, -83.0302] }
+    { name: 'Sterling Heights, MI', coords: [42.5803, -83.0302] },
+    { name: 'Novi, MI', coords: [42.4806, -83.4755] },
   ];
 
   serviceAreaLocations.forEach((location) => {
