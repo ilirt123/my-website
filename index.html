@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -531,7 +532,9 @@
             </div>
           </div>
           <div class="map-card quote-map-card">
-            <iframe title="ALL American Tiles Metro Detroit map" src="https://www.google.com/maps?ll=42.3000,-83.2500&z=9&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <p class="service-area-map-text">All American Tiles proudly serves Plymouth, MI and surrounding Metro Detroit areas including Novi, Troy, Sterling Heights, Detroit, and nearby communities.</p>
+            <div id="service-area-map" aria-label="All American Tiles service area map"></div>
+            <a class="map-directions-btn" href="https://www.google.com/maps?q=Plymouth,MI" target="_blank" rel="noopener">Get Directions</a>
           </div>
         </div>
         <form class="quote-form" novalidate>
@@ -646,6 +649,7 @@
     <div class="footer-bottom">&copy; 2026 ALL American Tiles. Plymouth, MI. Serving Metro Detroit.</div>
   </footer>
   <button class="back-to-top" type="button" aria-label="Back to top">&uarr;</button>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

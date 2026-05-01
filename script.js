@@ -1,5 +1,37 @@
 console.log("SCRIPT LOADED");
 
+const serviceAreaMapElement = document.getElementById('service-area-map');
+
+if (serviceAreaMapElement && window.L) {
+  const serviceAreaMap = L.map('service-area-map').setView([42.431, -83.225], 9);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(serviceAreaMap);
+
+  const serviceAreaMarker = L.divIcon({
+    className: '',
+    html: '<span class="service-area-marker" aria-hidden="true"></span>',
+    iconSize: [24, 32],
+    iconAnchor: [12, 32],
+    popupAnchor: [0, -30]
+  });
+
+  const serviceAreaLocations = [
+    { name: 'Plymouth, MI', coords: [42.3714, -83.4702] },
+    { name: 'Detroit, MI', coords: [42.3314, -83.0458] },
+    { name: 'Novi, MI', coords: [42.4806, -83.4755] },
+    { name: 'Troy, MI', coords: [42.6064, -83.1498] },
+    { name: 'Sterling Heights, MI', coords: [42.5803, -83.0302] }
+  ];
+
+  serviceAreaLocations.forEach((location) => {
+    L.marker(location.coords, { icon: serviceAreaMarker })
+      .addTo(serviceAreaMap)
+      .bindPopup(`All American Tiles serves ${location.name}`);
+  });
+}
+
 const button = document.querySelector('.topbar .menu-toggle');
 const nav = document.querySelector('#primary-navigation');
 const rightMenu = document.querySelector('.right-menu');
