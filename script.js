@@ -428,6 +428,7 @@ const setupRecentProjectsGalleryLightbox = () => {
 };
 
 setupLightboxGroup('.service-card img', 'services');
+setupLightboxGroup('.bathroom-service-card img', 'bathroom-services');
 document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
