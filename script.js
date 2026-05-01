@@ -434,7 +434,9 @@ const setupRecentProjectsGalleryLightbox = () => {
   });
 };
 
-setupLightboxGroup('.service-card img', 'services');
+document.querySelectorAll('.service-card').forEach((card, cardIndex) => {
+  setupLightboxGroup(card.querySelectorAll('img'), `service-card-${cardIndex}`);
+});
 document.querySelectorAll('.bathroom-service-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-service-${cardIndex}`);
 });
