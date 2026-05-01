@@ -87,5 +87,6 @@
 .quote-copy .quote-map-card{width:100%;max-width:none;margin:18px 0 0!important;text-align:left;padding:0!important}.quote-copy .quote-map-card .service-area-map-embed{height:340px}.quote-copy .quote-map-card .service-area-map-text{max-width:none;margin:14px 0 0!important;text-align:left}.quote-copy .quote-map-card .map-directions-btn{margin-top:14px}
 @media(max-width:768px){.quote-copy .quote-map-card .service-area-map-embed{height:280px}}
 .bathroom-service-card img{cursor:zoom-in}
+.lightbox-nav:disabled{opacity:.35;cursor:default;pointer-events:none}
 .waterproofing-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:0!important}.waterproofing-photo-grid img{width:100%;height:220px;object-fit:cover}
 @media(max-width:600px){.waterproofing-photo-grid{grid-template-columns:1fr}.waterproofing-photo-grid img{height:190px}}

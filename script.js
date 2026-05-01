@@ -361,6 +361,12 @@ const setLightboxZoom = (zoom) => {
   }
 };
 
+const updateLightboxNavigation = () => {
+  const hasMultipleImages = galleryImages.length > 1;
+  lightboxPrev?.toggleAttribute('disabled', !hasMultipleImages);
+  lightboxNext?.toggleAttribute('disabled', !hasMultipleImages);
+};
+
 const showLightboxImage = (index) => {
   if (!lightboxImage || !galleryImages.length) return;
   lightboxIndex = (index + galleryImages.length) % galleryImages.length;
@@ -368,6 +374,7 @@ const showLightboxImage = (index) => {
   lightboxImage.src = image.src;
   lightboxImage.alt = image.alt;
   setLightboxZoom(1);
+  updateLightboxNavigation();
 };
 
 const openLightboxImages = (images, index) => {
@@ -428,7 +435,9 @@ const setupRecentProjectsGalleryLightbox = () => {
 };
 
 setupLightboxGroup('.service-card img', 'services');
-setupLightboxGroup('.bathroom-service-card img', 'bathroom-services');
+document.querySelectorAll('.bathroom-service-card').forEach((card, cardIndex) => {
+  setupLightboxGroup(card.querySelectorAll('img'), `bathroom-service-${cardIndex}`);
+});
 document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
