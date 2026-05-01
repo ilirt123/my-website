@@ -63,11 +63,11 @@
         <span></span>
         <span></span>
       </button>
-      <a class="header-icon" href="#services" aria-label="Search">
+      <button class="header-icon search-toggle" type="button" aria-label="Search website" aria-expanded="false" aria-controls="site-search">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M10.8 4a6.8 6.8 0 0 1 5.4 10.9l3.4 3.4-1.4 1.4-3.4-3.4A6.8 6.8 0 1 1 10.8 4Zm0 2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z"/>
         </svg>
-      </a>
+      </button>
       <a class="header-icon" href="https://www.facebook.com/profile.php?id=61567769488674" target="_blank" rel="noopener" aria-label="Facebook">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M14 8.5V7.1c0-.7.5-.9.9-.9h2.2V2.3L14 2.2c-3.5 0-5.4 2.1-5.4 5.7v.6H5.2v4.2h3.4V22H13v-9.3h3.5l.6-4.2H14Z"/>
@@ -94,6 +94,16 @@
       </nav>
     </div>
   </header>
+  <div id="site-search" class="site-search" aria-hidden="true">
+    <div class="site-search-panel" role="dialog" aria-modal="true" aria-label="Search website">
+      <div class="site-search-head">
+        <label for="site-search-input">Search website</label>
+        <button class="site-search-close" type="button" aria-label="Close search">&times;</button>
+      </div>
+      <input id="site-search-input" class="site-search-input" type="search" placeholder="Search bathrooms, showers, reviews..." autocomplete="off">
+      <div class="site-search-results" aria-live="polite"></div>
+    </div>
+  </div>
 
   <main id="home">
     <section class="hero">
@@ -367,7 +377,7 @@
       </div>
     </section>
 
-    <section class="section reviews-section">
+    <section id="reviews" class="section reviews-section">
       <div class="section-head">
         <h2>Google Reviews</h2>
         <div class="line"></div>

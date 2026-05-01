@@ -2,6 +2,11 @@ const button = document.querySelector('.topbar .menu-toggle');
 const nav = document.querySelector('#primary-navigation');
 const rightMenu = document.querySelector('.right-menu');
 const moreToggle = document.querySelector('.right-menu .more-toggle');
+const searchToggle = document.querySelector('.search-toggle');
+const siteSearch = document.querySelector('#site-search');
+const siteSearchInput = document.querySelector('#site-search-input');
+const siteSearchResults = document.querySelector('.site-search-results');
+const siteSearchClose = document.querySelector('.site-search-close');
 
 const setMenuButtonState = (isOpen) => {
   button?.setAttribute('aria-expanded', String(isOpen));
@@ -37,6 +42,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closePrimaryMenu();
     closeMoreMenu();
+    closeSearch();
   }
 });
 
@@ -69,6 +75,89 @@ document.addEventListener('click', (event) => {
 
   if (window.innerWidth <= 900 && nav?.classList.contains('open') && !nav.contains(event.target) && !button?.contains(event.target)) {
     closePrimaryMenu();
+  }
+});
+
+const siteSearchItems = [
+  { title: 'Home', keywords: 'home all american tiles', target: '#home' },
+  { title: 'Services', keywords: 'services bathroom kitchen flooring fireplace tile', target: '#services' },
+  { title: 'Bathroom Services', keywords: 'bathroom services remodel tile shower half bathroom waterproofing', target: '#bathrooms' },
+  { title: 'Full Bathroom Remodel', keywords: 'full bathroom remodel vanity toilet tile shower', target: '#full-bathroom' },
+  { title: 'Shower Remodel', keywords: 'shower remodel glass shower waterproofing tile', target: '#shower' },
+  { title: 'Half Bathroom Remodel', keywords: 'half bathroom powder room', target: '#half-bathroom' },
+  { title: 'Tile & Waterproofing', keywords: 'tile waterproofing schluter kerdi ditra heat', target: '#bathrooms' },
+  { title: 'Recent Bathroom Projects', keywords: 'gallery recent projects photos bathroom shower', target: '#bathroom-gallery' },
+  { title: 'Contact / Get a Quote', keywords: 'contact quote estimate get a quote phone form', target: '#quote' },
+  { title: 'Map / Service Area', keywords: 'map metro detroit plymouth service area directions', target: '#quote' },
+  { title: 'Reviews', keywords: 'google reviews customer reviews', target: '#reviews' }
+];
+
+function renderSiteSearchResults(query = '') {
+  if (!siteSearchResults) return;
+  const normalizedQuery = query.trim().toLowerCase();
+  const matches = normalizedQuery
+    ? siteSearchItems.filter((item) => `${item.title} ${item.keywords}`.toLowerCase().includes(normalizedQuery))
+    : siteSearchItems;
+
+  siteSearchResults.innerHTML = '';
+
+  if (!matches.length) {
+    const empty = document.createElement('p');
+    empty.className = 'site-search-empty';
+    empty.textContent = 'No results found.';
+    siteSearchResults.append(empty);
+    return;
+  }
+
+  matches.forEach((item) => {
+    const result = document.createElement('a');
+    result.className = 'site-search-result';
+    result.href = item.target;
+    result.textContent = item.title;
+    result.addEventListener('click', (event) => {
+      event.preventDefault();
+      const target = document.querySelector(item.target);
+      closeSearch();
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', item.target);
+    });
+    siteSearchResults.append(result);
+  });
+}
+
+function openSearch() {
+  if (!siteSearch) return;
+  closePrimaryMenu();
+  closeMoreMenu();
+  siteSearch.classList.add('open');
+  siteSearch.setAttribute('aria-hidden', 'false');
+  searchToggle?.setAttribute('aria-expanded', 'true');
+  renderSiteSearchResults(siteSearchInput?.value ?? '');
+  window.setTimeout(() => siteSearchInput?.focus(), 0);
+}
+
+function closeSearch() {
+  siteSearch?.classList.remove('open');
+  siteSearch?.setAttribute('aria-hidden', 'true');
+  searchToggle?.setAttribute('aria-expanded', 'false');
+}
+
+searchToggle?.addEventListener('click', (event) => {
+  event.stopPropagation();
+  if (siteSearch?.classList.contains('open')) {
+    closeSearch();
+  } else {
+    openSearch();
+  }
+});
+
+siteSearchClose?.addEventListener('click', closeSearch);
+siteSearchInput?.addEventListener('input', (event) => {
+  renderSiteSearchResults(event.target.value);
+});
+siteSearch?.addEventListener('click', (event) => {
+  if (event.target === siteSearch) {
+    closeSearch();
   }
 });
 
