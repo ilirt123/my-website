@@ -449,14 +449,19 @@ recentProjectsCarousel?.addEventListener('pointerdown', (event) => {
 }, true);
 
 recentProjectsCarousel?.addEventListener('pointerup', (event) => {
-  const photo = event.target.closest('.gallery-photo') || recentProjectsPointerPhoto;
-  if (!photo) return;
   const movedX = Math.abs(event.clientX - recentProjectsPointerStartX);
   const movedY = Math.abs(event.clientY - recentProjectsPointerStartY);
   recentProjectsPointerStartX = 0;
   recentProjectsPointerStartY = 0;
+  if (movedX > 8 || movedY > 8) {
+    recentProjectsPointerPhoto = null;
+  }
+}, true);
+
+recentProjectsCarousel?.addEventListener('click', (event) => {
+  const photo = event.target.closest('.gallery-photo') || recentProjectsPointerPhoto;
   recentProjectsPointerPhoto = null;
-  if (movedX > 8 || movedY > 8) return;
+  if (!photo) return;
 
   const recentProjectsImages = lightboxGroups.get('recent-projects-gallery') || [];
   const index = Number(photo.dataset.lightboxIndex);
