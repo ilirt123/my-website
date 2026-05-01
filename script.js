@@ -3,12 +3,15 @@ console.log("SCRIPT LOADED");
 const serviceAreaMapElement = document.getElementById('service-area-map');
 
 if (serviceAreaMapElement && window.L) {
-  const mapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+  const mapLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+    subdomains: 'abcd',
+    maxZoom: 20
   });
 
   const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri'
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 20
   });
 
   const serviceAreaMap = L.map('service-area-map', {
