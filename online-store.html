@@ -159,7 +159,7 @@
 
     .store-shell {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-columns: minmax(0, 1fr) 320px;
       gap: 28px;
       align-items: start;
     }
@@ -180,7 +180,6 @@
       border-bottom: 1px solid var(--line);
     }
 
-    .store-toolbar input,
     .store-toolbar select {
       min-height: 44px;
       border: 1px solid #9fb0c4;
@@ -189,14 +188,71 @@
       background: #fff;
     }
 
-    .store-toolbar input { flex: 1 1 260px; }
+    .product-count {
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
     .store-toolbar select { flex: 0 1 220px; }
+
+    .mobile-category-select { display: none; }
+
+    .category-sections {
+      display: grid;
+      gap: 28px;
+      padding: 18px;
+    }
+
+    .category-section {
+      scroll-margin-top: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .category-section.is-hidden { display: none; }
+
+    .category-section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 3px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .category-section h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+    }
+
+    .category-section-count {
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .category-empty {
+      margin: 0;
+      border: 1px dashed #9fb0c4;
+      background: #f8fbff;
+      color: var(--muted);
+      padding: 16px;
+      line-height: 1.6;
+    }
 
     .product-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
-      padding: 18px;
     }
 
     .product-card {
@@ -267,9 +323,76 @@
       text-align: center;
     }
 
-    .cart-panel {
+    .store-side-panel {
       position: sticky;
       top: 20px;
+      display: grid;
+      gap: 18px;
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+    }
+
+    .category-helper {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .category-helper h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .category-helper input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #9fb0c4;
+      padding: 10px 12px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .category-menu {
+      display: grid;
+      gap: 8px;
+    }
+
+    .category-menu a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      padding: 11px 12px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .category-menu a:hover,
+    .category-menu a.active {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff;
+    }
+
+    .category-menu a.is-empty {
+      color: var(--muted);
+    }
+
+    .category-menu-count {
+      font-size: 11px;
+      opacity: .8;
+    }
+
+    .cart-panel {
       padding: 20px;
       display: grid;
       gap: 18px;
@@ -406,7 +529,31 @@
 
     @media (max-width: 1100px) {
       .store-shell { grid-template-columns: 1fr; }
-      .cart-panel { position: static; }
+      .store-side-panel {
+        position: static;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .category-helper {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        border-top: 4px solid var(--red);
+      }
+
+      .category-menu {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scroll-snap-type: x proximity;
+      }
+
+      .category-menu a {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        white-space: nowrap;
+      }
     }
 
     @media (max-width: 860px) {
@@ -428,11 +575,23 @@
       .store-actions { align-items: stretch; flex-direction: column; }
       .store-button { width: 100%; }
       .store-main, .fallback-section { padding-left: 22px; padding-right: 22px; }
-      .product-grid { grid-template-columns: 1fr; padding: 12px; }
+      .category-sections { padding: 12px; }
+      .product-grid { grid-template-columns: 1fr; }
       .product-card { grid-template-rows: 210px auto; }
       .product-image { height: 210px; }
-      .store-toolbar { align-items: stretch; flex-direction: column; }
-      .store-toolbar input, .store-toolbar select { width: 100%; flex: none; }
+      .store-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 6;
+        align-items: stretch;
+        flex-direction: column;
+        background: #fff;
+      }
+      .store-toolbar select { width: 100%; flex: none; }
+      .mobile-category-select { display: block; }
+      .category-section h2 { font-size: 20px; }
+      .category-helper { margin: 0 -22px; border-left: 0; border-right: 0; }
+      .category-helper h2 { font-size: 16px; }
       .store-frame-wrap { padding: 10px; }
       .store-frame { height: 760px; }
     }
@@ -469,30 +628,38 @@
       <div class="store-shell">
         <div class="store-panel">
           <div class="store-toolbar">
-            <input id="product-search" type="search" placeholder="Search vanities, tile, faucets, mirrors..." autocomplete="off">
-            <select id="category-filter" aria-label="Filter products by category">
-              <option value="all">All Products</option>
+            <strong id="product-count" class="product-count">All Materials</strong>
+            <select id="mobile-category-select" class="mobile-category-select" aria-label="Jump to product category">
+              <option value="">Jump to Category</option>
             </select>
           </div>
-          <div id="product-grid" class="product-grid"></div>
+          <div id="product-grid" class="category-sections"></div>
         </div>
 
-        <aside class="store-panel cart-panel" aria-label="Order summary">
-          <h2>Order Summary</h2>
-          <div id="cart-list" class="cart-list">
-            <p class="cart-empty">Select materials to build your order request.</p>
-          </div>
-          <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
-          <form id="material-order-form" class="order-form" novalidate>
-            <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
-            <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
-            <label>Email<input type="email" name="email" autocomplete="email" required></label>
-            <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
-            <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
-            <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
-            <button class="submit-order" type="submit">Submit Material Order</button>
-          </form>
-        </aside>
+        <div class="store-side-panel">
+          <nav class="store-panel category-helper" aria-label="Online store category menu">
+            <h2>Find Materials</h2>
+            <input id="product-search" type="search" placeholder="Search materials..." autocomplete="off">
+            <div id="category-menu" class="category-menu"></div>
+          </nav>
+
+          <aside class="store-panel cart-panel" aria-label="Order summary">
+            <h2>Order Summary</h2>
+            <div id="cart-list" class="cart-list">
+              <p class="cart-empty">Select materials to build your order request.</p>
+            </div>
+            <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
+            <form id="material-order-form" class="order-form" novalidate>
+              <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
+              <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
+              <label>Email<input type="email" name="email" autocomplete="email" required></label>
+              <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
+              <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
+              <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
+              <button class="submit-order" type="submit">Submit Material Order</button>
+            </form>
+          </aside>
+        </div>
       </div>
     </section>
 
@@ -1253,7 +1420,9 @@
 ];
 
     const productGrid = document.querySelector('#product-grid');
-    const categoryFilter = document.querySelector('#category-filter');
+    const categoryMenu = document.querySelector('#category-menu');
+    const mobileCategorySelect = document.querySelector('#mobile-category-select');
+    const productCount = document.querySelector('#product-count');
     const productSearch = document.querySelector('#product-search');
     const cartList = document.querySelector('#cart-list');
     const cartTotal = document.querySelector('#cart-total');
@@ -1272,49 +1441,172 @@
       return `${text.slice(0, maxLength).trim()}...`;
     };
 
-    const categories = [...new Set(STORE_PRODUCTS.map((product) => product.category))].sort();
-    categories.forEach((category) => {
-      const option = document.createElement('option');
-      option.value = category;
-      option.textContent = category;
-      categoryFilter.appendChild(option);
+    const helperCategories = [
+      { id: 'shower-systems', label: 'Shower Systems' },
+      { id: 'waterproofing', label: 'Waterproofing' },
+      { id: 'tile-trim', label: 'Tile Trim' },
+      { id: 'drains', label: 'Drains' },
+      { id: 'thinset-grout', label: 'Thinset & Grout' },
+      { id: 'accessories', label: 'Accessories' },
+      { id: 'tools', label: 'Tools' },
+      { id: 'other-materials', label: 'Other Materials' },
+    ];
+
+    const getStoreCategoryId = (product) => {
+      const haystack = `${product.name} ${product.description} ${product.category}`.toLowerCase();
+
+      if (/shower|in2ition|rain fixed|spray|h2okinetic/.test(haystack)) return 'shower-systems';
+      if (/waterproof|schluter|kerdi|ditra|membrane|sealant/.test(haystack)) return 'waterproofing';
+      if (/trim|edge|channel|schiene|rondec|jolly|titanium gloss/.test(haystack)) return 'tile-trim';
+      if (/drain/.test(haystack)) return 'drains';
+      if (/thinset|grout|mortar|adhesive|leveling|caulk/.test(haystack)) return 'thinset-grout';
+      if (/faucet|toilet|bathtub|tub|mirror|medicine cabinet|light|vanity light/.test(haystack)) return 'accessories';
+      if (/tool|trowel|spacer|float|sponge|saw|blade|bucket/.test(haystack)) return 'tools';
+      return 'other-materials';
+    };
+
+    const getCategoryLabel = (categoryId) => helperCategories.find((category) => category.id === categoryId)?.label || 'Other Materials';
+
+    STORE_PRODUCTS.forEach((product) => {
+      product.storeCategory = getStoreCategoryId(product);
     });
 
-    const getVisibleProducts = () => {
-      const category = categoryFilter.value;
-      const search = productSearch.value.trim().toLowerCase();
-      return STORE_PRODUCTS.filter((product) => {
-        const matchesCategory = category === 'all' || product.category === category;
-        const matchesSearch = !search || `${product.name} ${product.description} ${product.category}`.toLowerCase().includes(search);
-        return matchesCategory && matchesSearch;
+    let sectionObserver;
+
+    const setActiveCategory = (categoryId) => {
+      document.querySelectorAll('[data-category-link]').forEach((link) => {
+        link.classList.toggle('active', link.dataset.categoryLink === categoryId);
       });
     };
 
+    const scrollToCategory = (categoryId) => {
+      const target = document.getElementById(categoryId);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveCategory(categoryId);
+    };
+
+    const getVisibleProducts = () => {
+      const search = productSearch.value.trim().toLowerCase();
+      return STORE_PRODUCTS.filter((product) => {
+        return !search || `${product.name} ${product.description} ${product.category} ${getCategoryLabel(product.storeCategory)}`.toLowerCase().includes(search);
+      });
+    };
+
+    const renderCategoryMenu = (visibleProducts) => {
+      const counts = helperCategories.reduce((acc, category) => ({ ...acc, [category.id]: 0 }), {});
+      visibleProducts.forEach((product) => {
+        counts[product.storeCategory] = (counts[product.storeCategory] || 0) + 1;
+      });
+
+      categoryMenu.innerHTML = '';
+      mobileCategorySelect.innerHTML = '<option value="">Jump to Category</option>';
+
+      helperCategories.forEach((category) => {
+        const link = document.createElement('a');
+        link.href = `#${category.id}`;
+        link.dataset.categoryLink = category.id;
+        if (!counts[category.id]) link.classList.add('is-empty');
+        link.innerHTML = `<span>${category.label}</span><span class="category-menu-count">${counts[category.id] || 0}</span>`;
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          scrollToCategory(category.id);
+        });
+        categoryMenu.appendChild(link);
+
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = `${category.label} (${counts[category.id] || 0})`;
+        mobileCategorySelect.appendChild(option);
+      });
+    };
+
+    const buildProductCard = (product) => {
+      const card = document.createElement('article');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img class="product-image" src="${product.image}" alt="${product.name}" loading="lazy">
+        <div class="product-card-body">
+          <span class="product-category">${getCategoryLabel(product.storeCategory)}</span>
+          <h2>${product.name}</h2>
+          <p>${truncate(product.description)}</p>
+          <strong class="product-price">${priceLabel(product)}</strong>
+          <div class="product-controls">
+            <input type="number" min="1" value="1" aria-label="Quantity for ${product.name}">
+            <button class="add-button" type="button">Add to Order</button>
+          </div>
+        </div>
+      `;
+      const quantityInput = card.querySelector('input');
+      card.querySelector('button').addEventListener('click', () => {
+        const quantity = Math.max(1, parseInt(quantityInput.value, 10) || 1);
+        addToCart(product.id, quantity);
+      });
+      return card;
+    };
+
     const renderProducts = () => {
+      const visibleProducts = getVisibleProducts();
       productGrid.innerHTML = '';
-      getVisibleProducts().forEach((product) => {
-        const card = document.createElement('article');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img class="product-image" src="${product.image}" alt="${product.name}" loading="lazy">
-          <div class="product-card-body">
-            <span class="product-category">${product.category}</span>
-            <h2>${product.name}</h2>
-            <p>${truncate(product.description)}</p>
-            <strong class="product-price">${priceLabel(product)}</strong>
-            <div class="product-controls">
-              <input type="number" min="1" value="1" aria-label="Quantity for ${product.name}">
-              <button class="add-button" type="button">Add to Order</button>
-            </div>
+
+      helperCategories.forEach((category) => {
+        const categoryProducts = visibleProducts.filter((product) => product.storeCategory === category.id);
+        const section = document.createElement('section');
+        section.id = category.id;
+        section.className = 'category-section';
+        section.dataset.categorySection = category.id;
+        section.innerHTML = `
+          <div class="category-section-head">
+            <h2>${category.label}</h2>
+            <span class="category-section-count">${categoryProducts.length} items</span>
           </div>
         `;
-        const quantityInput = card.querySelector('input');
-        card.querySelector('button').addEventListener('click', () => {
-          const quantity = Math.max(1, parseInt(quantityInput.value, 10) || 1);
-          addToCart(product.id, quantity);
-        });
-        productGrid.appendChild(card);
+
+        if (categoryProducts.length) {
+          const grid = document.createElement('div');
+          grid.className = 'product-grid';
+          categoryProducts.forEach((product) => grid.appendChild(buildProductCard(product)));
+          section.appendChild(grid);
+        } else {
+          const empty = document.createElement('p');
+          empty.className = 'category-empty';
+          empty.textContent = productSearch.value.trim()
+            ? 'No matching products in this category. Try a different search or open the original Jotform store below.'
+            : 'No products are currently listed in this category. Use the original Jotform store below or call 734-657-7965 for help finding this material.';
+          section.appendChild(empty);
+        }
+
+        productGrid.appendChild(section);
       });
+
+      productCount.textContent = `${visibleProducts.length} Materials`;
+      renderCategoryMenu(visibleProducts);
+      observeCategorySections();
+    };
+
+    const observeCategorySections = () => {
+      if (sectionObserver) sectionObserver.disconnect();
+
+      const sections = document.querySelectorAll('[data-category-section]');
+      if (!sections.length || !('IntersectionObserver' in window)) {
+        setActiveCategory(helperCategories[0].id);
+        return;
+      }
+
+      sectionObserver = new IntersectionObserver((entries) => {
+        const activeEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (activeEntry) {
+          setActiveCategory(activeEntry.target.dataset.categorySection);
+        }
+      }, {
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: [0.1, 0.25, 0.5],
+      });
+
+      sections.forEach((section) => sectionObserver.observe(section));
     };
 
     const addToCart = (productId, quantity) => {
@@ -1471,7 +1763,10 @@
     });
 
     productSearch.addEventListener('input', renderProducts);
-    categoryFilter.addEventListener('change', renderProducts);
+    mobileCategorySelect.addEventListener('change', (event) => {
+      if (!event.target.value) return;
+      scrollToCategory(event.target.value);
+    });
     renderProducts();
     renderCart();
   </script>
