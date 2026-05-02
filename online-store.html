@@ -159,7 +159,7 @@
 
     .store-shell {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-columns: 320px minmax(0, 1fr);
       gap: 28px;
       align-items: start;
     }
@@ -385,11 +385,6 @@
 
     .category-menu a.is-empty {
       color: var(--muted);
-    }
-
-    .category-menu-count {
-      font-size: 11px;
-      opacity: .8;
     }
 
     .cart-panel {
@@ -626,16 +621,6 @@
 
     <section id="custom-store" class="store-main" aria-label="Bathroom material products">
       <div class="store-shell">
-        <div class="store-panel">
-          <div class="store-toolbar">
-            <strong id="product-count" class="product-count">All Materials</strong>
-            <select id="mobile-category-select" class="mobile-category-select" aria-label="Jump to product category">
-              <option value="">Jump to Category</option>
-            </select>
-          </div>
-          <div id="product-grid" class="category-sections"></div>
-        </div>
-
         <div class="store-side-panel">
           <nav class="store-panel category-helper" aria-label="Online store category menu">
             <h2>Find Materials</h2>
@@ -659,6 +644,16 @@
               <button class="submit-order" type="submit">Submit Material Order</button>
             </form>
           </aside>
+        </div>
+
+        <div class="store-panel">
+          <div class="store-toolbar">
+            <strong id="product-count" class="product-count">All Materials</strong>
+            <select id="mobile-category-select" class="mobile-category-select" aria-label="Jump to product category">
+              <option value="">Jump to Category</option>
+            </select>
+          </div>
+          <div id="product-grid" class="category-sections"></div>
         </div>
       </div>
     </section>
@@ -776,7 +771,7 @@
     "price": "0.89",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/vigo_white_12_in_x_24_in_matte_ceramic_a51ec6595472adfc4709465e35402a8e.png",
     "priceValue": 0.89,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1011",
@@ -785,7 +780,7 @@
     "price": "2.29",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_124058_736da3073a39737e97ea1a032435029d.png",
     "priceValue": 2.29,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1013",
@@ -794,7 +789,7 @@
     "price": "7.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/cwmwntino_3_in_hexacon_11_in_x_13_in_x_0_37_in_matte_porcelain_mesh_mounted_mosaic_ab8bf5acd77026f181bcaf92b195bc3f.jpg",
     "priceValue": 7.0,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1021",
@@ -803,7 +798,7 @@
     "price": "4.44",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/matte_contemporary_8f217e5ed53ff126c087efa20bb926f4.png",
     "priceValue": 4.44,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1020",
@@ -812,7 +807,7 @@
     "price": "6.29",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_151935_ae423dd159c2d7ba6a98feed3cc3acf6.png",
     "priceValue": 6.29,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1045",
@@ -821,7 +816,7 @@
     "price": "2.49",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100651041_levante_white_ii_matte_ceramic_tile_1_8423d9f17ddf946dc8ffaa3686221f74.avif",
     "priceValue": 2.49,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1046",
@@ -830,7 +825,7 @@
     "price": "",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100903590_context_90b5f6d4d4f94b281c8b4c7d3bea24ca.avif",
     "priceValue": null,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1047",
@@ -839,7 +834,7 @@
     "price": "3.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100136795_concrete_gray_matte_ceramic_tile_1_8a66b97bb19fae79b110a19a6b4a05a8.avif",
     "priceValue": 3.0,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1049",
@@ -848,7 +843,7 @@
     "price": "3.59",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100047117_context_eb5becaadf727a48ceaa1bc00213c498.avif",
     "priceValue": 3.59,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1050",
@@ -857,7 +852,7 @@
     "price": "2.29",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100486398_context_e37ba5e70ebee53b76b9532b9de0e8d9.avif",
     "priceValue": 2.29,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1051",
@@ -866,7 +861,7 @@
     "price": "2.19",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
     "priceValue": 2.19,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1052",
@@ -875,7 +870,7 @@
     "price": "2.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
     "priceValue": 2.99,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1066",
@@ -884,7 +879,7 @@
     "price": "3.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100941533_concept_gray_matte_porcelain_tile_1_9b329537caf1cc7f32b9b00cbf072c16.avif",
     "priceValue": 3.5,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1074",
@@ -893,7 +888,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1073",
@@ -902,7 +897,7 @@
     "price": "6.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
     "priceValue": 6.5,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1072",
@@ -911,7 +906,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1071",
@@ -920,7 +915,7 @@
     "price": "4.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
     "priceValue": 4.0,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1070",
@@ -929,7 +924,7 @@
     "price": "5.30",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
     "priceValue": 5.3,
-    "category": "Tile"
+    "category": "Bathroom Floor Tiles"
   },
   {
     "id": "1053",
@@ -938,7 +933,7 @@
     "price": "2.49",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100651041_levante_white_ii_matte_ceramic_tile_1_8423d9f17ddf946dc8ffaa3686221f74.avif",
     "priceValue": 2.49,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1055",
@@ -947,7 +942,7 @@
     "price": "",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100903590_context_90b5f6d4d4f94b281c8b4c7d3bea24ca.avif",
     "priceValue": null,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1057",
@@ -956,7 +951,7 @@
     "price": "3.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100136795_concrete_gray_matte_ceramic_tile_1_8a66b97bb19fae79b110a19a6b4a05a8.avif",
     "priceValue": 3.0,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1048",
@@ -965,7 +960,7 @@
     "price": "8.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101022655_ribbon_oak_matte_ceramic_tile_1_3484a3efc8c21c89a3cf83dd680a2fe5.avif",
     "priceValue": 8.0,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1059",
@@ -974,7 +969,7 @@
     "price": "3.59",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100047117_context_eb5becaadf727a48ceaa1bc00213c498.avif",
     "priceValue": 3.59,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1060",
@@ -983,7 +978,7 @@
     "price": "2.29",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100486398_context_e37ba5e70ebee53b76b9532b9de0e8d9.avif",
     "priceValue": 2.29,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1063",
@@ -992,7 +987,7 @@
     "price": "2.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
     "priceValue": 2.99,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1075",
@@ -1001,7 +996,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1077",
@@ -1010,7 +1005,7 @@
     "price": "6.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
     "priceValue": 6.5,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1080",
@@ -1019,7 +1014,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1082",
@@ -1028,7 +1023,7 @@
     "price": "4.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
     "priceValue": 4.0,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1084",
@@ -1037,7 +1032,7 @@
     "price": "5.30",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
     "priceValue": 5.3,
-    "category": "Tile"
+    "category": "Shower Wall Tiles"
   },
   {
     "id": "1040",
@@ -1046,7 +1041,7 @@
     "price": "3.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100782424_satin_white_matte_hexagon_porcelain_mosaic_display_fd5eef6f9dd920d7875ac116ec7d6f16.avif",
     "priceValue": 3.99,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1041",
@@ -1055,7 +1050,7 @@
     "price": "17.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100783091_woodville_white_hexagon_matte_porcelain_mosaic_display_2bedfa942931a32f7a51d3ad505f94a7.avif",
     "priceValue": 17.0,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1042",
@@ -1064,7 +1059,7 @@
     "price": "14.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101136794_2_39553482a6d02fba98b2f4a9174c23fa.avif",
     "priceValue": 14.0,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1043",
@@ -1073,7 +1068,7 @@
     "price": "10.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100831718_beaumont_shadow_hexagon_ceramic_mosaic_1_919e713f1d5c0f0fd2502ce3136fb191.avif",
     "priceValue": 10.0,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1044",
@@ -1082,7 +1077,7 @@
     "price": "",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100837392_beaumont_shadow_ceramic_mixed_penny_mosaic_1_70548d2154e5ae96b4e837c97433a395.avif",
     "priceValue": null,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1056",
@@ -1091,7 +1086,7 @@
     "price": "14.22",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_124823_f4cc6c1c42ded54d5f06f168ba1d38c7.png",
     "priceValue": 14.22,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1061",
@@ -1100,7 +1095,7 @@
     "price": "2.19",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
     "priceValue": 2.19,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1064",
@@ -1109,7 +1104,7 @@
     "price": "2.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
     "priceValue": 2.99,
-    "category": "Tile"
+    "category": "Shower Floor Tiles"
   },
   {
     "id": "1062",
@@ -1118,7 +1113,7 @@
     "price": "2.19",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
     "priceValue": 2.19,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1065",
@@ -1127,7 +1122,7 @@
     "price": "2.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
     "priceValue": 2.99,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1067",
@@ -1136,7 +1131,7 @@
     "price": "3.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100941533_concept_gray_matte_porcelain_tile_1_9b329537caf1cc7f32b9b00cbf072c16.avif",
     "priceValue": 3.5,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1076",
@@ -1145,7 +1140,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1079",
@@ -1154,7 +1149,7 @@
     "price": "6.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
     "priceValue": 6.5,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1081",
@@ -1163,7 +1158,7 @@
     "price": "4.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
     "priceValue": 4.99,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1083",
@@ -1172,7 +1167,7 @@
     "price": "4.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
     "priceValue": 4.0,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1085",
@@ -1181,7 +1176,7 @@
     "price": "5.30",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
     "priceValue": 5.3,
-    "category": "Tile"
+    "category": "House Floor Tile"
   },
   {
     "id": "1058",
@@ -1190,7 +1185,7 @@
     "price": "8.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101022655_ribbon_oak_matte_ceramic_tile_1_3484a3efc8c21c89a3cf83dd680a2fe5.avif",
     "priceValue": 8.0,
-    "category": "Tile"
+    "category": "Fireplace Tiles"
   },
   {
     "id": "1078",
@@ -1199,7 +1194,7 @@
     "price": "6.50",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
     "priceValue": 6.5,
-    "category": "Tile"
+    "category": "Fireplace Tiles"
   },
   {
     "id": "1004",
@@ -1208,7 +1203,7 @@
     "price": "849.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/projecta_60_in_x_36_in_rectangular_skirted_soaking_bathtub_with_right_drain_in_white_952c50d47c8514479216248c3172c670.png",
     "priceValue": 849.0,
-    "category": "Bath Fixtures"
+    "category": "Tubs"
   },
   {
     "id": "1005",
@@ -1217,7 +1212,7 @@
     "price": "723.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/rojecta_60_in_x_32_in_acrylic_left_drain_rectangular_low_profile_afr_18_in_apron_front_soaking_bathtub_in_white_5ed9fc6b8dd35fe836082bf854b8ded2.png",
     "priceValue": 723.0,
-    "category": "Bath Fixtures"
+    "category": "Tubs"
   },
   {
     "id": "1030",
@@ -1226,7 +1221,7 @@
     "price": "550.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_204735_ece5eed744473034ce071cd9af936f39.png",
     "priceValue": 550.0,
-    "category": "Bath Fixtures"
+    "category": "Tubs"
   },
   {
     "id": "1014",
@@ -1235,7 +1230,7 @@
     "price": "99.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_08_234427_189212352a4069f49d032321938f8eb3.png",
     "priceValue": 99.0,
-    "category": "Bath Fixtures"
+    "category": "Toilets"
   },
   {
     "id": "1015",
@@ -1244,7 +1239,7 @@
     "price": "199.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_08_235540_f4b423f3b29656b7478dfad250a9cdb8.png",
     "priceValue": 199.0,
-    "category": "Bath Fixtures"
+    "category": "Toilets"
   },
   {
     "id": "1032",
@@ -1253,7 +1248,7 @@
     "price": "230.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_210311_e9e2222e2d3c3a1b26bdbf353ebba9a5.png",
     "priceValue": 230.0,
-    "category": "Bath Fixtures"
+    "category": "Toilets"
   },
   {
     "id": "1006",
@@ -1262,7 +1257,7 @@
     "price": "371.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_112124_09e1292c8774c54de99bc79352cf9be6.png",
     "priceValue": 371.0,
-    "category": "Faucets & Shower"
+    "category": "Shower Head /Faucet"
   },
   {
     "id": "1023",
@@ -1271,7 +1266,7 @@
     "price": "149.55",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_160120_e8e591da883712d86270e05f96c16d55.png",
     "priceValue": 149.55,
-    "category": "Faucets & Shower"
+    "category": "Shower Head /Faucet"
   },
   {
     "id": "1022",
@@ -1280,7 +1275,7 @@
     "price": "237.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_155417_8be0551af999e7cf855207a426f8b207.png",
     "priceValue": 237.0,
-    "category": "Faucets & Shower"
+    "category": "Shower Head /Faucet"
   },
   {
     "id": "1086",
@@ -1289,7 +1284,7 @@
     "price": "250.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_08_111041_2812b33ecf5a5d9b3eb1fcab5d473aee.png",
     "priceValue": 250.0,
-    "category": "Faucets & Shower"
+    "category": "Shower Head /Faucet"
   },
   {
     "id": "1089",
@@ -1298,7 +1293,7 @@
     "price": "200.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_08_112308_b5c550f75b0aad3ed7ea419826a58739.png",
     "priceValue": 200.0,
-    "category": "Faucets & Shower"
+    "category": "Shower Head /Faucet"
   },
   {
     "id": "1019",
@@ -1307,7 +1302,7 @@
     "price": "129.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/kholer_9912a87b8cdbe39e7b0abc1c36fb9c56.png",
     "priceValue": 129.0,
-    "category": "Faucets & Shower"
+    "category": "Bathroom Sink Faucet"
   },
   {
     "id": "1018",
@@ -1316,7 +1311,7 @@
     "price": "39.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000549_f9627eb3b53b38571758298ec1ffe45d.png",
     "priceValue": 39.0,
-    "category": "Faucets & Shower"
+    "category": "Bathroom Sink Faucet"
   },
   {
     "id": "1035",
@@ -1325,7 +1320,7 @@
     "price": "150.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_212916_85fdedb54ceda65893ae7969fd8cd518.png",
     "priceValue": 150.0,
-    "category": "Faucets & Shower"
+    "category": "Bathroom Sink Faucet"
   },
   {
     "id": "1036",
@@ -1334,7 +1329,7 @@
     "price": "160.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_212550_f51d82ca8901b8c341149491c5816184.png",
     "priceValue": 160.0,
-    "category": "Faucets & Shower"
+    "category": "Bathroom Sink Faucet"
   },
   {
     "id": "1016",
@@ -1343,7 +1338,7 @@
     "price": "119.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000355_b98679f7b3bec7d9c5f6f5aa8dc7d829.png",
     "priceValue": 119.0,
-    "category": "Mirrors & Lighting"
+    "category": "Mirrors"
   },
   {
     "id": "1017",
@@ -1352,7 +1347,7 @@
     "price": "79.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000917_62d71071e27c49e067668dbf222ce1b2.png",
     "priceValue": 79.0,
-    "category": "Mirrors & Lighting"
+    "category": "Mirrors"
   },
   {
     "id": "1037",
@@ -1361,7 +1356,7 @@
     "price": "155.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_214526_e8332116cffd25db4e4232f474a612d8.png",
     "priceValue": 155.0,
-    "category": "Vanities"
+    "category": "Mirrors"
   },
   {
     "id": "1038",
@@ -1370,7 +1365,7 @@
     "price": "150.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_215159_4ca7a51022ba1e175f94013e9fc46e47.png",
     "priceValue": 150.0,
-    "category": "Vanities"
+    "category": "Mirrors"
   },
   {
     "id": "1039",
@@ -1379,7 +1374,7 @@
     "price": "400.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_220028_6346b4b1689d5f9bd77d8c7b1d718719.png",
     "priceValue": 400.0,
-    "category": "Vanities"
+    "category": "Mirrors"
   },
   {
     "id": "1029",
@@ -1388,7 +1383,7 @@
     "price": "29.99",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_165001_1b81284a5abf13bc952dd96f167a5b10.png",
     "priceValue": 29.99,
-    "category": "Accessories"
+    "category": "Trims"
   },
   {
     "id": "1031",
@@ -1397,7 +1392,7 @@
     "price": "180.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_205440_8e247ca13f17dc7d836913400c535c7b.png",
     "priceValue": 180.0,
-    "category": "Vanities"
+    "category": "Light Fixtures"
   },
   {
     "id": "1033",
@@ -1406,7 +1401,7 @@
     "price": "110.00",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_211259_bf9f2f9e850f6f05dc29ff4f06c7f233.png",
     "priceValue": 110.0,
-    "category": "Vanities"
+    "category": "Light Fixtures"
   },
   {
     "id": "1034",
@@ -1415,7 +1410,7 @@
     "price": "",
     "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_211834_ac37572fa095434e4a6df9a60c96a59a.png",
     "priceValue": null,
-    "category": "Vanities"
+    "category": "Light Fixtures"
   }
 ];
 
@@ -1442,30 +1437,29 @@
     };
 
     const helperCategories = [
-      { id: 'shower-systems', label: 'Shower Systems' },
-      { id: 'waterproofing', label: 'Waterproofing' },
-      { id: 'tile-trim', label: 'Tile Trim' },
-      { id: 'drains', label: 'Drains' },
-      { id: 'thinset-grout', label: 'Thinset & Grout' },
-      { id: 'accessories', label: 'Accessories' },
-      { id: 'tools', label: 'Tools' },
-      { id: 'other-materials', label: 'Other Materials' },
+      { id: 'vanities', label: 'Vanities' },
+      { id: 'bathroom-floor-tiles', label: 'Bathroom Floor Tiles' },
+      { id: 'shower-wall-tiles', label: 'Shower Wall Tiles' },
+      { id: 'shower-floor-tiles', label: 'Shower Floor Tiles' },
+      { id: 'house-floor-tile', label: 'House Floor Tile' },
+      { id: 'fireplace-tiles', label: 'Fireplace Tiles' },
+      { id: 'tubs', label: 'Tubs' },
+      { id: 'toilets', label: 'Toilets' },
+      { id: 'shower-head-faucet', label: 'Shower Head /Faucet' },
+      { id: 'bathroom-sink-faucet', label: 'Bathroom Sink Faucet' },
+      { id: 'mirrors', label: 'Mirrors' },
+      { id: 'trims', label: 'Trims' },
+      { id: 'light-fixtures', label: 'Light Fixtures' },
     ];
 
-    const getStoreCategoryId = (product) => {
-      const haystack = `${product.name} ${product.description} ${product.category}`.toLowerCase();
+    const categoryIdByLabel = helperCategories.reduce((acc, category) => {
+      acc[category.label] = category.id;
+      return acc;
+    }, {});
 
-      if (/shower|in2ition|rain fixed|spray|h2okinetic/.test(haystack)) return 'shower-systems';
-      if (/waterproof|schluter|kerdi|ditra|membrane|sealant/.test(haystack)) return 'waterproofing';
-      if (/trim|edge|channel|schiene|rondec|jolly|titanium gloss/.test(haystack)) return 'tile-trim';
-      if (/drain/.test(haystack)) return 'drains';
-      if (/thinset|grout|mortar|adhesive|leveling|caulk/.test(haystack)) return 'thinset-grout';
-      if (/faucet|toilet|bathtub|tub|mirror|medicine cabinet|light|vanity light/.test(haystack)) return 'accessories';
-      if (/tool|trowel|spacer|float|sponge|saw|blade|bucket/.test(haystack)) return 'tools';
-      return 'other-materials';
-    };
+    const getStoreCategoryId = (product) => categoryIdByLabel[product.category] || 'vanities';
 
-    const getCategoryLabel = (categoryId) => helperCategories.find((category) => category.id === categoryId)?.label || 'Other Materials';
+    const getCategoryLabel = (categoryId) => helperCategories.find((category) => category.id === categoryId)?.label || 'Vanities';
 
     STORE_PRODUCTS.forEach((product) => {
       product.storeCategory = getStoreCategoryId(product);
@@ -1507,7 +1501,7 @@
         link.href = `#${category.id}`;
         link.dataset.categoryLink = category.id;
         if (!counts[category.id]) link.classList.add('is-empty');
-        link.innerHTML = `<span>${category.label}</span><span class="category-menu-count">${counts[category.id] || 0}</span>`;
+        link.textContent = category.label;
         link.addEventListener('click', (event) => {
           event.preventDefault();
           scrollToCategory(category.id);
