@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All American Tiles Online Store</title>
+  <title>Bathroom Material Online Store | All American Tiles</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,13 +13,13 @@
       --red: #c8242f;
       --red-dark: #a91d27;
       --light: #f3f7fb;
+      --line: #d5dde8;
       --text: #263244;
       --muted: #617083;
+      --green: #17643d;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -28,9 +28,8 @@
       background: var(--light);
     }
 
-    a {
-      color: inherit;
-    }
+    a { color: inherit; }
+    button, input, textarea { font: inherit; }
 
     .store-topbar {
       background: var(--navy);
@@ -46,18 +45,17 @@
       align-items: center;
     }
 
-    .store-topbar a {
-      text-decoration: none;
-    }
+    .store-topbar a { text-decoration: none; }
 
     .store-header {
       background: #fff;
-      border-bottom: 1px solid #d5dde8;
+      border-bottom: 1px solid var(--line);
       padding: 18px 7vw;
     }
 
     .store-header-inner,
     .store-hero,
+    .store-shell,
     .store-frame-wrap {
       width: min(1180px, 100%);
       margin: 0 auto;
@@ -85,14 +83,12 @@
       white-space: nowrap;
     }
 
-    .back-link:hover {
-      color: var(--red);
-    }
+    .back-link:hover { color: var(--red); }
 
     .store-hero {
-      padding: 70px 0 42px;
+      padding: 68px 0 36px;
       display: grid;
-      gap: 24px;
+      gap: 22px;
     }
 
     .eyebrow {
@@ -107,17 +103,17 @@
 
     h1 {
       margin: 0;
-      max-width: 840px;
+      max-width: 900px;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
-      font-size: clamp(38px, 6vw, 68px);
+      font-size: clamp(36px, 6vw, 64px);
       line-height: 1.02;
       text-transform: uppercase;
     }
 
     .store-subtitle {
       margin: 0;
-      max-width: 680px;
+      max-width: 760px;
       color: var(--muted);
       font-size: clamp(17px, 2vw, 22px);
       line-height: 1.6;
@@ -130,26 +126,28 @@
       align-items: center;
     }
 
-    .store-button {
+    .store-button,
+    .submit-order,
+    .add-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 52px;
+      border: 0;
       background: var(--red);
       color: #fff;
-      padding: 15px 28px;
-      border-radius: 0;
+      padding: 13px 20px;
       font-family: "Montserrat", sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 900;
       text-decoration: none;
       text-transform: uppercase;
-      box-shadow: 0 16px 34px rgba(200, 36, 47, .24);
+      cursor: pointer;
     }
 
-    .store-button:hover {
-      background: var(--red-dark);
-    }
+    .store-button { min-height: 52px; padding: 15px 28px; box-shadow: 0 16px 34px rgba(200, 36, 47, .24); }
+    .store-button.secondary { background: var(--navy); box-shadow: none; }
+    .store-button:hover, .submit-order:hover, .add-button:hover { background: var(--red-dark); }
+    .store-button.secondary:hover { background: #001d4a; }
 
     .phone-link {
       color: var(--navy);
@@ -157,9 +155,220 @@
       text-decoration: none;
     }
 
-    .store-frame-section {
-      padding: 0 7vw 74px;
+    .store-main { padding: 0 7vw 70px; }
+
+    .store-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 28px;
+      align-items: start;
     }
+
+    .store-panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 20px 50px rgba(0, 40, 104, .1);
+    }
+
+    .store-toolbar {
+      padding: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .store-toolbar input,
+    .store-toolbar select {
+      min-height: 44px;
+      border: 1px solid #9fb0c4;
+      padding: 10px 12px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .store-toolbar input { flex: 1 1 260px; }
+    .store-toolbar select { flex: 0 1 220px; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .product-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      grid-template-rows: 180px auto;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      background: #e9eff6;
+    }
+
+    .product-card-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .product-category {
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .product-card h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .product-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .product-price {
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .product-controls {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .product-controls input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #9fb0c4;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .cart-panel {
+      position: sticky;
+      top: 20px;
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .cart-panel h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+    }
+
+    .cart-empty { color: var(--muted); margin: 0; line-height: 1.6; }
+
+    .cart-list { display: grid; gap: 12px; }
+
+    .cart-item {
+      border: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .cart-item strong { color: var(--navy); font-size: 14px; }
+    .cart-item small { color: var(--muted); }
+
+    .cart-item-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cart-item-actions input {
+      width: 76px;
+      border: 1px solid #9fb0c4;
+      padding: 8px;
+    }
+
+    .remove-item {
+      border: 0;
+      background: transparent;
+      color: var(--red);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cart-total {
+      border-top: 2px solid var(--line);
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .order-form { display: grid; gap: 12px; }
+
+    .order-form label {
+      display: grid;
+      gap: 6px;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .order-form input,
+    .order-form textarea {
+      width: 100%;
+      border: 1px solid #9fb0c4;
+      padding: 11px 12px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .order-form textarea { min-height: 92px; resize: vertical; }
+
+    .store-message {
+      display: none;
+      margin: 0;
+      padding: 12px 14px;
+      border-left: 5px solid var(--red);
+      background: #fff5f5;
+      color: var(--red);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .store-message.visible { display: block; }
+    .store-message.success { border-left-color: var(--green); background: #f2fbf6; color: var(--green); }
+    .submit-order:disabled { opacity: .62; cursor: not-allowed; }
+
+    .fallback-section { padding: 0 7vw 74px; }
 
     .store-frame-wrap {
       background: #fff;
@@ -168,12 +377,40 @@
       padding: 18px;
     }
 
+    .fallback-head {
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .fallback-head h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+    }
+
+    .fallback-head p { margin: 6px 0 0; color: var(--muted); }
+
     .store-frame {
       width: 100%;
       height: 900px;
       border: 0;
       display: block;
       background: #fff;
+    }
+
+    @media (max-width: 1100px) {
+      .store-shell { grid-template-columns: 1fr; }
+      .cart-panel { position: static; }
+    }
+
+    @media (max-width: 860px) {
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 720px) {
@@ -185,39 +422,19 @@
         font-size: 12px;
       }
 
-      .store-header {
-        padding: 16px 22px;
-      }
-
-      .store-header-inner {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .store-hero {
-        padding: 48px 22px 34px;
-      }
-
-      .store-actions {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .store-button {
-        width: 100%;
-      }
-
-      .store-frame-section {
-        padding: 0 22px 48px;
-      }
-
-      .store-frame-wrap {
-        padding: 10px;
-      }
-
-      .store-frame {
-        height: 760px;
-      }
+      .store-header { padding: 16px 22px; }
+      .store-header-inner { align-items: flex-start; flex-direction: column; }
+      .store-hero { padding: 48px 22px 32px; }
+      .store-actions { align-items: stretch; flex-direction: column; }
+      .store-button { width: 100%; }
+      .store-main, .fallback-section { padding-left: 22px; padding-right: 22px; }
+      .product-grid { grid-template-columns: 1fr; padding: 12px; }
+      .product-card { grid-template-rows: 210px auto; }
+      .product-image { height: 210px; }
+      .store-toolbar { align-items: stretch; flex-direction: column; }
+      .store-toolbar input, .store-toolbar select { width: 100%; flex: none; }
+      .store-frame-wrap { padding: 10px; }
+      .store-frame { height: 760px; }
     }
   </style>
 </head>
@@ -238,20 +455,1025 @@
 
   <main>
     <section class="store-hero" aria-labelledby="store-title">
-      <p class="eyebrow">Online Store</p>
-      <h1 id="store-title">All American Tiles Online Store</h1>
-      <p class="store-subtitle">Order materials, request products, or submit your project details.</p>
+      <p class="eyebrow">All American Tiles</p>
+      <h1 id="store-title">Bathroom Material Online Store</h1>
+      <p class="store-subtitle">Order bathroom materials, tile accessories, and remodeling products through All American Tiles.</p>
       <div class="store-actions">
-        <a class="store-button" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Store Form</a>
+        <a class="store-button" href="#custom-store">Shop Materials</a>
+        <a class="store-button secondary" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Original Jotform Store</a>
         <a class="phone-link" href="tel:7346577965">Questions? Call 734-657-7965</a>
       </div>
     </section>
 
-    <section class="store-frame-section" aria-label="Online store form">
+    <section id="custom-store" class="store-main" aria-label="Bathroom material products">
+      <div class="store-shell">
+        <div class="store-panel">
+          <div class="store-toolbar">
+            <input id="product-search" type="search" placeholder="Search vanities, tile, faucets, mirrors..." autocomplete="off">
+            <select id="category-filter" aria-label="Filter products by category">
+              <option value="all">All Products</option>
+            </select>
+          </div>
+          <div id="product-grid" class="product-grid"></div>
+        </div>
+
+        <aside class="store-panel cart-panel" aria-label="Order summary">
+          <h2>Order Summary</h2>
+          <div id="cart-list" class="cart-list">
+            <p class="cart-empty">Select materials to build your order request.</p>
+          </div>
+          <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
+          <form id="material-order-form" class="order-form" novalidate>
+            <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
+            <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
+            <label>Email<input type="email" name="email" autocomplete="email" required></label>
+            <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
+            <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
+            <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
+            <button class="submit-order" type="submit">Submit Material Order</button>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <section class="fallback-section" aria-label="Original Jotform store">
       <div class="store-frame-wrap">
-        <iframe class="store-frame" src="https://app.jotform.com/251587225256158" width="100%" height="900" frameborder="0" title="All American Tiles online store form"></iframe>
+        <div class="fallback-head">
+          <div>
+            <h2>Original Store Form</h2>
+            <p>Use this backup form if you prefer the original Jotform checkout experience.</p>
+          </div>
+          <a class="store-button secondary" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Original Jotform Store</a>
+        </div>
+        <iframe class="store-frame" src="https://app.jotform.com/251587225256158" width="100%" height="900" frameborder="0" title="All American Tiles original online store form"></iframe>
       </div>
     </section>
   </main>
+
+  <script>
+    const STORE_PRODUCTS = [
+  {
+    "id": "1008",
+    "name": "Bellington 36 in. Single Sink Almond Toffee Bath Vanity with White Engineered Stone Top",
+    "description": "36 in W x 22 in D x 34.5 in H vanity with engineered stone top. Features black hardware, 4-drawers and 1-cabinet with organizer. Includes top, backsplash and single sink; 8in faucet not included. Dimensions: H 34.49, W 36, D 22.05.",
+    "price": "799.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/bellington_36_in_3ac1f0f9df99aae601a51536e803c431.jpg",
+    "priceValue": 799.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1009",
+    "name": "Sonoma 36 in. Single Sink Midnight Blue Bath Vanity with Carrara Marble Top",
+    "description": "36\" W x 22\" D x 34\" H wood vanity with durable Carrara Marble top. Features chrome hardware, 2 soft-close drawers &amp; 1 cabinet door. Includes top, backsplash and single sink; 8\" faucet not included",
+    "price": "809.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/sonoma_36_in_single_sink_midnight_blue_bath_vanity_with_carrara_marble_top_e883bbaf7223427bcda9906fd26bcf36.png",
+    "priceValue": 809.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1007",
+    "name": "Double Sink Freestanding Weathered Tan & White Vanity",
+    "description": "Double Sink Weathered Tan (white top, tan cabinets, black and brushed nickel faucet) with backsplash",
+    "price": "900.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/double_sink_weathered_tan_white_top_tan_cabinets_black_and_brushed_nicke_faucet_with_backsplash_af9456a5b71a77334c7b7915b62504bb.png",
+    "priceValue": 900.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1024",
+    "name": "Melpark 60 in. Double Sink Grayish Blue Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "60 in W x 22 in D x 34.5 in H vanity with engineered marble top Features 2-hardware sets, 5-drawers and 2-cabinets with shelves. Includes top, backsplash and double sinks; faucets not included.",
+    "price": "1,499.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_161254_5e88aa1e5e66504f5dd31fbb82882490.png",
+    "priceValue": 1499.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1025",
+    "name": "Melpark 48 in. Single Sink Dove Gray Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "48 in W x 22 in D x 34.5 in H vanity with engineered marble top Features 2-hardware sets, 5-drawers and 2-cabinets with shelves. Includes top, backsplash and single sink; 8in faucet not included.",
+    "price": "1,199.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_161608_1be760a7a00d93f22c2d41154e81aa9f.png",
+    "priceValue": 1199.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1026",
+    "name": "Home Decorators Collection Melpark 48 in. Single Sink White Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "48 in W x 22 in D x 34.5 in H vanity with engineered marble top Features 2 hardware sets, 5 drawers and 2 cabinets with shelves. Includes top, backsplash and single sink; 8in faucet not included.",
+    "price": "1,569.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_161151_63871cc1519b16a671b194bf6f8bc5dd.png",
+    "priceValue": 1569.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1027",
+    "name": "Doveton 36 in. Single Sink Freestanding White Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "36 in W x 19 in D x 34 in H vanity with an engineered marble top. Features 2-hardware sets, 1-tilt-down drawer and 2-cabinet doors. Includes top, backsplash and single sink; 8in faucet not included",
+    "price": "499.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_162655_a63b0de5c70f5bdeb0e47bbfc8b54dad.png",
+    "priceValue": 499.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1028",
+    "name": "Doveton 48 in. Single Sink Freestanding White Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "48 in W x 19 in D x 34 in H vanity with an engineered marble top Features 2-hardware sets, 5-soft-close drawers and 2-doors. Includes top, backsplash and single sink; 8in faucet not included",
+    "price": "799.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_162446_d6d8c4ccca589dd7e3b9fde85434bed0.png",
+    "priceValue": 799.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1069",
+    "name": "Home Decorators Collection Doveton 36 in. Single Sink Dark Walnut Bath Vanity with White Engineered Marble Top (Assembled)",
+    "description": "36 in W x 19 in D x 34 in H vanity with an engineered marble top Features 2-hardware sets, 1-tilt-down drawer and 2-cabinet doors Includes top, backsplash and single sink; 8in faucet not included",
+    "price": "600.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_07_123652_c696934fec4c0a1d80b6235a0e82ffa9.png",
+    "priceValue": 600.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1068",
+    "name": "Home Decorators Collection Autumn 36 in. Single Sink Gray Bath Vanity with White Engineered Stone Top (Assembled)",
+    "description": "Home Decorators Collection. Autumn 36 in. Single Sink Gray Bath Vanity with White Engineered Stone Top (Assembled).",
+    "price": "570.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_07_124522_e136cec0b0a3c7038256cb398accfbf1.png",
+    "priceValue": 570.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1010",
+    "name": "Vigo White - Matte Ceramic",
+    "description": "Matte Ceramic Tile - TrafficMaster Vigo White Tile pattern installation: Offset",
+    "price": "0.89",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/vigo_white_12_in_x_24_in_matte_ceramic_a51ec6595472adfc4709465e35402a8e.png",
+    "priceValue": 0.89,
+    "category": "Tile"
+  },
+  {
+    "id": "1011",
+    "name": "Florida Tile Home Collection /Brilliance White Matte 12 in. x 24 in. Porcelain Floor and Wall Tile (133 sq. ft./Pack) 70-Piece Mini Pallet",
+    "description": "Realistic marble look porcelain tile for floor and wall. Strong tile suitable for kitchen, bathroom, laundry, living. Waterproof, frostproof, durable hard surface",
+    "price": "2.29",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_124058_736da3073a39737e97ea1a032435029d.png",
+    "priceValue": 2.29,
+    "category": "Tile"
+  },
+  {
+    "id": "1013",
+    "name": "Cementino 3 in. Hexagon 11 in. x 13 in. x 0.37 in. Matte Porcelain Mesh-Mounted Mosaic",
+    "description": "Cementino 3 in. Hexagon 11 in. x 13 in. x 0.37 in. Matte Porcelain Mesh-Mounted Mosaic. Type Hexagon Ceramic, Surface Mount,",
+    "price": "7.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/cwmwntino_3_in_hexacon_11_in_x_13_in_x_0_37_in_matte_porcelain_mesh_mounted_mosaic_ab8bf5acd77026f181bcaf92b195bc3f.jpg",
+    "priceValue": 7.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1021",
+    "name": "Laurel Manor Porcelain Tile",
+    "description": "This white matte Laurel Manor Porcelain Tile is 30 x 60.",
+    "price": "4.44",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/matte_contemporary_8f217e5ed53ff126c087efa20bb926f4.png",
+    "priceValue": 4.44,
+    "category": "Tile"
+  },
+  {
+    "id": "1020",
+    "name": "Vita Bella Polished Porcelain Tile",
+    "description": "With a polished or high gloss finish, this blue Vita Bella Polished Porcelain Tile is 24 x 48.",
+    "price": "6.29",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_151935_ae423dd159c2d7ba6a98feed3cc3acf6.png",
+    "priceValue": 6.29,
+    "category": "Tile"
+  },
+  {
+    "id": "1045",
+    "name": "Castille Levante White II Matte Ceramic Tile",
+    "description": "Elevate the look of your home with this gorgeous Levante White II Matte Ceramic Tile. This 12 x 24 tile comes in white and has a matte finish. This stone-look tile is durable and easy to clean, so you can put it in areas that have heavy foot traffic. Plus, this stone-look tile is resistant to fading and staining. This tile was made in Brazil. Known for culture and craftsmanship, tiles made in Brazil are durable and beautiful.",
+    "price": "2.49",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100651041_levante_white_ii_matte_ceramic_tile_1_8423d9f17ddf946dc8ffaa3686221f74.avif",
+    "priceValue": 2.49,
+    "category": "Tile"
+  },
+  {
+    "id": "1046",
+    "name": "Adessi Soho Madison Matte Ceramic Tile",
+    "description": "This white Soho Madison Ceramic Tile is 12 x 24 with matte finish. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition.",
+    "price": "",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100903590_context_90b5f6d4d4f94b281c8b4c7d3bea24ca.avif",
+    "priceValue": null,
+    "category": "Tile"
+  },
+  {
+    "id": "1047",
+    "name": "Concrete Gray Matte Ceramic Tile",
+    "description": "This gray Concrete Gray Ceramic Tile is 12 x 24 with matte finish. Inkjet technology offers the very best in tile design. Offering excellent color range, sharp details and exceptional variation, inkjet technology will create a tile that is stunningly realistic. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition.",
+    "price": "3.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100136795_concrete_gray_matte_ceramic_tile_1_8a66b97bb19fae79b110a19a6b4a05a8.avif",
+    "priceValue": 3.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1049",
+    "name": "Forum Ivory Matte Porcelain Tile",
+    "description": "Get the look of natural stone with this beautiful Forum Ivory Porcelain Tile. This 12 x 24 tile comes in white and has a matte finish. This tile gives you the beautiful fade-resistant variations of natural stone with the added benefit of easy maintenance. Its already resistant to staining, so theres is no need to seal this tile. Plus, this stone-look tile is engineered to last and able to withstand heavy foot traffic. This tile was made in the United States.",
+    "price": "3.59",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100047117_context_eb5becaadf727a48ceaa1bc00213c498.avif",
+    "priceValue": 3.59,
+    "category": "Tile"
+  },
+  {
+    "id": "1050",
+    "name": "La Rocca Panaro Bianco Matte Ceramic Tile",
+    "description": "Get the look of natural stone with this beautiful Panaro Bianco Ceramic Tile. This 13 x 23 tile comes in white and has a matte finish. This tile gives you the beautiful fade-resistant variations of natural stone with the added benefit of easy maintenance. Its already resistant to staining, so theres is no need to seal this tile. Plus, this stone-look tile is engineered to last and able to withstand heavy foot traffic. This tile was made in Brazil. Known for culture and craftsmanship, tiles made in Brazil are durable and beautiful.",
+    "price": "2.29",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100486398_context_e37ba5e70ebee53b76b9532b9de0e8d9.avif",
+    "priceValue": 2.29,
+    "category": "Tile"
+  },
+  {
+    "id": "1051",
+    "name": "Toulouse Gris High Gloss Ceramic Tile",
+    "description": "With a polished or high gloss finish, this white Toulouse Gris High Gloss Ceramic Tile is 16 x 16. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "2.19",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
+    "priceValue": 2.19,
+    "category": "Tile"
+  },
+  {
+    "id": "1052",
+    "name": "Ashford Woodville Blanco Wood Plank Matte Ceramic Tile",
+    "description": "The 8 x 24 Woodville Blanco Matte Ceramic Tile is white with a matte finish. Inkjet technology offers a wider range of color, finer details, and more variation in the design for a wood-look that has more character and authenticity on the tile itself. You can never go wrong with the warm look of wood when you pair it with the durability and versatility of tile. The Woodville Blanco Matte Ceramic Tile will create a unique touch to any room or project with everything from the edges to the printed design.",
+    "price": "2.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
+    "priceValue": 2.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1066",
+    "name": "Vetta by Crossville Concept Gray Matte Porcelain Tile",
+    "description": "This gray Concept Gray Porcelain Tile is 12 x 24 with matte finish. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile is made in the USA. Known for high quality design and efficient production, tiles made in the USA are excellent options for any floor or wall. Contemporary ceramic and porcelain tile can add an attractive touch to floors and walls throughout your home. Whether you're looking for simple, clean designs or large format designs, these tiles offer long-lasting beauty that is versatile, affordable, and easy to maintain. This product can be installed on a shower wall. This product can be installed on a shower floor.",
+    "price": "3.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100941533_concept_gray_matte_porcelain_tile_1_9b329537caf1cc7f32b9b00cbf072c16.avif",
+    "priceValue": 3.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1074",
+    "name": "Adessi Opal Black Hexagon Matte Porcelain Tile",
+    "description": "This black matte Opal Black Porcelain Tile is 11 x 13. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use contemporary ceramic and porcelain tiles for a classic feel and for durability. Whether you're looking for simple, clean designs or large format designs, these tiles offer long-lasting beauty that is versatile, affordable, and easy to maintain. This product can be installed on a shower wall. This product can be installed on a shower floor.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1073",
+    "name": "Viviano Zena Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Zena Black Polished Porcelain Tile is 24 x 48. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "6.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
+    "priceValue": 6.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1072",
+    "name": "Marquina Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Marquina Black Polished Porcelain Tile is 12 x 24. Inkjet technology offers the very best in tile design. Offering excellent color range, sharp details and exceptional variation, inkjet technology will create a tile that is stunningly realistic. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1071",
+    "name": "Castille Costa Bella Nero III Matte Porcelain Tile",
+    "description": "Liven up any room with the Costa Bella Nero III Porcelain Tile. This 12 x 24 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing.",
+    "price": "4.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
+    "priceValue": 4.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1070",
+    "name": "Maximo Napoli Sand Matte Porcelain Tile",
+    "description": "Liven up any room with the Napoli Sand Porcelain Tile. This 24 x 48 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing. This stone-look tile takes the old-world beauty of Italy, where it was made. Create a whole new look or enhance your existing style with the easy-to-install Napoli Sand Porcelain Tile from Floor & Decor's exclusive Maximo tile. There's no need to demolish your old tile with this thin tile, you can save time, stress, and mess! Simply install this over your existing tile (or the existing subfloors, too) for a quick update. It's easy to clean and perfect in areas like sunrooms, mudrooms, kitchens, or bathrooms! Not only does it eliminate the time, stress, and mess of traditional tile installation, it offers a stylish and durable solution for any space.",
+    "price": "5.30",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
+    "priceValue": 5.3,
+    "category": "Tile"
+  },
+  {
+    "id": "1053",
+    "name": "Castille Levante White II Matte Ceramic Tile",
+    "description": "Elevate the look of your home with this gorgeous Levante White II Matte Ceramic Tile. This 12 x 24 tile comes in white and has a matte finish. This stone-look tile is durable and easy to clean, so you can put it in areas that have heavy foot traffic. Plus, this stone-look tile is resistant to fading and staining. This tile was made in Brazil. Known for culture and craftsmanship, tiles made in Brazil are durable and beautiful.",
+    "price": "2.49",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100651041_levante_white_ii_matte_ceramic_tile_1_8423d9f17ddf946dc8ffaa3686221f74.avif",
+    "priceValue": 2.49,
+    "category": "Tile"
+  },
+  {
+    "id": "1055",
+    "name": "Adessi Soho Madison Matte Ceramic Tile",
+    "description": "This white Soho Madison Ceramic Tile is 12 x 24 with matte finish. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition.",
+    "price": "",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100903590_context_90b5f6d4d4f94b281c8b4c7d3bea24ca.avif",
+    "priceValue": null,
+    "category": "Tile"
+  },
+  {
+    "id": "1057",
+    "name": "Concrete Gray Matte Ceramic Tile",
+    "description": "This gray Concrete Gray Ceramic Tile is 12 x 24 with matte finish. Inkjet technology offers the very best in tile design. Offering excellent color range, sharp details and exceptional variation, inkjet technology will create a tile that is stunningly realistic. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition.",
+    "price": "3.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100136795_concrete_gray_matte_ceramic_tile_1_8a66b97bb19fae79b110a19a6b4a05a8.avif",
+    "priceValue": 3.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1048",
+    "name": "Dimensions Ribbon Oak Matte Ceramic Tile",
+    "description": "Elevate your space with this contemporary Ribbon Oak Matte Ceramic Tile. Featuring a gorgeous matte, it creates a grand piece perfect for walls in a living room, dining room, bathroom or backsplash.",
+    "price": "8.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101022655_ribbon_oak_matte_ceramic_tile_1_3484a3efc8c21c89a3cf83dd680a2fe5.avif",
+    "priceValue": 8.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1059",
+    "name": "Forum Ivory Matte Porcelain Tile",
+    "description": "Get the look of natural stone with this beautiful Forum Ivory Porcelain Tile. This 12 x 24 tile comes in white and has a matte finish. This tile gives you the beautiful fade-resistant variations of natural stone with the added benefit of easy maintenance. Its already resistant to staining, so theres is no need to seal this tile. Plus, this stone-look tile is engineered to last and able to withstand heavy foot traffic. This tile was made in the United States.",
+    "price": "3.59",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100047117_context_eb5becaadf727a48ceaa1bc00213c498.avif",
+    "priceValue": 3.59,
+    "category": "Tile"
+  },
+  {
+    "id": "1060",
+    "name": "La Rocca Panaro Bianco Matte Ceramic Tile",
+    "description": "Get the look of natural stone with this beautiful Panaro Bianco Ceramic Tile. This 13 x 23 tile comes in white and has a matte finish. This tile gives you the beautiful fade-resistant variations of natural stone with the added benefit of easy maintenance. Its already resistant to staining, so theres is no need to seal this tile. Plus, this stone-look tile is engineered to last and able to withstand heavy foot traffic. This tile was made in Brazil. Known for culture and craftsmanship, tiles made in Brazil are durable and beautiful.",
+    "price": "2.29",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100486398_context_e37ba5e70ebee53b76b9532b9de0e8d9.avif",
+    "priceValue": 2.29,
+    "category": "Tile"
+  },
+  {
+    "id": "1063",
+    "name": "Ashford Woodville Blanco Wood Plank Matte Ceramic Tile",
+    "description": "The 8 x 24 Woodville Blanco Matte Ceramic Tile is white with a matte finish. Inkjet technology offers a wider range of color, finer details, and more variation in the design for a wood-look that has more character and authenticity on the tile itself. You can never go wrong with the warm look of wood when you pair it with the durability and versatility of tile. The Woodville Blanco Matte Ceramic Tile will create a unique touch to any room or project with everything from the edges to the printed design.",
+    "price": "2.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
+    "priceValue": 2.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1075",
+    "name": "Adessi Opal Black Hexagon Matte Porcelain Tile",
+    "description": "This black matte Opal Black Porcelain Tile is 11 x 13. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use contemporary ceramic and porcelain tiles for a classic feel and for durability. Whether you're looking for simple, clean designs or large format designs, these tiles offer long-lasting beauty that is versatile, affordable, and easy to maintain. This product can be installed on a shower wall. This product can be installed on a shower floor.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1077",
+    "name": "Viviano Zena Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Zena Black Polished Porcelain Tile is 24 x 48. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "6.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
+    "priceValue": 6.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1080",
+    "name": "Marquina Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Marquina Black Polished Porcelain Tile is 12 x 24. Inkjet technology offers the very best in tile design. Offering excellent color range, sharp details and exceptional variation, inkjet technology will create a tile that is stunningly realistic. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1082",
+    "name": "Castille Costa Bella Nero III Matte Porcelain Tile",
+    "description": "Liven up any room with the Costa Bella Nero III Porcelain Tile. This 12 x 24 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing.",
+    "price": "4.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
+    "priceValue": 4.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1084",
+    "name": "Maximo Napoli Sand Matte Porcelain Tile",
+    "description": "Liven up any room with the Napoli Sand Porcelain Tile. This 24 x 48 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing. This stone-look tile takes the old-world beauty of Italy, where it was made. Create a whole new look or enhance your existing style with the easy-to-install Napoli Sand Porcelain Tile from Floor & Decor's exclusive Maximo tile. There's no need to demolish your old tile with this thin tile, you can save time, stress, and mess! Simply install this over your existing tile (or the existing subfloors, too) for a quick update. It's easy to clean and perfect in areas like sunrooms, mudrooms, kitchens, or bathrooms! Not only does it eliminate the time, stress, and mess of traditional tile installation, it offers a stylish and durable solution for any space.",
+    "price": "5.30",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
+    "priceValue": 5.3,
+    "category": "Tile"
+  },
+  {
+    "id": "1040",
+    "name": "Satin White Matte Hexagon Porcelain Mosaic",
+    "description": "For an elevated look to your design, choose the Satin White Matte Hexagon Porcelain Mosaic with a textured finish. Use this white tile to add new visual interest in any space like the bathroom, kitchen, living room, and more. Porcelain tile is stylish and easy to install, and it can go indoor or outdoor areas. It can also be easily cleaned and maintained in any space. The Satin White Matte Hexagon Porcelain Mosaic is versatile in style, so it can create a look thats right for you. It can be used as an accent piece or over a large area. This product can be installed on a shower floor.",
+    "price": "3.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100782424_satin_white_matte_hexagon_porcelain_mosaic_display_fd5eef6f9dd920d7875ac116ec7d6f16.avif",
+    "priceValue": 3.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1041",
+    "name": "Ashford Woodville White Hexagon Matte Porcelain Mosaic",
+    "description": "The 10 x 11 Ashford Woodville White Hexagon Porcelain Mosaic is white with a matte finish. Inkjet print technology produces high-definition images on each tile for a natural, authentic look on the entire surface of the tile itself. The look of wood with the worry-free nature of tile is sure to be the perfect touch for your home. The Ashford Woodville White Hexagon Porcelain Mosaic will add a unique touch to any room or project. Everything from the edges to the printed design of the tile can complete the look of your room, and you get can get the added benefit of durability, too.",
+    "price": "17.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100783091_woodville_white_hexagon_matte_porcelain_mosaic_display_2bedfa942931a32f7a51d3ad505f94a7.avif",
+    "priceValue": 17.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1042",
+    "name": "San Giorgio Alto Bianco Matte Porcelain Mosaic",
+    "description": "Get the look of natural stone with this beautiful Alto Bianco Porcelain Mosaic. This 12 x 12 tile comes in white and has a matte finish. This tile gives you the beautiful fade-resistant variations of natural stone with the added benefit of easy maintenance. Its already resistant to staining, so theres is no need to seal this tile. Plus, this stone-look tile is engineered to last and able to withstand heavy foot traffic.",
+    "price": "14.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101136794_2_39553482a6d02fba98b2f4a9174c23fa.avif",
+    "priceValue": 14.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1043",
+    "name": "Villa Beaumont Shadow Hexagon Ceramic Mosaic",
+    "description": "Make a statement with the 10 x 11 Beaumont Shadow Hexagon Ceramic Mosaic. This tile is blue and has a multi finish finish, making it an excellent addition for your style and space. Ceramic tile is versatile and easy to install. It can be used in indoor areas from living rooms to kitchens, and it can be easily cleaned and maintained. The right kind of tile decorative can add a colorful and artistic boost to the rooms in your home. Tiles are an easy way to make an instant impact in kitchens, bathrooms, and more. This product can be installed on a shower floor.",
+    "price": "10.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100831718_beaumont_shadow_hexagon_ceramic_mosaic_1_919e713f1d5c0f0fd2502ce3136fb191.avif",
+    "priceValue": 10.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1044",
+    "name": "Villa Beaumont Shadow Ceramic Mixed Penny Mosaic",
+    "description": "For an elevated look to your design, choose the Beaumont Shadow Ceramic Mixed Penny Mosaic with a matte finish. Use this blue tile to add new visual interest in any space like the bathroom, kitchen, living room, and more. Ceramic tile is versatile and easy to install. It can be used in indoor areas from living rooms to kitchens, and it can be easily cleaned and maintained. Tile decoratives are an inexpensive way to add style to your home. With so many different designs and colors to choose from, youll find exactly what your home needs. This product can be installed on a shower floor.",
+    "price": "",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100837392_beaumont_shadow_ceramic_mixed_penny_mosaic_1_70548d2154e5ae96b4e837c97433a395.avif",
+    "priceValue": null,
+    "category": "Tile"
+  },
+  {
+    "id": "1056",
+    "name": "MSI Stonella 2 in. Hexagon 12 in. x 12 in. x 0.24 in. Glass Mesh-Mounted Mosaic Wall Tile (14.7 sq. ft./Case)",
+    "description": "Features gray patterned look mosaic tile. Glass mosaic tile for indoor and outdoor use. Perfect for kitchen backsplash, bathroom, shower, or fireplace",
+    "price": "14.22",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_124823_f4cc6c1c42ded54d5f06f168ba1d38c7.png",
+    "priceValue": 14.22,
+    "category": "Tile"
+  },
+  {
+    "id": "1061",
+    "name": "Toulouse Gris High Gloss Ceramic Tile",
+    "description": "With a polished or high gloss finish, this white Toulouse Gris High Gloss Ceramic Tile is 16 x 16. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "2.19",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
+    "priceValue": 2.19,
+    "category": "Tile"
+  },
+  {
+    "id": "1064",
+    "name": "Ashford Woodville Blanco Wood Plank Matte Ceramic Tile",
+    "description": "The 8 x 24 Woodville Blanco Matte Ceramic Tile is white with a matte finish. Inkjet technology offers a wider range of color, finer details, and more variation in the design for a wood-look that has more character and authenticity on the tile itself. You can never go wrong with the warm look of wood when you pair it with the durability and versatility of tile. The Woodville Blanco Matte Ceramic Tile will create a unique touch to any room or project with everything from the edges to the printed design.",
+    "price": "2.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
+    "priceValue": 2.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1062",
+    "name": "Toulouse Gris High Gloss Ceramic Tile",
+    "description": "With a polished or high gloss finish, this white Toulouse Gris High Gloss Ceramic Tile is 16 x 16. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "2.19",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100008085_context_805b9c24cfea737fa6ce83caf0a3db56.avif",
+    "priceValue": 2.19,
+    "category": "Tile"
+  },
+  {
+    "id": "1065",
+    "name": "Ashford Woodville Blanco Wood Plank Matte Ceramic Tile",
+    "description": "The 8 x 24 Woodville Blanco Matte Ceramic Tile is white with a matte finish. Inkjet technology offers a wider range of color, finer details, and more variation in the design for a wood-look that has more character and authenticity on the tile itself. You can never go wrong with the warm look of wood when you pair it with the durability and versatility of tile. The Woodville Blanco Matte Ceramic Tile will create a unique touch to any room or project with everything from the edges to the printed design.",
+    "price": "2.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101329266_room1_73c0c66a779672ed1b6e5d1b0fe1fc71.avif",
+    "priceValue": 2.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1067",
+    "name": "Vetta by Crossville Concept Gray Matte Porcelain Tile",
+    "description": "This gray Concept Gray Porcelain Tile is 12 x 24 with matte finish. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile is made in the USA. Known for high quality design and efficient production, tiles made in the USA are excellent options for any floor or wall. Contemporary ceramic and porcelain tile can add an attractive touch to floors and walls throughout your home. Whether you're looking for simple, clean designs or large format designs, these tiles offer long-lasting beauty that is versatile, affordable, and easy to maintain. This product can be installed on a shower wall. This product can be installed on a shower floor.",
+    "price": "3.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100941533_concept_gray_matte_porcelain_tile_1_9b329537caf1cc7f32b9b00cbf072c16.avif",
+    "priceValue": 3.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1076",
+    "name": "Adessi Opal Black Hexagon Matte Porcelain Tile",
+    "description": "This black matte Opal Black Porcelain Tile is 11 x 13. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Pressed tiles require more prominent grout lines, and the rounded edges allow for a smoother transition. Use contemporary ceramic and porcelain tiles for a classic feel and for durability. Whether you're looking for simple, clean designs or large format designs, these tiles offer long-lasting beauty that is versatile, affordable, and easy to maintain. This product can be installed on a shower wall. This product can be installed on a shower floor.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100888619_context_698ee259248e5bc88de94958ed979665.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1079",
+    "name": "Viviano Zena Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Zena Black Polished Porcelain Tile is 24 x 48. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "6.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
+    "priceValue": 6.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1081",
+    "name": "Marquina Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Marquina Black Polished Porcelain Tile is 12 x 24. Inkjet technology offers the very best in tile design. Offering excellent color range, sharp details and exceptional variation, inkjet technology will create a tile that is stunningly realistic. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "4.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100559202_context_f2bcf89aea63bec0e4d94c7e826d1c01.avif",
+    "priceValue": 4.99,
+    "category": "Tile"
+  },
+  {
+    "id": "1083",
+    "name": "Castille Costa Bella Nero III Matte Porcelain Tile",
+    "description": "Liven up any room with the Costa Bella Nero III Porcelain Tile. This 12 x 24 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing.",
+    "price": "4.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101134914_costa_bella_nero_iii_matte_porcelain_tile_1_813e57bddc59f660d9657abb1972d38a.avif",
+    "priceValue": 4.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1085",
+    "name": "Maximo Napoli Sand Matte Porcelain Tile",
+    "description": "Liven up any room with the Napoli Sand Porcelain Tile. This 24 x 48 tile features a matte finish. Durable stone-look tile is an affordable alternative to natural stone, and it looks great throughout the house. Plus, you can get the authentic look of stone with an easy-to-maintain surface, as stone-look tile is waterproof and doesnt require sealing. This stone-look tile takes the old-world beauty of Italy, where it was made. Create a whole new look or enhance your existing style with the easy-to-install Napoli Sand Porcelain Tile from Floor & Decor's exclusive Maximo tile. There's no need to demolish your old tile with this thin tile, you can save time, stress, and mess! Simply install this over your existing tile (or the existing subfloors, too) for a quick update. It's easy to clean and perfect in areas like sunrooms, mudrooms, kitchens, or bathrooms! Not only does it eliminate the time, stress, and mess of traditional tile installation, it offers a stylish and durable solution for any space.",
+    "price": "5.30",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101073377_napoli_sand_matte_porcelain_tile_1_69f7bde24af75c5f16bba089e01371f6.avif",
+    "priceValue": 5.3,
+    "category": "Tile"
+  },
+  {
+    "id": "1058",
+    "name": "Dimensions Ribbon Oak Matte Ceramic Tile",
+    "description": "Elevate your space with this contemporary Ribbon Oak Matte Ceramic Tile. Featuring a gorgeous matte, it creates a grand piece perfect for walls in a living room, dining room, bathroom or backsplash.",
+    "price": "8.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/101022655_ribbon_oak_matte_ceramic_tile_1_3484a3efc8c21c89a3cf83dd680a2fe5.avif",
+    "priceValue": 8.0,
+    "category": "Tile"
+  },
+  {
+    "id": "1078",
+    "name": "Viviano Zena Black Polished Porcelain Tile",
+    "description": "This black polished or high gloss Zena Black Polished Porcelain Tile is 24 x 48. This tile has inkjet print quality, which produces a high definition image that thoroughly covers the tile and results in a natural, authentic look. Straight or rectified tiles are cut so that they can be installed with minimal grout lines and give a very clean look. This tile comes from Turkey, and is a high quality, stylish tile. Use ceramic or porcelain tiles with a high-gloss finish to create a classic look.",
+    "price": "6.50",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/100812163_context_5980a39d7b6049e962863d65dbed1fa0.avif",
+    "priceValue": 6.5,
+    "category": "Tile"
+  },
+  {
+    "id": "1004",
+    "name": "PPROJECTA 60 in. x 36 in. Rectangular Skirted Soaking Bathtub with Right Drain in White",
+    "description": "Ergonomic design for comfort. Increases circulation. High-gloss acrylic construction ensures durability. Right Drain.",
+    "price": "849.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/projecta_60_in_x_36_in_rectangular_skirted_soaking_bathtub_with_right_drain_in_white_952c50d47c8514479216248c3172c670.png",
+    "priceValue": 849.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1005",
+    "name": "PROJECTA 60 in. x 32 in. Acrylic Left Drain Rectangular Low-Profile AFR 18 in. Apron Front Soaking Bathtub in White",
+    "description": "Made from premium-grade acrylic to ensure long durability. Bottom resists slipping to prevent physical damage. Simple installation by TRU-LEVEL base and Above Floor Rough (AFR). Left Drain.",
+    "price": "723.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/rojecta_60_in_x_32_in_acrylic_left_drain_rectangular_low_profile_afr_18_in_apron_front_soaking_bathtub_in_white_5ed9fc6b8dd35fe836082bf854b8ded2.png",
+    "priceValue": 723.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1030",
+    "name": "KOHLER Elmbrook 60 in. x 30.25 in. Soaking Bathtub with Left-Hand Drain in White",
+    "description": "The Elmbrook 60 in. alcove bath is a simple, versatile design with timeless style. Defined by sleek lines and an integral apron, this easy-to-clean bath offers a polished look that complements traditional or contemporary bathroom decor. It comes with a lifetime limited warranty. Overall Length (in.) x Width (in.):60 x 30. Drain Location",
+    "price": "550.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_204735_ece5eed744473034ce071cd9af936f39.png",
+    "priceValue": 550.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1014",
+    "name": "Glacier Bay 12 inch Rough In Two-Piece 1.28 GPF Single Flush Round Toilet in White Seat Included",
+    "description": "ADA comfort height with 1.28 GPF powerful flush performance. QuickConnect easy installation system, no tools required Includes toilet seat, wax ring and floor mounting bolt set. Size/Dimensions: Height: 32.5 in, Depth: 27.25 in, Width: 18 in. Shape: Round",
+    "price": "99.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_08_234427_189212352a4069f49d032321938f8eb3.png",
+    "priceValue": 99.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1015",
+    "name": "Glacier Bay 12 inch Rough In Two-Piece 1.28 GPF Single Flush Round Toilet in White Seat Included (Copy)",
+    "description": "Made of vitreous, ADA comfort height, 1.28 GPF canister flush. Class Five canister provides powerful and effective flush. Soft close toilet seat, wax ring, and hardware included Elongated shape. Dimensions: Height: 30.36 in, Depth: 29.54 in, Width: 15.47 in.",
+    "price": "199.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_08_235540_f4b423f3b29656b7478dfad250a9cdb8.png",
+    "priceValue": 199.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1032",
+    "name": "KOHLER Highline Arc 12 in. Rough In 2-Piece 1.28 GFP Single Flush Elongated Chair Height Toilet in White with Soft Close Seat",
+    "description": "Made of vitreous, ADA comfort height, 1.28 GPF canister flush. Class Five canister provides powerful and effective flush. Soft close toilet seat, wax ring, and hardware included.",
+    "price": "230.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_210311_e9e2222e2d3c3a1b26bdbf353ebba9a5.png",
+    "priceValue": 230.0,
+    "category": "Bath Fixtures"
+  },
+  {
+    "id": "1006",
+    "name": "Ashlyn In2ition Single Handle 4-Spray Tub and Shower Faucet 1.75 GPM in Matte Black Valve Included",
+    "description": "Delta shower valve included with shower faucet trim kit. Use showerhead with handheld shower together or separate. Delta shower system backed by Delta's lifetime limited warranty. Matte Black color.",
+    "price": "371.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_112124_09e1292c8774c54de99bc79352cf9be6.png",
+    "priceValue": 371.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1023",
+    "name": "Delta Nicoli H2OKinetic Technology Rough-in Valve Included Single-Handle 5-Spray Shower Faucet 1.75 GPM in Matte Black",
+    "description": "Delta shower valve included with shower faucet trim kit H2Okinetic Technology: 3X the coverage of a standard shower head. Delta shower system backed by Delta's Lifetime Limited Warranty",
+    "price": "149.55",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_160120_e8e591da883712d86270e05f96c16d55.png",
+    "priceValue": 149.55,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1022",
+    "name": "1-Spray Patterns with 2.5 GPM 10 in. Wall Mount Rain Fixed Shower Head in Matte Black (Valve Included)",
+    "description": "10 in. top outlet for rain spray Single lever handle to adjust water temperature and flow easily CUPC certified pressure balance valve prevents calding",
+    "price": "237.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_155417_8be0551af999e7cf855207a426f8b207.png",
+    "priceValue": 237.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1086",
+    "name": "Delta Lorna Single Handle 5-Spray Tub and Shower Faucet 1.75 GPM in Chrome Valve Included",
+    "description": "Delta shower valve included with shower faucet trim kit Monitor Valve protects from rapid changes in water temperature Delta shower system backed by Delta's Lifetime Limited Warranty",
+    "price": "250.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_08_111041_2812b33ecf5a5d9b3eb1fcab5d473aee.png",
+    "priceValue": 250.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1089",
+    "name": "Delta Arvo In2ition 2-in-1 Single-Handle 4-Spray Tub and Shower Faucet in Chrome (Valve Included)",
+    "description": "Delta shower valve included with shower faucet trim kit Use showerhead with handheld shower together or separate Delta shower system backed by Delta's Lifetime Limited Warranty",
+    "price": "200.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_08_112308_b5c550f75b0aad3ed7ea419826a58739.png",
+    "priceValue": 200.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1019",
+    "name": "Sundae 8 in. Widespread Double Handles Bathroom Faucet in Vibrant Brushed Nickel",
+    "description": "Spot Repel finish resists fingerprints, smudges, and water spots. KOHLER ceramic disc valves exceed industry longevity standards. Box includes: Assembled faucet, clicker drain.",
+    "price": "129.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/kholer_9912a87b8cdbe39e7b0abc1c36fb9c56.png",
+    "priceValue": 129.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1018",
+    "name": "Builders 4 in. Centerset Double Handle Low-Arc Bathroom Faucet in Brushed Nickel",
+    "description": "Features Glacier Bay exclusive ClickInstall drain Designed to fit three hole sinks with a 4 inch spread Backed by Glacier Bay Limited Lifetime Warranty",
+    "price": "39.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000549_f9627eb3b53b38571758298ec1ffe45d.png",
+    "priceValue": 39.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1035",
+    "name": "Delta Portwood 4 in. Centerset 2-Handle Bathroom Faucet in SpotShield Brushed Nickel",
+    "description": "Simple, 3-hole centerset bathroom faucet installation SpotShield brushed nickel resists water spots and fingerprints Delta bathroom faucet backed by Deltas lifetime limited warranty",
+    "price": "150.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_212916_85fdedb54ceda65893ae7969fd8cd518.png",
+    "priceValue": 150.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1036",
+    "name": "MOEN Banbury 8 in. Widespread Double Handle High-Arc Bathroom Faucet in Spot Resist Brushed Nickel (Valve Included)",
+    "description": "Widespread bathroom sink faucet with 3 hole installation. Spot resistant brushed nickel double handle bathroom faucet. Tested beyond standards for long-lasting performance",
+    "price": "160.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_212550_f51d82ca8901b8c341149491c5816184.png",
+    "priceValue": 160.0,
+    "category": "Faucets & Shower"
+  },
+  {
+    "id": "1016",
+    "name": "Glacier Bay 23-1/2 in. W x 32-1/2 in. H Framed Surface-Mount Bathroom Medicine Cabinet with Mirror, White",
+    "description": "Timeless white shaker frame adds elegance to any bathroom Features 2 adjustable interior shelves for customizable storage Wood composite construction offers enhanced durability & strength",
+    "price": "119.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000355_b98679f7b3bec7d9c5f6f5aa8dc7d829.png",
+    "priceValue": 119.0,
+    "category": "Mirrors & Lighting"
+  },
+  {
+    "id": "1017",
+    "name": "16 in. W x 26 in. H Rectangular Wood Composite Medicine Cabinet with Mirror",
+    "description": "Frameless beveled-edge design ideal for modern bathrooms. Features 2 adjustable interior shelves for customizable storage. Wood composite construction offers enhanced durability &amp; strength",
+    "price": "79.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_000917_62d71071e27c49e067668dbf222ce1b2.png",
+    "priceValue": 79.0,
+    "category": "Mirrors & Lighting"
+  },
+  {
+    "id": "1037",
+    "name": "niveal 24 in. W x 36 in. H Rectangular Framed Wall Bathroom Vanity Mirror in Matte Black",
+    "description": "Contemporary design elevates the overall look of your space. Crafted from an aluminum frame for prolonged use. Designed for quick and easy installation",
+    "price": "155.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_214526_e8332116cffd25db4e4232f474a612d8.png",
+    "priceValue": 155.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1038",
+    "name": "better bevel 30 in. W x 30 in. H Rubber Framed Round Bathroom Vanity Mirror in Matte Gold",
+    "description": "High-clarity, distortion-free reflection. Z-bar hanging system installs in minutes. Designed and assembled in the USA",
+    "price": "150.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_215159_4ca7a51022ba1e175f94013e9fc46e47.png",
+    "priceValue": 150.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1039",
+    "name": "KeonJinn 72 in. W x 36 in. H Framed Brushed Gold Mirrors for Bathroom Wall Beveled Mirror Bathroom Vanity Mirror Over Sink",
+    "description": "Premium HD glass ensures a clear, undistorted image. Durable aluminum frame offers sleek and modern look. Includes hanging hooks for easy installation",
+    "price": "400.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_220028_6346b4b1689d5f9bd77d8c7b1d718719.png",
+    "priceValue": 400.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1029",
+    "name": "Titanium Gloss L - 1/2 in.",
+    "description": "Trim edge for a finished shower wall end. Polished finish titanium 1/2\" L channel.",
+    "price": "29.99",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2025_06_09_165001_1b81284a5abf13bc952dd96f167a5b10.png",
+    "priceValue": 29.99,
+    "category": "Accessories"
+  },
+  {
+    "id": "1031",
+    "name": "Hampton Bay Regan 29.13 in. 4-Light Brushed Nickel Vanity Light with Clear Glass Shades",
+    "description": "Ideal for use as vanity lighting in bathrooms Transitional 4-light brushed nickel vanity wall fixture Uses four 60-Watt medium base bulbs, sold separately",
+    "price": "180.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_205440_8e247ca13f17dc7d836913400c535c7b.png",
+    "priceValue": 180.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1033",
+    "name": "BAOURE 24.6 in. 4 Light Black Vanity Light Fixtures Modern Bathroom Light Fixtures with Clear Glass Shade for Over Mirror",
+    "description": "Sleek modern design with clear glass shades Dual-direction mounting for customized illumination Durable metal construction ensures long-lasting durability",
+    "price": "110.00",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_211259_bf9f2f9e850f6f05dc29ff4f06c7f233.png",
+    "priceValue": 110.0,
+    "category": "Vanities"
+  },
+  {
+    "id": "1034",
+    "name": "Basdien 24 in. 4-Light silver Grain Finish Vanity Light Fixture Bathroom Over Mirror Wall Lights with White Glass Shades",
+    "description": "Brushed nickel finish and frosted glass shades for elegance. ETL-certified ceramic sockets ensure safety and reliability. Dimmable functionality allows customized brightness",
+    "price": "",
+    "image": "https://www.jotform.com/uploads/ilirmingo1/form_files/screenshot_2026_01_06_211834_ac37572fa095434e4a6df9a60c96a59a.png",
+    "priceValue": null,
+    "category": "Vanities"
+  }
+];
+
+    const productGrid = document.querySelector('#product-grid');
+    const categoryFilter = document.querySelector('#category-filter');
+    const productSearch = document.querySelector('#product-search');
+    const cartList = document.querySelector('#cart-list');
+    const cartTotal = document.querySelector('#cart-total');
+    const orderForm = document.querySelector('#material-order-form');
+    const storeMessage = document.querySelector('#store-message');
+    const cart = new Map();
+
+    const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const priceValue = (product) => typeof product.priceValue === 'number' ? product.priceValue : null;
+    const priceLabel = (product) => priceValue(product) === null ? 'Request quote' : money.format(priceValue(product));
+
+    const truncate = (text, maxLength = 155) => {
+      if (!text || text.length <= maxLength) return text || 'Bathroom material available through All American Tiles.';
+      return `${text.slice(0, maxLength).trim()}...`;
+    };
+
+    const categories = [...new Set(STORE_PRODUCTS.map((product) => product.category))].sort();
+    categories.forEach((category) => {
+      const option = document.createElement('option');
+      option.value = category;
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+
+    const getVisibleProducts = () => {
+      const category = categoryFilter.value;
+      const search = productSearch.value.trim().toLowerCase();
+      return STORE_PRODUCTS.filter((product) => {
+        const matchesCategory = category === 'all' || product.category === category;
+        const matchesSearch = !search || `${product.name} ${product.description} ${product.category}`.toLowerCase().includes(search);
+        return matchesCategory && matchesSearch;
+      });
+    };
+
+    const renderProducts = () => {
+      productGrid.innerHTML = '';
+      getVisibleProducts().forEach((product) => {
+        const card = document.createElement('article');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img class="product-image" src="${product.image}" alt="${product.name}" loading="lazy">
+          <div class="product-card-body">
+            <span class="product-category">${product.category}</span>
+            <h2>${product.name}</h2>
+            <p>${truncate(product.description)}</p>
+            <strong class="product-price">${priceLabel(product)}</strong>
+            <div class="product-controls">
+              <input type="number" min="1" value="1" aria-label="Quantity for ${product.name}">
+              <button class="add-button" type="button">Add to Order</button>
+            </div>
+          </div>
+        `;
+        const quantityInput = card.querySelector('input');
+        card.querySelector('button').addEventListener('click', () => {
+          const quantity = Math.max(1, parseInt(quantityInput.value, 10) || 1);
+          addToCart(product.id, quantity);
+        });
+        productGrid.appendChild(card);
+      });
+    };
+
+    const addToCart = (productId, quantity) => {
+      const product = STORE_PRODUCTS.find((item) => item.id === productId);
+      if (!product) return;
+      const existing = cart.get(productId);
+      cart.set(productId, { product, quantity: (existing?.quantity || 0) + quantity });
+      renderCart();
+    };
+
+    const renderCart = () => {
+      cartList.innerHTML = '';
+      if (!cart.size) {
+        cartList.innerHTML = '<p class="cart-empty">Select materials to build your order request.</p>';
+      } else {
+        cart.forEach((entry, productId) => {
+          const item = document.createElement('div');
+          item.className = 'cart-item';
+          const unitPrice = priceValue(entry.product);
+          const lineTotal = unitPrice === null ? 'Quote needed' : money.format(unitPrice * entry.quantity);
+          item.innerHTML = `
+            <strong>${entry.product.name}</strong>
+            <small>${priceLabel(entry.product)} each - ${lineTotal}</small>
+            <div class="cart-item-actions">
+              <input type="number" min="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">
+              <button class="remove-item" type="button">Remove</button>
+            </div>
+          `;
+          item.querySelector('input').addEventListener('input', (event) => {
+            entry.quantity = Math.max(1, parseInt(event.target.value, 10) || 1);
+            cart.set(productId, entry);
+            updateTotal();
+          });
+          item.querySelector('button').addEventListener('click', () => {
+            cart.delete(productId);
+            renderCart();
+          });
+          cartList.appendChild(item);
+        });
+      }
+      updateTotal();
+    };
+
+    const updateTotal = () => {
+      let total = 0;
+      cart.forEach((entry) => {
+        const unitPrice = priceValue(entry.product);
+        if (unitPrice !== null) total += unitPrice * entry.quantity;
+      });
+      cartTotal.textContent = money.format(total);
+    };
+
+    const setStoreMessage = (message, type = 'error') => {
+      storeMessage.textContent = message;
+      storeMessage.className = `store-message visible ${type}`;
+    };
+
+    const clearStoreMessage = () => {
+      storeMessage.textContent = '';
+      storeMessage.className = 'store-message';
+    };
+
+    const buildOrderDetails = () => {
+      const items = [...cart.values()].map((entry) => {
+        const unitPrice = priceLabel(entry.product);
+        const unitValue = priceValue(entry.product);
+        const lineTotal = unitValue === null ? 'Quote needed' : money.format(unitValue * entry.quantity);
+        return `- ${entry.product.name} | Qty: ${entry.quantity} | Unit: ${unitPrice} | Line: ${lineTotal}`;
+      }).join('\n');
+      return items || 'No items selected';
+    };
+
+    orderForm.addEventListener('input', clearStoreMessage);
+
+    orderForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearStoreMessage();
+
+      const formData = new FormData(orderForm);
+      const customerName = String(formData.get('customerName') || '').trim();
+      const phone = String(formData.get('phone') || '').trim();
+      const email = String(formData.get('email') || '').trim();
+      const addressZip = String(formData.get('addressZip') || '').trim();
+      const notes = String(formData.get('notes') || '').trim();
+
+      if (!cart.size) {
+        setStoreMessage('Please add at least one material to your order.');
+        return;
+      }
+
+      if (!customerName || !phone || !email || !addressZip) {
+        setStoreMessage('Please complete your name, phone, email, and address / ZIP code.');
+        return;
+      }
+
+      if (!emailPattern.test(email)) {
+        setStoreMessage('Please enter a valid email address.');
+        return;
+      }
+
+      const [firstName, ...lastParts] = customerName.split(/\s+/);
+      const lastName = lastParts.join(' ') || 'Customer';
+      const zipMatch = addressZip.match(/\b\d{5}(?:-\d{4})?\b/);
+      const button = orderForm.querySelector('button[type="submit"]');
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Sending...';
+
+      const payload = {
+        firstName,
+        lastName,
+        phone,
+        email,
+        zipCode: zipMatch ? zipMatch[0] : addressZip,
+        projectType: 'Online Store',
+        serviceNeeded: 'Bathroom Materials',
+        referralSource: 'Online Store',
+        contactConsent: true,
+        message: [
+          'Bathroom material online store order request',
+          '',
+          'Customer address / ZIP:',
+          addressZip,
+          '',
+          'Selected items:',
+          buildOrderDetails(),
+          '',
+          `Estimated total: ${cartTotal.textContent}`,
+          '',
+          'Customer notes:',
+          notes || 'None provided'
+        ].join('\n')
+      };
+
+      try {
+        const response = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('Material order request failed');
+
+        setStoreMessage('Thank you! Your material order request was sent.', 'success');
+        cart.clear();
+        orderForm.reset();
+        renderCart();
+      } catch (error) {
+        setStoreMessage('Sorry, your material order could not be sent. Please call us at 734-657-7965.');
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    });
+
+    productSearch.addEventListener('input', renderProducts);
+    categoryFilter.addEventListener('change', renderProducts);
+    renderProducts();
+    renderCart();
+  </script>
 </body>
 </html>
