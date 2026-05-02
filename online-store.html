@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All American Tiles Online Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #002868;
+      --red: #c8242f;
+      --red-dark: #a91d27;
+      --light: #f3f7fb;
+      --text: #263244;
+      --muted: #617083;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Open Sans", Arial, sans-serif;
+      color: var(--text);
+      background: var(--light);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .store-topbar {
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 7vw;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      display: flex;
+      justify-content: flex-end;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .store-topbar a {
+      text-decoration: none;
+    }
+
+    .store-header {
+      background: #fff;
+      border-bottom: 1px solid #d5dde8;
+      padding: 18px 7vw;
+    }
+
+    .store-header-inner,
+    .store-hero,
+    .store-frame-wrap {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .store-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .store-logo {
+      width: min(250px, 58vw);
+      display: block;
+    }
+
+    .back-link {
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .back-link:hover {
+      color: var(--red);
+    }
+
+    .store-hero {
+      padding: 70px 0 42px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 840px;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: clamp(38px, 6vw, 68px);
+      line-height: 1.02;
+      text-transform: uppercase;
+    }
+
+    .store-subtitle {
+      margin: 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.6;
+    }
+
+    .store-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .store-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      background: var(--red);
+      color: #fff;
+      padding: 15px 28px;
+      border-radius: 0;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+      text-transform: uppercase;
+      box-shadow: 0 16px 34px rgba(200, 36, 47, .24);
+    }
+
+    .store-button:hover {
+      background: var(--red-dark);
+    }
+
+    .phone-link {
+      color: var(--navy);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .store-frame-section {
+      padding: 0 7vw 74px;
+    }
+
+    .store-frame-wrap {
+      background: #fff;
+      border-top: 6px solid var(--red);
+      box-shadow: 0 22px 60px rgba(0, 40, 104, .14);
+      padding: 18px;
+    }
+
+    .store-frame {
+      width: 100%;
+      height: 900px;
+      border: 0;
+      display: block;
+      background: #fff;
+    }
+
+    @media (max-width: 720px) {
+      .store-topbar {
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 10px 20px;
+        gap: 10px;
+        font-size: 12px;
+      }
+
+      .store-header {
+        padding: 16px 22px;
+      }
+
+      .store-header-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .store-hero {
+        padding: 48px 22px 34px;
+      }
+
+      .store-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .store-button {
+        width: 100%;
+      }
+
+      .store-frame-section {
+        padding: 0 22px 48px;
+      }
+
+      .store-frame-wrap {
+        padding: 10px;
+      }
+
+      .store-frame {
+        height: 760px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="store-topbar">
+    <span>All American Tiles</span>
+    <a href="tel:7346577965">Call 734-657-7965</a>
+  </div>
+
+  <header class="store-header">
+    <div class="store-header-inner">
+      <a href="https://allamericantilesmi.com/" aria-label="All American Tiles home">
+        <img class="store-logo" src="assets/all-american-tiles-logo.jpg" alt="All American Tiles">
+      </a>
+      <a class="back-link" href="https://allamericantilesmi.com/">Back to Main Website</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="store-hero" aria-labelledby="store-title">
+      <p class="eyebrow">Online Store</p>
+      <h1 id="store-title">All American Tiles Online Store</h1>
+      <p class="store-subtitle">Order materials, request products, or submit your project details.</p>
+      <div class="store-actions">
+        <a class="store-button" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Store Form</a>
+        <a class="phone-link" href="tel:7346577965">Questions? Call 734-657-7965</a>
+      </div>
+    </section>
+
+    <section class="store-frame-section" aria-label="Online store form">
+      <div class="store-frame-wrap">
+        <iframe class="store-frame" src="https://app.jotform.com/251587225256158" width="100%" height="900" frameborder="0" title="All American Tiles online store form"></iframe>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
