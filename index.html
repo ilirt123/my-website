@@ -539,6 +539,8 @@
           <label><span>Email <span class="required-star" aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
           <label><span>Phone Number <span class="required-star" aria-hidden="true">*</span></span><input type="tel" name="phone" autocomplete="tel" required aria-required="true"></label>
           <label><span>ZIP Code</span><input type="text" name="zipCode" autocomplete="postal-code"></label>
+          <label><span>Date <span class="required-star" aria-hidden="true">*</span></span><input type="date" name="preferredDate" required aria-required="true"></label>
+          <label><span>Project Name <span class="required-star" aria-hidden="true">*</span></span><input type="text" name="projectName" autocomplete="off" required aria-required="true"></label>
           <label><span>Project Type <span class="required-star" aria-hidden="true">*</span></span>
             <select name="projectType" required aria-required="true">
               <option>Bathroom</option>
@@ -569,7 +571,11 @@
             </select>
           </label>
           <label class="full-field"><span>How can we help you? <span class="required-star" aria-hidden="true">*</span></span><textarea name="message" rows="5" required aria-required="true"></textarea></label>
-          <label class="agreement-field full-field"><input type="checkbox" name="contactConsent"> I agree to be contacted by ALL American Tiles about my project request.</label>
+          <div class="agreement-field full-field" role="radiogroup" aria-labelledby="terms-label">
+            <span id="terms-label">Terms and Conditions <span class="required-star" aria-hidden="true">*</span></span>
+            <label><input type="radio" name="termsAndConditions" value="Agree" required aria-required="true"> Agree</label>
+            <label><input type="radio" name="termsAndConditions" value="Disagree"> Disagree</label>
+          </div>
           <p class="form-message" role="status" aria-live="polite"></p>
           <button type="submit">Free Estimate</button>
         </form>

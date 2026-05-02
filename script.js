@@ -317,7 +317,7 @@ if (quoteSection && quoteHeading && quickQuoteBar) {
 const quoteForm = document.querySelector('.quote-form');
 const quoteFormMessage = quoteForm?.querySelector('.form-message');
 
-const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
+const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'preferredDate', 'projectName', 'projectType', 'serviceNeeded', 'message'];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const fireLeadConversion = () => {
@@ -363,6 +363,15 @@ const validateQuoteForm = () => {
     return false;
   }
 
+  const termsFields = quoteForm?.querySelectorAll('input[name="termsAndConditions"]') ?? [];
+  const termsValue = quoteForm?.elements.namedItem('termsAndConditions')?.value;
+  const termsAccepted = termsValue === 'Agree';
+  termsFields.forEach((field) => field.setAttribute('aria-invalid', String(!termsAccepted)));
+  if (!termsAccepted) {
+    setQuoteFormMessage('Please agree to the Terms and Conditions.');
+    return false;
+  }
+
   if (!isValid) {
     setQuoteFormMessage('Please complete all required fields.');
   }
@@ -374,6 +383,11 @@ quoteForm?.addEventListener('input', (event) => {
   const field = event.target;
   if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement || field instanceof HTMLSelectElement) {
     field.setAttribute('aria-invalid', 'false');
+    if (field instanceof HTMLInputElement && field.name === 'termsAndConditions') {
+      quoteForm?.querySelectorAll('input[name="termsAndConditions"]').forEach((radio) => {
+        radio.setAttribute('aria-invalid', 'false');
+      });
+    }
   }
   clearQuoteFormMessage();
 });
@@ -390,6 +404,13 @@ quoteForm?.addEventListener('submit', async (event) => {
   clearQuoteFormMessage();
 
   const payload = Object.fromEntries(new FormData(quoteForm).entries());
+  payload.contactConsent = payload.termsAndConditions === 'Agree';
+  payload.message = [
+    `Preferred Date: ${payload.preferredDate}`,
+    `Project Name: ${payload.projectName}`,
+    '',
+    payload.message,
+  ].join('\n');
 
   try {
     const response = await fetch('/api/lead', {
