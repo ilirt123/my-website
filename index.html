@@ -578,13 +578,14 @@
 
   </main>
 
-  <form class="quick-quote-bar" aria-label="Quick quote form">
-    <label>First Name<input type="text"></label>
-    <label>Last Name<input type="text"></label>
-    <label>Phone<input type="tel"></label>
-    <label>Email<input type="email"></label>
-    <label>ZIP Code<input type="text"></label>
+  <form class="quick-quote-bar" aria-label="Quick quote form" novalidate>
+    <label>First Name<input type="text" name="firstName" autocomplete="given-name" required aria-required="true"></label>
+    <label>Last Name<input type="text" name="lastName" autocomplete="family-name" required aria-required="true"></label>
+    <label>Phone<input type="tel" name="phone" autocomplete="tel" required aria-required="true"></label>
+    <label>Email<input type="email" name="email" autocomplete="email" required aria-required="true"></label>
+    <label>ZIP Code<input type="text" name="zipCode" autocomplete="postal-code" inputmode="numeric" required aria-required="true"></label>
     <button type="submit">Free Estimate</button>
+    <p class="quick-quote-message" role="status" aria-live="polite"></p>
   </form>
 
   <div class="image-lightbox" aria-hidden="true" role="dialog" aria-label="Expanded project photo">

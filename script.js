@@ -300,7 +300,7 @@ window.addEventListener('resize', () => {
 });
 
 const quoteSection = document.querySelector('#quote');
-const quoteHeading = document.querySelector('#quote .quote-copy h2');
+const quoteHeading = document.querySelector('#quote .quote-map-card h2, #quote .quote-copy h2, #quote .quote-copy h3');
 const quickQuoteBar = document.querySelector('.quick-quote-bar');
 
 if (quoteSection && quoteHeading && quickQuoteBar) {
@@ -312,11 +312,6 @@ if (quoteSection && quoteHeading && quickQuoteBar) {
   );
 
   quoteObserver.observe(quoteHeading);
-
-  quickQuoteBar.addEventListener('submit', (event) => {
-    event.preventDefault();
-    quoteSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
 }
 
 const quoteForm = document.querySelector('.quote-form');
@@ -412,6 +407,102 @@ quoteForm?.addEventListener('submit', async (event) => {
     quoteForm.reset();
   } catch (error) {
     setQuoteFormMessage('Sorry, your request could not be sent. Please call us at 734-657-7965.');
+  } finally {
+    submitButton?.removeAttribute('disabled');
+    if (submitButton) submitButton.textContent = originalButtonText;
+  }
+});
+
+const quickQuoteMessage = quickQuoteBar?.querySelector('.quick-quote-message');
+const quickQuoteRequiredFields = ['firstName', 'lastName', 'phone', 'email', 'zipCode'];
+
+const setQuickQuoteMessage = (message, type = 'error') => {
+  if (!quickQuoteMessage) return;
+  quickQuoteMessage.textContent = message;
+  quickQuoteMessage.className = `quick-quote-message visible ${type}`;
+};
+
+const clearQuickQuoteMessage = () => {
+  if (!quickQuoteMessage) return;
+  quickQuoteMessage.textContent = '';
+  quickQuoteMessage.className = 'quick-quote-message';
+};
+
+const getQuickQuoteField = (name) => quickQuoteBar?.elements.namedItem(name);
+
+const validateQuickQuoteForm = () => {
+  let isValid = true;
+
+  quickQuoteRequiredFields.forEach((name) => {
+    const field = getQuickQuoteField(name);
+    const value = field?.value?.trim() ?? '';
+
+    if (!value) {
+      field?.setAttribute('aria-invalid', 'true');
+      isValid = false;
+    } else {
+      field?.setAttribute('aria-invalid', 'false');
+    }
+  });
+
+  const emailField = getQuickQuoteField('email');
+  const email = emailField?.value?.trim() ?? '';
+  if (email && !emailPattern.test(email)) {
+    emailField?.setAttribute('aria-invalid', 'true');
+    setQuickQuoteMessage('Please enter a valid email address.');
+    return false;
+  }
+
+  if (!isValid) {
+    setQuickQuoteMessage('Please complete all required fields.');
+  }
+
+  return isValid;
+};
+
+quickQuoteBar?.addEventListener('input', (event) => {
+  const field = event.target;
+  if (field instanceof HTMLInputElement) {
+    field.setAttribute('aria-invalid', 'false');
+  }
+  clearQuickQuoteMessage();
+});
+
+quickQuoteBar?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  if (!quickQuoteBar || !validateQuickQuoteForm()) return;
+
+  const submitButton = quickQuoteBar.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton?.textContent ?? '';
+  submitButton?.setAttribute('disabled', 'true');
+  if (submitButton) submitButton.textContent = 'Sending...';
+  clearQuickQuoteMessage();
+
+  const payload = {
+    ...Object.fromEntries(new FormData(quickQuoteBar).entries()),
+    projectType: 'Bathroom',
+    serviceNeeded: 'Bathroom',
+    message: 'Quick quote request from top form',
+    hearAbout: 'Website',
+  };
+
+  try {
+    const response = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error('Quick quote request failed');
+    }
+
+    fireLeadConversion();
+    setQuickQuoteMessage('Thank you! Your request was sent.', 'success');
+    quickQuoteBar.reset();
+  } catch (error) {
+    setQuickQuoteMessage('Sorry, your request could not be sent. Please call us at 734-657-7965.');
   } finally {
     submitButton?.removeAttribute('disabled');
     if (submitButton) submitButton.textContent = originalButtonText;
