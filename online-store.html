@@ -55,9 +55,7 @@
     }
 
     .store-header-inner,
-    .store-hero,
-    .store-shell,
-    .store-frame-wrap {
+    .store-hero {
       width: min(1180px, 100%);
       margin: 0 auto;
     }
@@ -159,9 +157,11 @@
     .store-main { padding: 0 7vw 70px; }
 
     .store-shell {
+      width: min(1400px, 100%);
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
-      gap: 28px;
+      grid-template-columns: 230px minmax(0, 1fr) 330px;
+      gap: 22px;
       align-items: start;
     }
 
@@ -376,37 +376,36 @@
       position: sticky;
       top: 20px;
       display: grid;
-      gap: 18px;
-      max-height: calc(100vh - 40px);
-      overflow: auto;
+      max-height: none;
+      overflow: visible;
     }
 
     .category-helper {
-      padding: 18px;
+      padding: 14px;
       display: grid;
-      gap: 14px;
+      gap: 10px;
     }
 
     .category-helper h2 {
       margin: 0;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
-      font-size: 20px;
+      font-size: 17px;
       text-transform: uppercase;
     }
 
     .category-helper input {
       width: 100%;
-      min-height: 44px;
+      min-height: 40px;
       border: 1px solid #9fb0c4;
-      padding: 10px 12px;
+      padding: 9px 10px;
       color: var(--text);
       background: #fff;
     }
 
     .category-menu {
       display: grid;
-      gap: 8px;
+      gap: 5px;
     }
 
     .category-menu a {
@@ -417,9 +416,9 @@
       border: 1px solid var(--line);
       background: #fff;
       color: var(--navy);
-      padding: 11px 12px;
+      padding: 8px 10px;
       font-family: "Montserrat", sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       text-decoration: none;
       text-transform: uppercase;
@@ -437,6 +436,8 @@
     }
 
     .cart-panel {
+      position: sticky;
+      top: 20px;
       padding: 20px;
       display: grid;
       gap: 18px;
@@ -535,42 +536,6 @@
     .store-message.success { border-left-color: var(--green); background: #f2fbf6; color: var(--green); }
     .submit-order:disabled { opacity: .62; cursor: not-allowed; }
 
-    .fallback-section { padding: 0 7vw 74px; }
-
-    .store-frame-wrap {
-      background: #fff;
-      border-top: 6px solid var(--red);
-      box-shadow: 0 22px 60px rgba(0, 40, 104, .14);
-      padding: 18px;
-    }
-
-    .fallback-head {
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: end;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .fallback-head h2 {
-      margin: 0;
-      color: var(--navy);
-      font-family: "Montserrat", sans-serif;
-      font-size: 24px;
-      text-transform: uppercase;
-    }
-
-    .fallback-head p { margin: 6px 0 0; color: var(--muted); }
-
-    .store-frame {
-      width: 100%;
-      height: 900px;
-      border: 0;
-      display: block;
-      background: #fff;
-    }
-
     .product-lightbox {
       position: fixed;
       inset: 0;
@@ -663,13 +628,15 @@
       font-size: 25px;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       .store-shell { grid-template-columns: 1fr; }
       .store-side-panel {
         position: static;
         max-height: none;
         overflow: visible;
       }
+
+      .cart-panel { position: static; }
 
       .category-helper {
         position: sticky;
@@ -710,7 +677,7 @@
       .store-hero { padding: 48px 22px 32px; }
       .store-actions { align-items: stretch; flex-direction: column; }
       .store-button { width: 100%; }
-      .store-main, .fallback-section { padding-left: 22px; padding-right: 22px; }
+      .store-main { padding-left: 22px; padding-right: 22px; }
       .category-sections { padding: 12px; }
       .product-grid { grid-template-columns: 1fr; }
       .product-card { grid-template-rows: 210px auto; }
@@ -728,8 +695,6 @@
       .category-section h2 { font-size: 20px; }
       .category-helper { margin: 0 -22px; border-left: 0; border-right: 0; }
       .category-helper h2 { font-size: 16px; }
-      .store-frame-wrap { padding: 10px; }
-      .store-frame { height: 760px; }
       .product-lightbox { padding: 22px; }
       .product-lightbox-close { top: 10px; right: 10px; }
       .product-lightbox-nav { width: 38px; height: 54px; font-size: 36px; }
@@ -781,23 +746,6 @@
             <input id="product-search" type="search" placeholder="Search materials..." autocomplete="off">
             <div id="category-menu" class="category-menu"></div>
           </nav>
-
-          <aside class="store-panel cart-panel" aria-label="Order summary">
-            <h2>Order Summary</h2>
-            <div id="cart-list" class="cart-list">
-              <p class="cart-empty">Select materials to build your order request.</p>
-            </div>
-            <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
-            <form id="material-order-form" class="order-form" novalidate>
-              <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
-              <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
-              <label>Email<input type="email" name="email" autocomplete="email" required></label>
-              <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
-              <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
-              <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
-              <button class="submit-order" type="submit">Submit Material Order</button>
-            </form>
-          </aside>
         </div>
 
         <div class="store-panel">
@@ -809,36 +757,26 @@
           </div>
           <div id="product-grid" class="category-sections"></div>
         </div>
-      </div>
-    </section>
 
-    <section class="fallback-section" aria-label="Original Jotform store">
-      <div class="store-frame-wrap">
-        <div class="fallback-head">
-          <div>
-            <h2>Original Store Form</h2>
-            <p>Use this backup form if you prefer the original Jotform checkout experience.</p>
+        <aside class="store-panel cart-panel" aria-label="Order summary">
+          <h2>Order Summary</h2>
+          <div id="cart-list" class="cart-list">
+            <p class="cart-empty">Select materials to build your order request.</p>
           </div>
-          <a class="store-button secondary" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Original Jotform Store</a>
-        </div>
-        <iframe class="store-frame" src="https://app.jotform.com/251587225256158" width="100%" height="900" frameborder="0" title="All American Tiles original online store form"></iframe>
+          <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
+          <form id="material-order-form" class="order-form" novalidate>
+            <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
+            <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
+            <label>Email<input type="email" name="email" autocomplete="email" required></label>
+            <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
+            <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
+            <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
+            <button class="submit-order" type="submit">Submit Material Order</button>
+          </form>
+        </aside>
       </div>
     </section>
   </main>
-
-  <section class="bottom-disclaimer">
-    <h3>IMPORTANT INFORMATION:</h3>
-
-    <ol>
-      <li>Product availability, colors, and sizes may vary based on supplier stock.</li>
-      <li>Product photos are provided for reference and may look slightly different in person.</li>
-      <li>All prices shown are material estimates and may need final confirmation.</li>
-      <li>Delivery, pickup, installation, taxes, and extra materials are confirmed separately.</li>
-      <li class="highlight">
-        All material orders must be reviewed and confirmed by All American Tiles before purchase.
-      </li>
-    </ol>
-  </section>
 
   <div id="product-lightbox" class="product-lightbox" aria-hidden="true" role="dialog" aria-label="Expanded product image">
     <button class="product-lightbox-close" type="button" aria-label="Close product image">&times;</button>
