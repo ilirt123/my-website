@@ -854,12 +854,12 @@
             <p class="cart-empty">Select materials to build your order request.</p>
           </div>
           <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
-          <form id="material-order-form" class="order-form" novalidate>
-            <label>Customer Name<input type="text" name="customerName" autocomplete="name" required></label>
-            <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
-            <label>Email<input type="email" name="email" autocomplete="email" required></label>
-            <label>Address / ZIP Code<input type="text" name="addressZip" autocomplete="street-address" required></label>
-            <label>Notes<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..."></textarea></label>
+          <form id="material-order-form" class="order-form">
+            <label>Customer Name *<input type="text" name="customerName" autocomplete="name" required></label>
+            <label>Phone *<input type="tel" name="phone" autocomplete="tel" required></label>
+            <label>Email *<input type="email" name="email" autocomplete="email" required></label>
+            <label>Address / ZIP Code *<input type="text" name="addressZip" autocomplete="street-address" required></label>
+            <label>Notes *<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..." required></textarea></label>
             <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
             <button class="submit-order" type="submit">Submit Material Order</button>
           </form>
@@ -6967,8 +6967,6 @@
     const cart = new Map();
 
     const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const helperCategories = [
       { id: 'vanities', label: 'Vanities' },
       { id: 'bathroom-floor-tiles', label: 'Bathroom Floor Tiles' },
@@ -7393,9 +7391,19 @@
 
     orderForm.addEventListener('input', clearStoreMessage);
 
+    orderForm.addEventListener('invalid', () => {
+      setStoreMessage('Please complete all required fields before submitting your order.');
+    }, true);
+
     orderForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       clearStoreMessage();
+
+      if (!orderForm.checkValidity()) {
+        setStoreMessage('Please complete all required fields before submitting your order.');
+        orderForm.reportValidity();
+        return;
+      }
 
       const formData = new FormData(orderForm);
       const customerName = String(formData.get('customerName') || '').trim();
@@ -7405,17 +7413,7 @@
       const notes = String(formData.get('notes') || '').trim();
 
       if (!cart.size) {
-        setStoreMessage('Please add at least one material to your order.');
-        return;
-      }
-
-      if (!customerName || !phone || !email || !addressZip) {
-        setStoreMessage('Please complete your name, phone, email, and address / ZIP code.');
-        return;
-      }
-
-      if (!emailPattern.test(email)) {
-        setStoreMessage('Please enter a valid email address.');
+        setStoreMessage('Please select at least one material before submitting your order.');
         return;
       }
 
