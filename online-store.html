@@ -250,22 +250,21 @@
     }
 
     .category-toggle {
-      border: 1px solid var(--line);
-      background: #fff;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      background: transparent;
       color: var(--navy);
-      padding: 7px 10px;
-      font-family: "Montserrat", sans-serif;
-      font-size: 11px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
       font-weight: 900;
-      text-transform: uppercase;
+      line-height: 1;
       cursor: pointer;
     }
 
-    .category-toggle:hover,
-    .category-toggle[aria-expanded="false"] {
-      border-color: var(--red);
-      color: var(--red);
-    }
+    .category-toggle:hover { color: var(--red); }
 
     .category-products[hidden] { display: none; }
 
@@ -7062,7 +7061,8 @@
       if (products) products.hidden = shouldCollapse;
       if (toggle) {
         toggle.setAttribute('aria-expanded', String(!shouldCollapse));
-        toggle.textContent = shouldCollapse ? 'Show' : 'Hide';
+        toggle.textContent = shouldCollapse ? '\u203A' : '\u2304';
+        toggle.setAttribute('aria-label', shouldCollapse ? 'Expand category' : 'Collapse category');
       }
     };
 
@@ -7196,7 +7196,7 @@
             <h2>${category.label}</h2>
             <div class="category-section-meta">
               <span class="category-section-count">${categoryProducts.length} items</span>
-              <button class="category-toggle" type="button" data-category-toggle="${category.id}" aria-controls="${productsId}" aria-expanded="${String(!isCollapsed)}">${isCollapsed ? 'Show' : 'Hide'}</button>
+              <button class="category-toggle" type="button" data-category-toggle="${category.id}" aria-controls="${productsId}" aria-expanded="${String(!isCollapsed)}" aria-label="${isCollapsed ? 'Expand category' : 'Collapse category'}">${isCollapsed ? '&#8250;' : '&#8964;'}</button>
             </div>
           </div>
         `;
