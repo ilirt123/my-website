@@ -266,7 +266,7 @@
 
     .category-toggle:hover { color: var(--red); }
 
-    .category-products[hidden] { display: none; }
+    .category-products.is-collapsed { display: none; }
 
     .category-empty {
       margin: 0;
@@ -6995,6 +6995,7 @@
     let lightboxProduct = null;
     let lightboxImageIndex = 0;
     let lightboxZoom = 1;
+    let activeCategoryId = helperCategories[0].id;
 
     const priceValue = (product) => typeof product.priceValue === 'number' ? product.priceValue : null;
     const priceLabel = (product) => priceValue(product) === null ? 'Request quote' : money.format(priceValue(product));
@@ -7042,6 +7043,7 @@
     const formatUnitPrice = (unitPrice) => unitPrice === null ? 'Request quote' : money.format(unitPrice);
 
     const setActiveCategory = (categoryId) => {
+      activeCategoryId = categoryId;
       document.querySelectorAll('[data-category-link]').forEach((link) => {
         link.classList.toggle('active', link.dataset.categoryLink === categoryId);
       });
@@ -7058,7 +7060,7 @@
       } else {
         collapsedCategories.delete(categoryId);
       }
-      if (products) products.hidden = shouldCollapse;
+      if (products) products.classList.toggle('is-collapsed', shouldCollapse);
       if (toggle) {
         toggle.setAttribute('aria-expanded', String(!shouldCollapse));
         toggle.textContent = shouldCollapse ? '\u203A' : '\u2304';
@@ -7205,7 +7207,7 @@
         productsWrap.id = productsId;
         productsWrap.className = 'category-products';
         productsWrap.dataset.categoryProducts = category.id;
-        productsWrap.hidden = isCollapsed;
+        productsWrap.classList.toggle('is-collapsed', isCollapsed);
 
         if (categoryProducts.length) {
           const grid = document.createElement('div');
@@ -7222,12 +7224,6 @@
         }
 
         section.appendChild(productsWrap);
-        section.querySelector('[data-category-toggle]').addEventListener('click', () => {
-          const isActive = categoryMenu.querySelector(`[data-category-link="${category.id}"]`)?.classList.contains('active');
-          const shouldCollapse = !productsWrap.hidden;
-          if (isActive && shouldCollapse) return;
-          setCategoryCollapsed(category.id, shouldCollapse);
-        });
         productGrid.appendChild(section);
       });
 
@@ -7235,6 +7231,21 @@
       renderCategoryMenu(visibleProducts);
       observeCategorySections();
     };
+
+    productGrid.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-category-toggle]');
+      if (!toggle || !productGrid.contains(toggle)) return;
+      const categoryId = toggle.dataset.categoryToggle;
+      const section = toggle.closest('[data-category-section]');
+      const products = section?.querySelector('[data-category-products]');
+      if (!categoryId || !section || !products) return;
+      const shouldCollapse = !products.classList.contains('is-collapsed');
+      if (categoryId === activeCategoryId && shouldCollapse) {
+        setCategoryCollapsed(categoryId, false);
+        return;
+      }
+      setCategoryCollapsed(categoryId, shouldCollapse);
+    });
 
     const observeCategorySections = () => {
       if (sectionObserver) sectionObserver.disconnect();
