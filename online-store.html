@@ -567,6 +567,15 @@
       text-transform: uppercase;
     }
 
+    .required-star {
+      color: #c8242f !important;
+      font-weight: 900;
+    }
+
+    .order-form .required-star {
+      color: #c8242f !important;
+    }
+
     .order-form input,
     .order-form textarea {
       width: 100%;
@@ -855,11 +864,11 @@
           </div>
           <div class="cart-total"><span>Estimated Total</span><span id="cart-total">$0.00</span></div>
           <form id="material-order-form" class="order-form">
-            <label>Customer Name *<input type="text" name="customerName" autocomplete="name" required></label>
-            <label>Phone *<input type="tel" name="phone" autocomplete="tel" required></label>
-            <label>Email *<input type="email" name="email" autocomplete="email" required></label>
-            <label>Address / ZIP Code *<input type="text" name="addressZip" autocomplete="street-address" required></label>
-            <label>Notes *<textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..." required></textarea></label>
+            <label><span>Customer Name <span class="required-star">*</span></span><input type="text" name="customerName" autocomplete="name" required></label>
+            <label><span>Phone <span class="required-star">*</span></span><input type="tel" name="phone" autocomplete="tel" required></label>
+            <label><span>Email <span class="required-star">*</span></span><input type="email" name="email" autocomplete="email" required></label>
+            <label><span>Address / ZIP Code <span class="required-star">*</span></span><input type="text" name="addressZip" autocomplete="street-address" required></label>
+            <label><span>Notes <span class="required-star">*</span></span><textarea name="notes" placeholder="Product colors, pickup/delivery questions, project details..." required></textarea></label>
             <p id="store-message" class="store-message" role="status" aria-live="polite"></p>
             <button class="submit-order" type="submit">Submit Material Order</button>
           </form>
