@@ -313,6 +313,32 @@
       line-height: 1.55;
     }
 
+    .product-details[hidden] { display: none; }
+
+    .product-details {
+      display: grid;
+      gap: 10px;
+    }
+
+    .details-toggle {
+      justify-self: start;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      padding: 9px 12px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .details-toggle:hover,
+    .details-toggle[aria-expanded="true"] {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
     .product-price {
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
@@ -7024,6 +7050,7 @@
       card.className = 'product-card';
       const quantityOption = getProductQuantityOption(product) || { label: 'Quantity', values: [{ value: '1', label: '1' }] };
       const detailOptions = getProductDetailOptions(product);
+      const detailsId = `product-details-${product.id}`;
       card.innerHTML = `
         <button class="product-image-button" type="button" aria-label="View larger image of ${escapeHTML(product.name)}">
           <img class="product-image" src="${escapeHTML(product.image)}" alt="${escapeHTML(product.name)}" loading="lazy">
@@ -7031,11 +7058,14 @@
         <div class="product-card-body">
           <span class="product-category">${escapeHTML(product.category)}</span>
           <h2>${escapeHTML(product.name)}</h2>
-          <p>${escapeHTML(truncate(product.description))}</p>
           <strong class="product-price" data-product-price>${escapeHTML(priceLabel(product))}</strong>
+          <button class="details-toggle" type="button" aria-expanded="false" aria-controls="${escapeHTML(detailsId)}">View Details</button>
+          <div class="product-details" id="${escapeHTML(detailsId)}" hidden>
+            <p>${escapeHTML(truncate(product.description))}</p>
+            ${detailOptions.length ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index)).join('')}</div>` : ''}
+          </div>
           <div class="product-options">
             ${renderOptionSelect(quantityOption, 0, 'quantity')}
-            ${detailOptions.map((option, index) => renderOptionSelect(option, index)).join('')}
           </div>
           <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(priceValue(product))}</span></div>
           <div class="product-controls">
@@ -7044,6 +7074,14 @@
         </div>
       `;
       card.querySelector('.product-image-button').addEventListener('click', () => openProductLightbox(product.id, 0));
+      const detailsToggle = card.querySelector('.details-toggle');
+      const productDetails = card.querySelector('.product-details');
+      detailsToggle.addEventListener('click', () => {
+        const isExpanded = detailsToggle.getAttribute('aria-expanded') === 'true';
+        detailsToggle.setAttribute('aria-expanded', String(!isExpanded));
+        detailsToggle.textContent = isExpanded ? 'View Details' : 'Hide Details';
+        productDetails.hidden = isExpanded;
+      });
       card.querySelectorAll('select').forEach((select) => {
         select.addEventListener('change', () => updateProductSubtotal(card, product));
       });
