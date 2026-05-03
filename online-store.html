@@ -207,15 +207,13 @@
       padding: 18px;
     }
 
-    .category-section {
+    .store-category {
       scroll-margin-top: 24px;
       display: grid;
       gap: 14px;
     }
 
-    .category-section.is-hidden { display: none; }
-
-    .category-section-head {
+    .store-category-header {
       display: flex;
       align-items: end;
       justify-content: space-between;
@@ -224,15 +222,7 @@
       padding-bottom: 10px;
     }
 
-    .category-section-meta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .category-section h2 {
+    .store-category h2 {
       margin: 0;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
@@ -240,7 +230,8 @@
       text-transform: uppercase;
     }
 
-    .category-section-count {
+    .store-category-count {
+      margin: 6px 0 0;
       color: var(--red);
       font-family: "Montserrat", sans-serif;
       font-size: 12px;
@@ -250,23 +241,27 @@
     }
 
     .category-toggle {
-      width: 30px;
-      height: 30px;
       border: 0;
       background: transparent;
-      color: var(--navy);
-      padding: 0;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
+      color: #002868;
+      font-size: 32px;
       font-weight: 900;
-      line-height: 1;
       cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
     }
 
-    .category-toggle:hover { color: var(--red); }
+    .category-toggle:hover {
+      color: #c8242f;
+    }
 
-    .category-products.is-collapsed { display: none; }
+    .store-category.is-collapsed .category-toggle {
+      transform: none;
+    }
+
+    .store-category-products[hidden] {
+      display: none !important;
+    }
 
     .category-empty {
       margin: 0;
@@ -777,7 +772,7 @@
       }
       .store-toolbar select { width: 100%; flex: none; }
       .mobile-category-select { display: block; }
-      .category-section h2 { font-size: 20px; }
+      .store-category h2 { font-size: 20px; }
       .category-helper { margin: 0 -22px; border-left: 0; border-right: 0; }
       .category-helper h2 { font-size: 16px; }
       .product-lightbox { padding: 22px; }
@@ -6961,7 +6956,6 @@
     const productLightboxNext = productLightbox.querySelector('.product-lightbox-next');
     const storeBackToTop = document.querySelector('#store-back-to-top');
     const cart = new Map();
-    const collapsedCategories = new Set();
 
     const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -7047,31 +7041,48 @@
       document.querySelectorAll('[data-category-link]').forEach((link) => {
         link.classList.toggle('active', link.dataset.categoryLink === categoryId);
       });
-      setCategoryCollapsed(categoryId, false);
+      document.querySelectorAll('.store-category').forEach((category) => {
+        const isActive = category.dataset.categorySection === categoryId;
+        category.classList.toggle('is-active', isActive);
+        if (isActive) {
+          const toggle = category.querySelector('.category-toggle');
+          const products = category.querySelector('.store-category-products');
+          category.classList.remove('is-collapsed');
+          if (products) products.hidden = false;
+          if (toggle) {
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.setAttribute('aria-label', `Collapse ${getCategoryLabel(categoryId)}`);
+            toggle.textContent = '\u2304';
+          }
+        }
+      });
     };
 
-    const setCategoryCollapsed = (categoryId, shouldCollapse) => {
-      const section = document.querySelector(`[data-category-section="${categoryId}"]`);
-      if (!section) return;
-      const products = section.querySelector('[data-category-products]');
-      const toggle = section.querySelector('[data-category-toggle]');
-      if (shouldCollapse) {
-        collapsedCategories.add(categoryId);
-      } else {
-        collapsedCategories.delete(categoryId);
-      }
-      if (products) products.classList.toggle('is-collapsed', shouldCollapse);
-      if (toggle) {
-        toggle.setAttribute('aria-expanded', String(!shouldCollapse));
-        toggle.textContent = shouldCollapse ? '\u203A' : '\u2304';
-        toggle.setAttribute('aria-label', shouldCollapse ? 'Expand category' : 'Collapse category');
-      }
+    const bindCategoryCollapseControls = () => {
+      document.querySelectorAll(".store-category").forEach((category) => {
+        const toggle = category.querySelector(".category-toggle");
+        const products = category.querySelector(".store-category-products");
+
+        if (!toggle || !products) return;
+
+        toggle.addEventListener("click", () => {
+          if (category.classList.contains("is-active")) {
+            return;
+          }
+
+          const isCollapsed = category.classList.toggle("is-collapsed");
+          products.hidden = isCollapsed;
+          toggle.setAttribute("aria-expanded", String(!isCollapsed));
+          toggle.textContent = isCollapsed ? "\u203A" : "\u2304";
+          const categoryLabel = category.querySelector("h2")?.textContent || "category";
+          toggle.setAttribute("aria-label", isCollapsed ? `Expand ${categoryLabel}` : `Collapse ${categoryLabel}`);
+        });
+      });
     };
 
     const scrollToCategory = (categoryId) => {
-      const target = document.getElementById(categoryId);
+      const target = document.getElementById(`category-${categoryId}`);
       if (!target) return;
-      setCategoryCollapsed(categoryId, false);
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveCategory(categoryId);
     };
@@ -7095,7 +7106,7 @@
 
       helperCategories.forEach((category) => {
         const link = document.createElement('a');
-        link.href = `#${category.id}`;
+        link.href = `#category-${category.id}`;
         link.dataset.categoryLink = category.id;
         if (!counts[category.id]) link.classList.add('is-empty');
         link.textContent = category.label;
@@ -7188,26 +7199,24 @@
       helperCategories.forEach((category) => {
         const categoryProducts = visibleProducts.filter((product) => product.storeCategory === category.id);
         const section = document.createElement('section');
-        section.id = category.id;
-        section.className = 'category-section';
+        section.id = `category-${category.id}`;
+        section.className = 'store-category';
         section.dataset.categorySection = category.id;
         const productsId = `${category.id}-products`;
-        const isCollapsed = collapsedCategories.has(category.id);
         section.innerHTML = `
-          <div class="category-section-head">
-            <h2>${category.label}</h2>
-            <div class="category-section-meta">
-              <span class="category-section-count">${categoryProducts.length} items</span>
-              <button class="category-toggle category-collapse-toggle" type="button" data-category-toggle="${category.id}" aria-controls="${productsId}" aria-expanded="${String(!isCollapsed)}" aria-label="${isCollapsed ? 'Expand category' : 'Collapse category'}">${isCollapsed ? '&#8250;' : '&#8964;'}</button>
+          <div class="store-category-header">
+            <div>
+              <h2>${category.label}</h2>
+              <p class="store-category-count">${categoryProducts.length} items</p>
             </div>
+            <button class="category-toggle" type="button" aria-expanded="true" aria-label="Collapse ${category.label}">&#8964;</button>
           </div>
         `;
 
         const productsWrap = document.createElement('div');
         productsWrap.id = productsId;
-        productsWrap.className = 'category-products';
+        productsWrap.className = 'store-category-products';
         productsWrap.dataset.categoryProducts = category.id;
-        productsWrap.classList.toggle('is-collapsed', isCollapsed);
 
         if (categoryProducts.length) {
           const grid = document.createElement('div');
@@ -7230,24 +7239,8 @@
       productCount.textContent = `${visibleProducts.length} Materials`;
       renderCategoryMenu(visibleProducts);
       bindCategoryCollapseControls();
+      setActiveCategory(activeCategoryId);
       observeCategorySections();
-    };
-
-    const bindCategoryCollapseControls = () => {
-      document.querySelectorAll('.category-collapse-toggle').forEach((button) => {
-        button.addEventListener('click', () => {
-          const categorySection = button.closest('[data-category-section]');
-          const products = categorySection?.querySelector('.category-products');
-          const categoryId = categorySection?.dataset.categorySection;
-          if (!categorySection || !products || !categoryId) return;
-          const shouldCollapse = !products.classList.contains('is-collapsed');
-          if (categoryId === activeCategoryId && shouldCollapse) {
-            setCategoryCollapsed(categoryId, false);
-            return;
-          }
-          setCategoryCollapsed(categoryId, shouldCollapse);
-        });
-      });
     };
 
     const observeCategorySections = () => {
