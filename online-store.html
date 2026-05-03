@@ -220,6 +220,18 @@
       gap: 16px;
       border-bottom: 3px solid var(--line);
       padding-bottom: 10px;
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .store-category-header::-webkit-details-marker {
+      display: none;
+    }
+
+    .store-category-header::marker {
+      content: "";
     }
 
     .store-category h2 {
@@ -241,50 +253,23 @@
     }
 
     .category-toggle {
-      border: 0;
-      background: transparent;
       color: #002868;
       font-size: 32px;
       font-weight: 900;
-      cursor: pointer;
       line-height: 1;
       padding: 4px 8px;
+    }
+
+    .category-toggle::before {
+      content: "\203A";
+    }
+
+    .store-category[open] .category-toggle::before {
+      content: "\25BE";
     }
 
     .category-toggle:hover {
       color: #c8242f;
-    }
-
-    .store-category.is-collapsed .category-toggle {
-      transform: none;
-    }
-
-    .store-category-products[hidden],
-    .store-category.is-collapsed .store-category-products {
-      display: none !important;
-    }
-
-    .category-toggle,
-    .store-category-header button {
-      pointer-events: auto !important;
-      cursor: pointer !important;
-      border: 0;
-      background: transparent;
-      color: #002868;
-      font-size: 32px;
-      font-weight: 900;
-      line-height: 1;
-      padding: 4px 8px;
-    }
-
-    .category-toggle:hover,
-    .store-category-header button:hover {
-      color: #c8242f;
-    }
-
-    .store-category-header {
-      position: relative;
-      z-index: 2;
     }
 
     .category-empty {
@@ -6980,7 +6965,6 @@
     const productLightboxNext = productLightbox.querySelector('.product-lightbox-next');
     const storeBackToTop = document.querySelector('#store-back-to-top');
     const cart = new Map();
-    const collapsedCategories = new Set();
 
     const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -7063,32 +7047,19 @@
 
     const setActiveCategory = (categoryId) => {
       activeCategoryId = categoryId;
-      const activeCategoryName = getCategoryLabel(categoryId);
-      collapsedCategories.delete(activeCategoryName);
       document.querySelectorAll('[data-category-link]').forEach((link) => {
         link.classList.toggle('active', link.dataset.categoryLink === categoryId);
       });
       document.querySelectorAll('.store-category').forEach((category) => {
         const isActive = category.dataset.categorySection === categoryId;
         category.classList.toggle('is-active', isActive);
-        if (isActive) {
-          const toggle = category.querySelector('.category-toggle');
-          const products = category.querySelector('.store-category-products');
-          category.classList.remove('is-collapsed');
-          if (products) products.hidden = false;
-          if (toggle) {
-            toggle.setAttribute('aria-expanded', 'true');
-            toggle.setAttribute('aria-label', `Collapse ${getCategoryLabel(categoryId)}`);
-            toggle.textContent = '\u2304';
-          }
-        }
       });
     };
 
     const scrollToCategory = (categoryId) => {
       const target = document.getElementById(`category-${categoryId}`);
       if (!target) return;
-      collapsedCategories.delete(getCategoryLabel(categoryId));
+      target.open = true;
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveCategory(categoryId);
     };
@@ -7206,28 +7177,25 @@
         const categoryProducts = visibleProducts.filter((product) => product.storeCategory === category.id);
         const categoryName = category.label;
         const isActiveCategory = category.id === activeCategoryId;
-        const isCollapsed = collapsedCategories.has(categoryName) && !isActiveCategory;
-        const section = document.createElement('section');
+        const section = document.createElement('details');
         section.id = `category-${category.id}`;
-        section.className = `store-category${isActiveCategory ? ' is-active' : ''}${isCollapsed ? ' is-collapsed' : ''}`;
+        section.className = `store-category${isActiveCategory ? ' is-active' : ''}`;
         section.dataset.categorySection = category.id;
         section.dataset.category = categoryName;
-        const productsId = `${category.id}-products`;
+        section.open = true;
         section.innerHTML = `
-          <div class="store-category-header">
+          <summary class="store-category-header">
             <div>
               <h2>${categoryName}</h2>
               <p class="store-category-count">${categoryProducts.length} items</p>
             </div>
-            <button class="category-toggle" type="button" aria-expanded="${String(!isCollapsed)}" aria-label="${isCollapsed ? `Expand ${categoryName}` : `Collapse ${categoryName}`}" data-category="${categoryName}">${isCollapsed ? '&#8250;' : '&#8964;'}</button>
-          </div>
+            <span class="category-toggle" aria-hidden="true"></span>
+          </summary>
         `;
 
         const productsWrap = document.createElement('div');
-        productsWrap.id = productsId;
         productsWrap.className = 'store-category-products';
         productsWrap.dataset.categoryProducts = category.id;
-        productsWrap.hidden = isCollapsed;
 
         if (categoryProducts.length) {
           const grid = document.createElement('div');
@@ -7252,54 +7220,6 @@
       setActiveCategory(activeCategoryId);
       observeCategorySections();
     };
-
-    if (productGrid) {
-      productGrid.addEventListener("click", (event) => {
-        const toggle = event.target.closest(".category-toggle");
-        if (!toggle || !productGrid.contains(toggle)) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const categorySection = toggle.closest(".store-category");
-        if (!categorySection) return;
-
-        const products = categorySection.querySelector(".store-category-products");
-        if (!products) return;
-
-        const categoryName =
-          categorySection.dataset.category ||
-          toggle.dataset.category ||
-          categorySection.querySelector("h2")?.textContent?.trim();
-        const isActiveCategory =
-          categorySection.classList.contains("is-active") ||
-          categorySection.dataset.categorySection === activeCategoryId ||
-          categoryName === getCategoryLabel(activeCategoryId);
-
-        if (isActiveCategory) {
-          products.hidden = false;
-          categorySection.classList.remove("is-collapsed");
-          toggle.textContent = "\u2304";
-          toggle.setAttribute("aria-expanded", "true");
-          if (categoryName) collapsedCategories.delete(categoryName);
-          return;
-        }
-
-        const shouldCollapse = !categorySection.classList.contains("is-collapsed");
-        categorySection.classList.toggle("is-collapsed", shouldCollapse);
-        products.hidden = shouldCollapse;
-        toggle.textContent = shouldCollapse ? "\u203A" : "\u2304";
-        toggle.setAttribute("aria-expanded", String(!shouldCollapse));
-
-        if (categoryName) {
-          if (shouldCollapse) {
-            collapsedCategories.add(categoryName);
-          } else {
-            collapsedCategories.delete(categoryName);
-          }
-        }
-      });
-    }
 
     const observeCategorySections = () => {
       if (sectionObserver) sectionObserver.disconnect();
@@ -7570,174 +7490,6 @@
       initializeStore();
     }
   </script>
-  <script>
-(() => {
-  const OPEN_ARROW = "⌄";
-  const CLOSED_ARROW = "›";
 
-  window.__AAT_COLLAPSED_CATEGORIES = window.__AAT_COLLAPSED_CATEGORIES || new Set();
-  const collapsedCategories = window.__AAT_COLLAPSED_CATEGORIES;
-
-  const getGrid = () => document.getElementById("product-grid");
-
-  const getCategoryKey = (category, toggle) => {
-    return (
-      category?.dataset?.category ||
-      toggle?.dataset?.category ||
-      category?.querySelector("h2")?.textContent?.trim() ||
-      ""
-    );
-  };
-
-  const getProductsContainer = (category) => {
-    if (!category) return null;
-
-    return (
-      category.querySelector(":scope > .store-category-products") ||
-      category.querySelector(":scope > .category-products") ||
-      category.querySelector(":scope > .product-grid") ||
-      category.querySelector(".store-category-products") ||
-      category.querySelector(".category-products") ||
-      category.querySelector(".product-grid")
-    );
-  };
-
-  const isActiveCategory = (category) => {
-    return (
-      category.classList.contains("is-active") ||
-      category.classList.contains("active") ||
-      category.getAttribute("aria-current") === "true"
-    );
-  };
-
-  const getToggleButton = (category) => {
-    return (
-      category.querySelector(".category-toggle") ||
-      category.querySelector("[data-category-toggle]") ||
-      category.querySelector(".store-category-header button")
-    );
-  };
-
-  const setCategoryState = (category, shouldCollapse) => {
-    const products = getProductsContainer(category);
-    const toggle = getToggleButton(category);
-
-    if (!products) return;
-
-    if (isActiveCategory(category)) {
-      shouldCollapse = false;
-    }
-
-    category.classList.toggle("is-collapsed", shouldCollapse);
-
-    if (shouldCollapse) {
-      if (!products.hidden) products.setAttribute("hidden", "");
-      if (products.style.display !== "none") products.style.display = "none";
-    } else {
-      if (products.hidden) products.removeAttribute("hidden");
-      if (products.style.display) products.style.display = "";
-    }
-
-    if (toggle) {
-      const expanded = String(!shouldCollapse);
-      const arrow = shouldCollapse ? CLOSED_ARROW : OPEN_ARROW;
-      if (toggle.getAttribute("aria-expanded") !== expanded) {
-        toggle.setAttribute("aria-expanded", expanded);
-      }
-      if (toggle.textContent !== arrow) {
-        toggle.textContent = arrow;
-      }
-    }
-  };
-
-  const syncCollapsedState = () => {
-    const grid = getGrid();
-    if (!grid) return;
-
-    grid.querySelectorAll(".store-category").forEach((category) => {
-      const key = getCategoryKey(category, getToggleButton(category));
-      const shouldCollapse = key && collapsedCategories.has(key);
-      setCategoryState(category, shouldCollapse);
-    });
-  };
-
-  const bindCollapseHandler = () => {
-    const grid = getGrid();
-    if (!grid || grid.dataset.aatCollapseBound === "true") return;
-
-    grid.dataset.aatCollapseBound = "true";
-
-    grid.addEventListener(
-      "click",
-      (event) => {
-        const toggle = event.target.closest(
-          ".category-toggle, [data-category-toggle], .store-category-header button"
-        );
-
-        if (!toggle || !grid.contains(toggle)) return;
-
-        const category = toggle.closest(".store-category");
-        if (!category || !grid.contains(category)) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        const products = getProductsContainer(category);
-        if (!products) return;
-
-        const key = getCategoryKey(category, toggle);
-
-        if (isActiveCategory(category)) {
-          if (key) collapsedCategories.delete(key);
-          setCategoryState(category, false);
-          return;
-        }
-
-        const shouldCollapse =
-          !category.classList.contains("is-collapsed") && !products.hidden;
-
-        if (key) {
-          if (shouldCollapse) {
-            collapsedCategories.add(key);
-          } else {
-            collapsedCategories.delete(key);
-          }
-        }
-
-        setCategoryState(category, shouldCollapse);
-      },
-      true
-    );
-
-    syncCollapsedState();
-  };
-
-  const startCollapseFix = () => {
-    bindCollapseHandler();
-    syncCollapsedState();
-
-    const grid = getGrid();
-    if (!grid) return;
-
-    const observer = new MutationObserver(() => {
-      bindCollapseHandler();
-      syncCollapsedState();
-    });
-
-    observer.observe(grid, {
-      childList: true,
-      subtree: true
-    });
-
-    console.log("AAT store category collapse fix loaded");
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startCollapseFix);
-  } else {
-    startCollapseFix();
-  }
-})();
-  </script>
 </body>
 </html>
