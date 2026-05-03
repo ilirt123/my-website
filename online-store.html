@@ -7198,7 +7198,7 @@
             <h2>${category.label}</h2>
             <div class="category-section-meta">
               <span class="category-section-count">${categoryProducts.length} items</span>
-              <button class="category-toggle" type="button" data-category-toggle="${category.id}" aria-controls="${productsId}" aria-expanded="${String(!isCollapsed)}" aria-label="${isCollapsed ? 'Expand category' : 'Collapse category'}">${isCollapsed ? '&#8250;' : '&#8964;'}</button>
+              <button class="category-toggle category-collapse-toggle" type="button" data-category-toggle="${category.id}" aria-controls="${productsId}" aria-expanded="${String(!isCollapsed)}" aria-label="${isCollapsed ? 'Expand category' : 'Collapse category'}">${isCollapsed ? '&#8250;' : '&#8964;'}</button>
             </div>
           </div>
         `;
@@ -7229,23 +7229,26 @@
 
       productCount.textContent = `${visibleProducts.length} Materials`;
       renderCategoryMenu(visibleProducts);
+      bindCategoryCollapseControls();
       observeCategorySections();
     };
 
-    productGrid.addEventListener('click', (event) => {
-      const toggle = event.target.closest('[data-category-toggle]');
-      if (!toggle || !productGrid.contains(toggle)) return;
-      const categoryId = toggle.dataset.categoryToggle;
-      const section = toggle.closest('[data-category-section]');
-      const products = section?.querySelector('[data-category-products]');
-      if (!categoryId || !section || !products) return;
-      const shouldCollapse = !products.classList.contains('is-collapsed');
-      if (categoryId === activeCategoryId && shouldCollapse) {
-        setCategoryCollapsed(categoryId, false);
-        return;
-      }
-      setCategoryCollapsed(categoryId, shouldCollapse);
-    });
+    const bindCategoryCollapseControls = () => {
+      document.querySelectorAll('.category-collapse-toggle').forEach((button) => {
+        button.addEventListener('click', () => {
+          const categorySection = button.closest('[data-category-section]');
+          const products = categorySection?.querySelector('.category-products');
+          const categoryId = categorySection?.dataset.categorySection;
+          if (!categorySection || !products || !categoryId) return;
+          const shouldCollapse = !products.classList.contains('is-collapsed');
+          if (categoryId === activeCategoryId && shouldCollapse) {
+            setCategoryCollapsed(categoryId, false);
+            return;
+          }
+          setCategoryCollapsed(categoryId, shouldCollapse);
+        });
+      });
+    };
 
     const observeCategorySections = () => {
       if (sectionObserver) sectionObserver.disconnect();
