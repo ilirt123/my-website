@@ -429,6 +429,23 @@
       text-transform: uppercase;
     }
 
+    .add-to-cart-button {
+      width: 100%;
+      border: 0;
+      background: var(--red);
+      color: #fff;
+      padding: 13px 18px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .add-to-cart-button:hover {
+      background: var(--red-dark);
+    }
+
     .store-side-panel {
       position: sticky;
       top: 20px;
@@ -637,7 +654,7 @@
       place-items: center;
       background: #fff;
       box-shadow: 0 24px 70px rgba(0, 0, 0, .45);
-      overflow: hidden;
+      overflow: visible;
     }
 
     .product-lightbox img {
@@ -672,36 +689,39 @@
     .product-lightbox-nav {
       position: absolute;
       top: 50%;
-      z-index: 3;
+      z-index: 5;
       width: 34px;
       height: 42px;
+      border: 0;
       border-radius: 10px;
-      background: rgba(255, 255, 255, .88);
+      background: rgba(255, 255, 255, .92);
       color: #002868;
       font-size: 28px;
+      font-weight: 900;
       line-height: 1;
-      box-shadow: 0 8px 22px rgba(0, 40, 104, .22);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(0, 40, 104, .24);
       transform: translateY(-50%);
-      transition: transform .18s ease, background .18s ease, color .18s ease;
       animation: lightboxArrowPulse 1.8s ease-in-out infinite;
     }
 
     .product-lightbox-nav:hover {
       background: #c8242f;
       color: #fff;
-      transform: translateY(-50%) scale(1.06);
     }
 
-    .product-lightbox-prev { left: 18px; }
-    .product-lightbox-next { right: 18px; }
+    .product-lightbox-prev { left: -46px; }
+    .product-lightbox-next { right: -46px; }
     .product-lightbox-nav[hidden] { display: none; }
 
     @keyframes lightboxArrowPulse {
       0%, 100% {
-        box-shadow: 0 8px 22px rgba(0, 40, 104, .18);
+        box-shadow: 0 8px 22px rgba(0, 40, 104, .20);
       }
       50% {
-        box-shadow: 0 10px 28px rgba(200, 36, 47, .32);
+        box-shadow: 0 10px 30px rgba(200, 36, 47, .35);
       }
     }
 
@@ -824,6 +844,8 @@
       .product-lightbox { padding: 22px; }
       .product-lightbox-close { top: 10px; right: 10px; }
       .product-lightbox-nav { width: 32px; height: 40px; font-size: 26px; }
+      .product-lightbox-prev { left: 8px; }
+      .product-lightbox-next { right: 8px; }
       .store-back-to-top { right: 16px; bottom: 18px; width: 44px; height: 44px; }
     }
   </style>
@@ -909,15 +931,15 @@
 
   <div id="product-lightbox" class="product-lightbox" aria-hidden="true" role="dialog" aria-label="Expanded product image">
     <button class="product-lightbox-close" type="button" aria-label="Close product image">&times;</button>
-    <button class="product-lightbox-nav product-lightbox-prev" type="button" aria-label="Previous product image">&lsaquo;</button>
     <div class="product-lightbox-frame">
+      <button class="product-lightbox-nav product-lightbox-prev" type="button" aria-label="Previous product image">&lsaquo;</button>
       <img src="" alt="">
+      <button class="product-lightbox-nav product-lightbox-next" type="button" aria-label="Next product image">&rsaquo;</button>
       <div class="product-lightbox-zoom" aria-label="Image zoom controls">
         <button type="button" data-zoom="out" aria-label="Zoom out">-</button>
         <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
       </div>
     </div>
-    <button class="product-lightbox-nav product-lightbox-next" type="button" aria-label="Next product image">&rsaquo;</button>
   </div>
 
   <button id="store-back-to-top" class="store-back-to-top" type="button" aria-label="Back to top">&uarr;</button>
@@ -7428,8 +7450,11 @@
     const updateCartFromProductCard = (card, product) => {
       const quantity = getSelectedQuantity(card, product);
       if (quantity <= 0) {
-        cart.delete(product.id);
-        renderCart();
+        if (isSquareFootProduct(product)) {
+          setStoreMessage('Please enter square feet before adding this tile to your cart.');
+        } else {
+          setStoreMessage('Please select a quantity before adding this item to your cart.');
+        }
         return;
       }
 
@@ -7443,6 +7468,11 @@
         unit: getProductUnit(product)
       });
       clearStoreMessage();
+      renderCart();
+    };
+
+    const removeCartItemForProduct = (productId) => {
+      cart.delete(productId);
       renderCart();
     };
 
@@ -7494,6 +7524,7 @@
             ${renderQuantityControl(product, quantityOption)}
           </div>
           <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(isSquareFootProduct(product) ? 0 : priceValue(product))}</span></div>
+          <button class="add-to-cart-button" type="button">Add to Cart</button>
         </div>
       `;
       card.querySelector('.product-image-button').addEventListener('click', () => openProductLightbox(product.id, 0));
@@ -7506,12 +7537,16 @@
         productDetails.hidden = isExpanded;
       });
       card.querySelectorAll('select, input').forEach((field) => {
-        const syncCart = () => {
+        const syncSubtotal = () => {
           updateProductSubtotal(card, product);
-          updateCartFromProductCard(card, product);
+          if (getSelectedQuantity(card, product) <= 0) removeCartItemForProduct(product.id);
         };
-        field.addEventListener('change', syncCart);
-        field.addEventListener('input', syncCart);
+        field.addEventListener('change', syncSubtotal);
+        field.addEventListener('input', syncSubtotal);
+      });
+      card.querySelector('.add-to-cart-button').addEventListener('click', () => {
+        updateProductSubtotal(card, product);
+        updateCartFromProductCard(card, product);
       });
       syncProductCardFromCart(card, product);
       return card;
