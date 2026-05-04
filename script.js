@@ -7,19 +7,29 @@ const siteSearch = document.querySelector('#site-search');
 const siteSearchInput = document.querySelector('#site-search-input');
 const siteSearchResults = document.querySelector('.site-search-results');
 const siteSearchClose = document.querySelector('.site-search-close');
+const submenuToggles = document.querySelectorAll('.submenu-toggle, .more-menu-toggle');
 
 const setMenuButtonState = (isOpen) => {
   button?.setAttribute('aria-expanded', String(isOpen));
   button?.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
 };
 
+const closeSubmenus = (container = document) => {
+  container.querySelectorAll('.mobile-nav-group.open, .more-nav-group.open').forEach((group) => {
+    group.classList.remove('open');
+    group.querySelector('.submenu-toggle, .more-menu-toggle')?.setAttribute('aria-expanded', 'false');
+  });
+};
+
 const closePrimaryMenu = () => {
   nav?.classList.remove('open');
+  if (nav) closeSubmenus(nav);
   setMenuButtonState(false);
 };
 
 const closeMoreMenu = () => {
   rightMenu?.classList.remove('open');
+  if (rightMenu) closeSubmenus(rightMenu);
   moreToggle?.setAttribute('aria-expanded', 'false');
   setMenuButtonState(false);
 };
@@ -29,12 +39,14 @@ button?.addEventListener('click', (event) => {
     event.stopPropagation();
     nav?.classList.remove('open');
     const isOpen = rightMenu?.classList.toggle('open') ?? false;
+    if (isOpen && rightMenu) closeSubmenus(rightMenu);
     setMenuButtonState(isOpen);
     return;
   }
 
   closeMoreMenu();
   const isOpen = nav?.classList.toggle('open') ?? false;
+  if (isOpen && nav) closeSubmenus(nav);
   setMenuButtonState(isOpen);
 });
 
@@ -61,7 +73,19 @@ window.addEventListener('resize', () => {
 moreToggle?.addEventListener('click', (event) => {
   event.stopPropagation();
   const isOpen = rightMenu.classList.toggle('open');
+  if (isOpen) closeSubmenus(rightMenu);
   moreToggle.setAttribute('aria-expanded', String(isOpen));
+});
+
+submenuToggles.forEach((toggle) => {
+  toggle.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const group = toggle.closest('.mobile-nav-group, .more-nav-group');
+    if (!group) return;
+    const isOpen = group.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
 });
 
 document.querySelectorAll('.more-menu a').forEach((link) => {

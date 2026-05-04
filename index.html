@@ -42,16 +42,25 @@
     </nav>
     <nav id="primary-navigation" class="nav mobile-header-menu header-card-menu" aria-label="Primary navigation">
       <a href="#home">Home</a>
-      <div class="mobile-service-group">
-        <a href="#services">Services</a>
-        <div class="mobile-service-submenu">
+      <div class="mobile-nav-group mobile-service-group">
+        <button class="submenu-toggle" type="button" aria-expanded="false">Services</button>
+        <div class="mobile-submenu mobile-service-submenu">
           <a href="#full-bathroom">Bathroom</a>
           <a href="#half-bathroom">Half Bathroom</a>
           <a href="#shower">Shower</a>
-          <a href="#bathroom-gallery">Recent Projects Gallery</a>
+          <a href="#bathroom-gallery">Projects Gallery</a>
         </div>
       </div>
-      <a href="#process">Process</a>
+      <div class="mobile-nav-group mobile-process-group">
+        <button class="submenu-toggle" type="button" aria-expanded="false">Process</button>
+        <div class="mobile-submenu mobile-process-submenu">
+          <a href="#process-consultation">Consultation</a>
+          <a href="#process-selection">Selection</a>
+          <a href="#process-preparation">Preparation</a>
+          <a href="#process-installation">Installation</a>
+        </div>
+      </div>
+      <a href="#bathroom-gallery">Projects Gallery</a>
       <a href="#about">About</a>
       <a href="#quote">Contact</a>
       <a href="https://www.allamericantilesmi.com/online-store" target="_blank" rel="noopener">Online Store</a>
@@ -79,18 +88,29 @@
         </svg>
       </a>
       <nav id="more-navigation" class="more-menu" aria-label="More navigation">
-        <a href="#services">Services</a>
-        <a class="more-sub-link" href="#service-bathroom">Bathroom</a>
-        <a class="more-sub-link" href="#service-kitchen">Kitchen</a>
-        <a class="more-sub-link" href="#service-flooring">Flooring</a>
-        <a class="more-sub-link" href="#service-fireplace">Fireplace</a>
-        <a href="#process">Process</a>
-        <a class="more-sub-link" href="#process-consultation">Consultation</a>
-        <a class="more-sub-link" href="#process-selection">Selection</a>
-        <a class="more-sub-link" href="#process-preparation">Preparation</a>
-        <a class="more-sub-link" href="#process-installation">Installation</a>
+        <a href="#home">Home</a>
+        <div class="more-nav-group">
+          <button class="more-menu-toggle" type="button" aria-expanded="false">Services</button>
+          <div class="more-submenu">
+            <a class="more-sub-link" href="#full-bathroom">Bathroom</a>
+            <a class="more-sub-link" href="#half-bathroom">Half Bathroom</a>
+            <a class="more-sub-link" href="#shower">Shower</a>
+            <a class="more-sub-link" href="#bathroom-gallery">Projects Gallery</a>
+          </div>
+        </div>
+        <div class="more-nav-group">
+          <button class="more-menu-toggle" type="button" aria-expanded="false">Process</button>
+          <div class="more-submenu">
+            <a class="more-sub-link" href="#process-consultation">Consultation</a>
+            <a class="more-sub-link" href="#process-selection">Selection</a>
+            <a class="more-sub-link" href="#process-preparation">Preparation</a>
+            <a class="more-sub-link" href="#process-installation">Installation</a>
+          </div>
+        </div>
+        <a href="#bathroom-gallery">Projects Gallery</a>
         <a href="#about">About</a>
         <a href="#quote">Contact</a>
+        <a href="https://www.allamericantilesmi.com/online-store" target="_blank" rel="noopener">Online Store</a>
       </nav>
     </div>
   </header>
@@ -234,16 +254,16 @@
         </div>
       </div>
 
-      <div class="section bathroom-process-section">
+      <div id="process" class="section bathroom-process-section">
         <div class="section-head">
           <h2>Our Bathroom Remodeling Process</h2>
           <div class="line"></div>
         </div>
         <div class="bathroom-process-list">
-          <article><span>01</span><h3>Consultation</h3></article>
-          <article><span>02</span><h3>Planning &amp; Material Selection</h3></article>
-          <article><span>03</span><h3>Preparation &amp; Waterproofing</h3></article>
-          <article><span>04</span><h3>Tile Installation</h3></article>
+          <article id="process-consultation"><span>01</span><h3>Consultation</h3></article>
+          <article id="process-selection"><span>02</span><h3>Planning &amp; Material Selection</h3></article>
+          <article id="process-preparation"><span>03</span><h3>Preparation &amp; Waterproofing</h3></article>
+          <article id="process-installation"><span>04</span><h3>Tile Installation</h3></article>
           <article><span>05</span><h3>Final Details &amp; Cleanup</h3></article>
         </div>
       </div>
