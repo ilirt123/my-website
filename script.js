@@ -8,6 +8,51 @@ const siteSearchInput = document.querySelector('#site-search-input');
 const siteSearchResults = document.querySelector('.site-search-results');
 const siteSearchClose = document.querySelector('.site-search-close');
 const submenuToggles = document.querySelectorAll('.submenu-toggle, .more-menu-toggle');
+const hero = document.querySelector('.hero');
+
+const heroImages = [
+  'assets/bathroom-gallery-01.jpg',
+  'assets/bathroom-gallery-03.jpg',
+  'assets/bathroom-gallery-04.jpg',
+  'assets/bathroom-gallery-05.jpg',
+  'assets/bathroom-gallery-10.jpg',
+  'assets/bathroom-gallery-12.jpg',
+  'assets/bathroom-gallery-14.jpg',
+  'assets/bathroom-gallery-18.jpg',
+  'assets/bathroom-gallery-24.jpg',
+  'assets/bathroom-gallery-31.jpeg'
+];
+
+const setupHeroRotation = () => {
+  if (!hero || heroImages.length < 2) return;
+
+  heroImages.forEach((src) => {
+    const image = new Image();
+    image.src = src;
+  });
+
+  const layers = [document.createElement('div'), document.createElement('div')];
+  layers.forEach((layer, index) => {
+    layer.className = `hero-bg-layer${index === 0 ? ' active' : ''}`;
+    layer.style.backgroundImage = `url("${heroImages[index]}")`;
+    hero.prepend(layer);
+  });
+
+  let imageIndex = 0;
+  let activeLayer = 0;
+
+  window.setInterval(() => {
+    imageIndex = (imageIndex + 1) % heroImages.length;
+    activeLayer = activeLayer === 0 ? 1 : 0;
+    const nextLayer = layers[activeLayer];
+    const previousLayer = layers[activeLayer === 0 ? 1 : 0];
+    nextLayer.style.backgroundImage = `url("${heroImages[imageIndex]}")`;
+    nextLayer.classList.add('active');
+    previousLayer.classList.remove('active');
+  }, 5000);
+};
+
+setupHeroRotation();
 
 const setMenuButtonState = (isOpen) => {
   button?.setAttribute('aria-expanded', String(isOpen));
