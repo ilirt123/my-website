@@ -7527,7 +7527,7 @@
       return selectedPrice ?? priceValue(product);
     };
 
-    const parseTileCoverageSqFt = (sizeValue) => {
+    const parseTileAreaSqFt = (sizeValue) => {
       const text = String(sizeValue || '').toLowerCase();
       const match = text.match(/(\d+(?:\.\d+)?)\s*(?:in\.?|inch|inches)?\s*x\s*(\d+(?:\.\d+)?)/i);
       if (!match) return null;
@@ -7537,6 +7537,24 @@
       if (!width || !height) return null;
 
       return (width * height) / 144;
+    };
+
+    const calculateEstimatedPieces = (projectSqFt, tileSqFt, useContingency) => {
+      const sqFt = Math.ceil(Number(projectSqFt || 0));
+
+      if (!sqFt || !tileSqFt) return null;
+
+      const basePieces = Math.ceil(sqFt / tileSqFt);
+      const contingencyPieces = useContingency ? Math.ceil(basePieces * 0.15) : 0;
+
+      return basePieces + contingencyPieces;
+    };
+
+    const calculateTileSubtotal = (projectSqFt, pricePerSqFt, useContingency) => {
+      const sqFt = Math.ceil(Number(projectSqFt || 0));
+      const effectiveSqFt = useContingency ? sqFt * 1.15 : sqFt;
+
+      return effectiveSqFt * Number(pricePerSqFt || 0);
     };
 
     const getSelectedTileSize = (productCard) => {
@@ -7562,9 +7580,9 @@
     };
 
     const getTileSqFt = (product, selectedSize) => {
-      return parseTileCoverageSqFt(selectedSize)
-        || parseTileCoverageSqFt(product.name)
-        || parseTileCoverageSqFt(product.description);
+      return parseTileAreaSqFt(selectedSize)
+        || parseTileAreaSqFt(product.name)
+        || parseTileAreaSqFt(product.description);
     };
 
     const getTileQuantityUnit = (product) => {
@@ -7589,12 +7607,7 @@
 
     const getEstimatedTilePieces = (product, selectedSize, squareFeet, useContingency) => {
       const tileSqFt = getTileSqFt(product, selectedSize);
-      const projectSqFt = Math.ceil(Number(squareFeet || 0));
-      const effectiveSqFt = useContingency ? projectSqFt * 1.15 : projectSqFt;
-
-      if (!tileSqFt || !effectiveSqFt) return null;
-
-      return Math.ceil(effectiveSqFt / tileSqFt);
+      return calculateEstimatedPieces(squareFeet, tileSqFt, useContingency);
     };
 
     const getTileCalculation = (card, product, options = {}) => {
@@ -7608,7 +7621,9 @@
       const effectiveSqFt = contingency ? projectSqFt * 1.15 : projectSqFt;
       const tileSqFt = getTileSqFt(product, selectedSize);
       const estimatedPieces = getEstimatedTilePieces(product, selectedSize, projectSqFt, contingency);
-      const lineTotal = unitPrice === null || !effectiveSqFt ? null : unitPrice * effectiveSqFt;
+      const lineTotal = unitPrice === null || !effectiveSqFt
+        ? null
+        : calculateTileSubtotal(projectSqFt, unitPrice, contingency);
       const tileUnit = getTileQuantityUnit(product);
 
       return {
