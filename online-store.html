@@ -456,6 +456,37 @@
       outline-offset: -2px;
     }
 
+    .tile-estimate {
+      display: grid;
+      gap: 6px;
+      border: 1px solid #d8e2ee;
+      background: #f7faff;
+      padding: 10px;
+      color: var(--navy);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .tile-estimate[hidden] {
+      display: none;
+    }
+
+    .tile-estimate-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tile-estimate-row span:first-child {
+      font-weight: 800;
+    }
+
+    .tile-estimate-row strong {
+      color: var(--text);
+      font-weight: 900;
+      text-align: right;
+    }
+
     .product-subtotal {
       display: flex;
       justify-content: space-between;
@@ -7382,8 +7413,103 @@
       return selectedPrice ?? priceValue(product);
     };
 
+    const parseTileCoverageSqFt = (sizeValue) => {
+      const text = String(sizeValue || '').toLowerCase();
+      const match = text.match(/(\d+(?:\.\d+)?)\s*(?:in\.?|inch|inches)?\s*x\s*(\d+(?:\.\d+)?)/i);
+      if (!match) return null;
+
+      const width = Number(match[1]);
+      const height = Number(match[2]);
+      if (!width || !height) return null;
+
+      return (width * height) / 144;
+    };
+
+    const getSelectedSizeValue = (selectedOptions = {}) => {
+      return selectedOptions.Size
+        || selectedOptions.size
+        || selectedOptions['Tile Size']
+        || Object.entries(selectedOptions).find(([label]) => normalizeSearchText(label).includes('size'))?.[1]
+        || '';
+    };
+
+    const getTileCoverageSqFt = (product, selectedOptions) => {
+      const selectedSize = getSelectedSizeValue(selectedOptions);
+      return parseTileCoverageSqFt(selectedSize)
+        || parseTileCoverageSqFt(product.name)
+        || parseTileCoverageSqFt(product.description);
+    };
+
+    const getEstimatedTileQuantity = (product, selectedOptions, squareFeet) => {
+      const coverage = getTileCoverageSqFt(product, selectedOptions);
+      const sqFt = Number(squareFeet || 0);
+
+      if (!coverage || !sqFt) return null;
+
+      return Math.ceil(sqFt / coverage);
+    };
+
+    const getTileQuantityUnit = (product) => {
+      const productText = `${product.name || ''} ${product.description || ''}`.toLowerCase();
+      const isSheet = productText.includes('mosaic') || productText.includes('mesh-mounted');
+      return isSheet
+        ? { singular: 'sheet', plural: 'sheets', label: 'Estimated Sheet Quantity' }
+        : { singular: 'tile', plural: 'tiles', label: 'Estimated Tile Quantity' };
+    };
+
+    const formatSquareFeet = (squareFeet) => {
+      return `${Number(squareFeet || 0).toLocaleString('en-US', { maximumFractionDigits: 2 })} sq ft`;
+    };
+
+    const formatCoverage = (coverage) => {
+      if (!coverage) return 'N/A';
+      return `${Number(coverage.toFixed(2)).toLocaleString('en-US', { maximumFractionDigits: 2 })} sq ft`;
+    };
+
+    const formatCoveragePerUnit = (coverage, unit) => {
+      return coverage ? `${formatCoverage(coverage)} per ${unit}` : 'N/A';
+    };
+
+    const getTileEstimateDetails = (product, selectedOptions, squareFeet) => {
+      const coverage = getTileCoverageSqFt(product, selectedOptions);
+      const estimatedQuantity = getEstimatedTileQuantity(product, selectedOptions, squareFeet);
+      const unit = getTileQuantityUnit(product);
+
+      return {
+        coverage,
+        estimatedQuantity,
+        unit,
+        estimateLabel: unit.label
+      };
+    };
+
+    const buildCartEntry = (card, product) => {
+      const quantity = getSelectedQuantity(card, product);
+      const selections = getSelectedOptions(card, product);
+      const unitPrice = getSelectedUnitPrice(card, product);
+      const unit = getProductUnit(product);
+      const entry = {
+        product,
+        quantity,
+        selections,
+        unitPrice,
+        unit
+      };
+
+      if (isSquareFootProduct(product)) {
+        const tileEstimate = getTileEstimateDetails(product, selections, quantity);
+        entry.squareFeet = quantity;
+        entry.coverage = tileEstimate.coverage;
+        entry.estimatedTileQuantity = tileEstimate.estimatedQuantity;
+        entry.tileQuantityUnit = tileEstimate.unit;
+        entry.tileEstimateLabel = tileEstimate.estimateLabel;
+      }
+
+      return entry;
+    };
+
     const formatQuantity = (quantity, unit) => {
-      if (unit === 'sq ft') return `${Number(quantity).toLocaleString('en-US', { maximumFractionDigits: 2 })} sq ft`;
+      if (unit === 'sq ft') return formatSquareFeet(quantity);
       return `Qty ${Math.max(1, parseInt(quantity, 10) || 1)}`;
     };
 
@@ -7457,11 +7583,23 @@
 
     const updateProductSubtotal = (card, product) => {
       const quantity = getSelectedQuantity(card, product);
+      const selections = getSelectedOptions(card, product);
       const unitPrice = getSelectedUnitPrice(card, product);
       const subtotal = card.querySelector('[data-product-subtotal]');
       const price = card.querySelector('[data-product-price]');
+      const tileEstimate = card.querySelector('[data-tile-estimate]');
       if (price) price.textContent = formatUnitPrice(unitPrice, product);
       if (subtotal) subtotal.textContent = unitPrice === null ? 'Quote needed' : money.format(unitPrice * quantity);
+      if (tileEstimate && isSquareFootProduct(product)) {
+        const estimateDetails = getTileEstimateDetails(product, selections, quantity);
+        const quantityUnit = estimateDetails.unit;
+        const estimatedQuantity = estimateDetails.estimatedQuantity
+          ? `${estimateDetails.estimatedQuantity.toLocaleString('en-US')} ${quantityUnit.plural}`
+          : 'N/A';
+        tileEstimate.querySelector('[data-tile-estimate-label]').textContent = estimateDetails.estimateLabel;
+        tileEstimate.querySelector('[data-tile-estimate-value]').textContent = estimatedQuantity;
+        tileEstimate.querySelector('[data-tile-coverage-value]').textContent = formatCoveragePerUnit(estimateDetails.coverage, quantityUnit.singular);
+      }
     };
 
     const syncProductCardFromCart = (card, product) => {
@@ -7493,20 +7631,12 @@
         if (isSquareFootProduct(product)) {
           setStoreMessage('Please enter square feet before adding this tile to your cart.');
         } else {
-          setStoreMessage('Please select a quantity before adding this item to your cart.');
+          setStoreMessage('Please choose a quantity before adding this item to your cart.');
         }
         return;
       }
 
-      const selections = getSelectedOptions(card, product);
-      const unitPrice = getSelectedUnitPrice(card, product);
-      cart.set(product.id, {
-        product,
-        quantity,
-        selections,
-        unitPrice,
-        unit: getProductUnit(product)
-      });
+      cart.set(product.id, buildCartEntry(card, product));
       clearStoreMessage();
       renderCart();
     };
@@ -7516,9 +7646,9 @@
       renderCart();
     };
 
-    const renderOptionSelect = (option, index, role = 'detail') => {
+    const renderOptionSelect = (option, index, product, role = 'detail') => {
       const options = option.values.map((value) => {
-        const priceSuffix = typeof value.priceValue === 'number' ? ` - ${money.format(value.priceValue)}` : '';
+        const priceSuffix = typeof value.priceValue === 'number' ? ` - ${formatPriceWithUnit(value.priceValue, getProductUnit(product))}` : '';
         return `<option value="${escapeHTML(value.value || value.label)}">${escapeHTML(value.label)}${escapeHTML(priceSuffix)}</option>`;
       }).join('');
       const label = option.label || 'Option';
@@ -7527,7 +7657,7 @@
 
     const renderQuantityControl = (product, quantityOption) => {
       const isSquareFoot = isSquareFootProduct(product);
-      const label = isSquareFoot ? 'Quantity (sq ft)' : 'Quantity';
+      const label = isSquareFoot ? 'Square Feet Needed' : 'Quantity';
       const role = isSquareFoot ? 'square-footage' : 'quantity';
       return `
         <label class="product-option">${label}
@@ -7537,6 +7667,22 @@
             <button class="quantity-plus" type="button" aria-label="Increase ${isSquareFoot ? 'square feet' : 'quantity'}">+</button>
           </div>
         </label>
+      `;
+    };
+
+    const renderTileEstimate = (product) => {
+      if (!isSquareFootProduct(product)) return '';
+      return `
+        <div class="tile-estimate" data-tile-estimate>
+          <div class="tile-estimate-row">
+            <span data-tile-estimate-label>Estimated Tile Quantity</span>
+            <strong data-tile-estimate-value>N/A</strong>
+          </div>
+          <div class="tile-estimate-row">
+            <span>Coverage</span>
+            <strong data-tile-coverage-value>N/A</strong>
+          </div>
+        </div>
       `;
     };
 
@@ -7561,12 +7707,14 @@
           <button class="details-toggle" type="button" aria-expanded="false" aria-controls="${escapeHTML(detailsId)}">View Details</button>
           <div class="product-details" id="${escapeHTML(detailsId)}" hidden>
             <p>${escapeHTML(truncate(product.description))}</p>
-            ${detailOptions.length ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index)).join('')}</div>` : ''}
+            ${detailOptions.length && !isSquareFootProduct(product) ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index, product)).join('')}</div>` : ''}
           </div>
           <div class="product-options">
+            ${detailOptions.length && isSquareFootProduct(product) ? detailOptions.map((option, index) => renderOptionSelect(option, index, product)).join('') : ''}
             ${renderQuantityControl(product, quantityOption)}
           </div>
-          <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(isSquareFootProduct(product) ? 0 : priceValue(product))}</span></div>
+          ${renderTileEstimate(product)}
+          <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(0)}</span></div>
           <button class="add-to-cart-button" type="button">Add to Cart</button>
         </div>
       `;
@@ -7591,7 +7739,13 @@
       card.querySelectorAll('select, input').forEach((field) => {
         const syncSubtotal = () => {
           updateProductSubtotal(card, product);
-          if (getSelectedQuantity(card, product) <= 0) removeCartItemForProduct(product.id);
+          if (!cart.has(product.id)) return;
+          if (getSelectedQuantity(card, product) <= 0) {
+            removeCartItemForProduct(product.id);
+            return;
+          }
+          cart.set(product.id, buildCartEntry(card, product));
+          renderCart();
         };
         field.addEventListener('change', syncSubtotal);
         field.addEventListener('input', syncSubtotal);
@@ -7713,9 +7867,23 @@
             .map(([label, value]) => `${label}: ${value}`)
             .join(' | ');
           const unit = entry.unit || getProductUnit(entry.product);
+          const isTileEntry = unit === 'sq ft';
           const quantityLabel = formatQuantity(entry.quantity, unit);
+          const tileUnit = entry.tileQuantityUnit || getTileQuantityUnit(entry.product);
+          const tileQuantityLabel = entry.tileEstimateLabel || tileUnit.label;
+          const tileQuantity = entry.estimatedTileQuantity
+            ? `${entry.estimatedTileQuantity.toLocaleString('en-US')} ${tileUnit.plural}`
+            : 'N/A';
+          const tileSummary = isTileEntry
+            ? `
+              <small>Square Feet: ${formatSquareFeet(entry.squareFeet ?? entry.quantity)}</small>
+              <small>${tileQuantityLabel}: ${tileQuantity}</small>
+              <small>Coverage: ${formatCoveragePerUnit(entry.coverage, tileUnit.singular)}</small>
+            `
+            : '';
           item.innerHTML = `
-            <strong>${entry.product.name} &mdash; ${quantityLabel}</strong>
+            <strong>${entry.product.name}${isTileEntry ? '' : ` &mdash; ${quantityLabel}`}</strong>
+            ${tileSummary}
             <small>${formatUnitPrice(entry.unitPrice, entry.product)} - ${lineTotal}</small>
             ${selections ? `<small>${selections}</small>` : ''}
             <div class="cart-item-actions">
@@ -7734,6 +7902,14 @@
               return;
             }
             entry.quantity = newQuantity;
+            if (unit === 'sq ft') {
+              const tileEstimate = getTileEstimateDetails(entry.product, entry.selections, newQuantity);
+              entry.squareFeet = newQuantity;
+              entry.coverage = tileEstimate.coverage;
+              entry.estimatedTileQuantity = tileEstimate.estimatedQuantity;
+              entry.tileQuantityUnit = tileEstimate.unit;
+              entry.tileEstimateLabel = tileEstimate.estimateLabel;
+            }
             cart.set(cartKey, entry);
             resetProductFields(entry.product.id, entry.quantity);
             renderCart();
@@ -7775,7 +7951,13 @@
           .map(([label, value]) => `${label}: ${value}`)
           .join(' | ');
         const unit = entry.unit || getProductUnit(entry.product);
-        const amountLabel = unit === 'sq ft' ? `${entry.quantity} sq ft` : `Qty ${entry.quantity}`;
+        const tileUnit = entry.tileQuantityUnit || getTileQuantityUnit(entry.product);
+        const tileQuantity = entry.estimatedTileQuantity
+          ? `${entry.estimatedTileQuantity} ${tileUnit.plural}`
+          : 'N/A';
+        const amountLabel = unit === 'sq ft'
+          ? `Square Feet: ${formatSquareFeet(entry.squareFeet ?? entry.quantity)} | ${entry.tileEstimateLabel || tileUnit.label}: ${tileQuantity} | Coverage: ${formatCoveragePerUnit(entry.coverage, tileUnit.singular)}`
+          : `Qty ${entry.quantity}`;
         return `- ${entry.product.name} | Category: ${entry.product.category} | ${amountLabel} | Unit: ${formatUnitPrice(entry.unitPrice, entry.product)} | Line: ${lineTotal}${selections ? ` | ${selections}` : ''}`;
       }).join('\n');
       return items || 'No items selected';
