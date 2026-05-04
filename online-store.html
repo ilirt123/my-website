@@ -173,6 +173,45 @@
 
     .store-main { padding: 0 7vw 70px; }
 
+    .store-search-wide {
+      width: min(1400px, 100%);
+      margin: 0 auto 22px;
+    }
+
+    .store-search-wrap {
+      width: 100%;
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 14px 34px rgba(0, 40, 104, 0.08);
+      padding: 0 24px;
+    }
+
+    .store-search-icon {
+      width: 28px;
+      height: 28px;
+      fill: var(--navy);
+      flex: 0 0 auto;
+    }
+
+    .store-search-wrap input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .store-search-wrap input::placeholder {
+      color: #6f7d8d;
+    }
+
     .store-shell {
       width: min(1400px, 100%);
       margin: 0 auto;
@@ -743,15 +782,6 @@
       text-transform: uppercase;
     }
 
-    .category-helper input {
-      width: 100%;
-      min-height: 40px;
-      border: 1px solid #9fb0c4;
-      padding: 9px 10px;
-      color: var(--text);
-      background: #fff;
-    }
-
     .category-menu {
       display: grid;
       gap: 5px;
@@ -1173,6 +1203,18 @@
       .store-actions { align-items: center; flex-direction: column; }
       .store-button { width: min(360px, 100%); }
       .store-main { padding-left: 22px; padding-right: 22px; }
+      .store-search-wide { margin-bottom: 16px; }
+      .store-search-wrap {
+        min-height: 56px;
+        padding: 0 16px;
+        gap: 12px;
+        border-radius: 10px;
+      }
+      .store-search-icon {
+        width: 22px;
+        height: 22px;
+      }
+      .store-search-wrap input { font-size: 17px; }
       .category-sections { padding: 12px; }
       .product-grid { grid-template-columns: 1fr; }
       .product-card { grid-template-rows: 210px auto; }
@@ -1228,11 +1270,18 @@
     </section>
 
     <section id="custom-store" class="store-main" aria-label="Bathroom material products">
+      <div class="store-search-wide">
+        <label class="store-search-wrap" for="product-search">
+          <svg class="store-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.8 4a6.8 6.8 0 0 1 5.4 10.9l3.4 3.4-1.4 1.4-3.4-3.4A6.8 6.8 0 1 1 10.8 4Zm0 2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z"></path>
+          </svg>
+          <input id="product-search" type="search" placeholder="Search product, SKU, finish..." autocomplete="off">
+        </label>
+      </div>
       <div class="store-shell">
         <div class="store-side-panel">
           <nav class="store-panel category-helper" aria-label="Online store category menu">
             <h2>Find Materials</h2>
-            <input id="product-search" type="search" placeholder="Search materials..." autocomplete="off">
             <div id="category-menu" class="category-menu"></div>
           </nav>
         </div>
