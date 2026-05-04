@@ -161,9 +161,7 @@
     }
 
     .store-button { min-height: 52px; padding: 15px 28px; box-shadow: 0 16px 34px rgba(200, 36, 47, .24); }
-    .store-button.secondary { background: var(--navy); box-shadow: none; }
     .store-button:hover, .submit-order:hover { background: var(--red-dark); }
-    .store-button.secondary:hover { background: #001d4a; }
 
     .phone-link {
       color: var(--navy);
@@ -1266,7 +1264,6 @@
       <p class="store-subtitle">Order bathroom materials, tile accessories, and remodeling products through All American Tiles.</p>
       <div class="store-actions">
         <a class="store-button" href="#custom-store">Shop Materials</a>
-        <a class="store-button secondary" href="https://app.jotform.com/251587225256158" target="_blank" rel="noopener">Open Original Jotform Store</a>
         <a class="phone-link" href="tel:7346577965">Questions? Call 734-657-7965</a>
       </div>
     </section>
@@ -8279,8 +8276,8 @@
           const empty = document.createElement('p');
           empty.className = 'category-empty';
           empty.textContent = productSearch.value.trim()
-            ? 'No matching products in this category. Try a different search or open the original Jotform store below.'
-            : 'No products are currently listed in this category. Use the original Jotform store below or call 734-657-7965 for help finding this material.';
+            ? 'No matching products in this category. Try a different search or call 734-657-7965 for help finding this material.'
+            : 'No products are currently listed in this category. Call 734-657-7965 for help finding this material.';
           productsWrap.appendChild(empty);
         }
 
