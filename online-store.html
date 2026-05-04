@@ -831,9 +831,8 @@
     .cart-list { display: grid; gap: 12px; }
 
     .cart-item {
-      position: relative;
       border: 1px solid var(--line);
-      padding: 14px 54px 42px 14px;
+      padding: 14px;
       display: grid;
       gap: 8px;
     }
@@ -842,7 +841,6 @@
       min-width: 0;
       display: grid;
       gap: 8px;
-      padding-right: 8px;
     }
 
     .cart-item strong { color: var(--navy); font-size: 14px; }
@@ -852,21 +850,21 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      justify-content: flex-start;
+      justify-content: space-between;
+      margin-top: 12px;
     }
 
     .cart-item-actions input {
-      width: 76px;
+      flex: 1;
+      max-width: 180px;
       border: 1px solid #9fb0c4;
       padding: 8px;
     }
 
     .remove-item {
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      width: 36px;
-      height: 36px;
+      margin-left: auto;
+      width: 38px;
+      height: 38px;
       display: inline-grid;
       place-items: center;
       border: 0;
@@ -874,11 +872,12 @@
       color: #002868;
       cursor: pointer;
       padding: 0;
+      flex: 0 0 auto;
     }
 
     .remove-item svg {
-      width: 21px;
-      height: 21px;
+      width: 22px;
+      height: 22px;
       fill: currentColor;
     }
 
@@ -8326,6 +8325,13 @@
               ${estimateLine}
             `
             : '';
+          const removeButton = `
+            <button class="remove-item" type="button" aria-label="Delete item" title="Delete item">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 3h6l1 2h5v2h-2v15H5V7H3V5h5l1-2Zm2 0-.5 2h3L13 3h-2ZM7 7v13h10V7H7Zm3 3h2v7h-2v-7Zm4 0h2v7h-2v-7Z"></path>
+              </svg>
+            </button>
+          `;
           item.innerHTML = `
             <div class="cart-item-details">
               <strong>${entry.product.name}${isTileEntry ? '' : ` &mdash; ${quantityLabel}`}</strong>
@@ -8333,18 +8339,15 @@
               <small>Subtotal: ${lineTotal}</small>
               ${selections ? `<small>${selections}</small>` : ''}
             </div>
-            ${isTileEntry ? '' : `
-              <div class="cart-item-actions">
-                <input type="number" min="0" step="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">
-              </div>
-            `}
-            <button class="remove-item" type="button" aria-label="Delete item" title="Delete item">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M9 3h6l1 2h5v2h-2v15H5V7H3V5h5l1-2Zm2 0-.5 2h3L13 3h-2ZM7 7v13h10V7H7Zm3 3h2v7h-2v-7Zm4 0h2v7h-2v-7Z"></path>
-              </svg>
-            </button>
+            <div class="cart-item-actions">
+              ${isTileEntry
+                ? `<input class="cart-item-project-size" type="text" value="${formatSquareFeet(entry.projectSqFt || 0)}" aria-label="Project square footage for ${entry.product.name}" readonly>`
+                : `<input class="cart-item-quantity" type="number" min="0" step="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">`
+              }
+              ${removeButton}
+            </div>
           `;
-          const quantityInput = item.querySelector('input');
+          const quantityInput = item.querySelector('.cart-item-quantity');
           if (quantityInput) {
             quantityInput.addEventListener('input', (event) => {
               const newQuantity = Math.max(0, parseInt(event.target.value, 10) || 0);
