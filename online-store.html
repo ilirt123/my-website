@@ -463,6 +463,16 @@
       outline-offset: -2px;
     }
 
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
     .tile-size-option select[hidden] {
       display: none;
     }
@@ -531,21 +541,63 @@
       text-transform: uppercase;
     }
 
-    .tile-project-input {
-      width: 100%;
-      min-height: 44px;
+    .sqft-stepper {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) 42px;
+      align-items: center;
       border: 1px solid #9fb0c4;
       background: #fff;
+      min-height: 48px;
+    }
+
+    .sqft-stepper button {
+      width: 42px;
+      height: 48px;
+      border: 0;
+      background: #eef3f8;
+      color: #002868;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .sqft-stepper button:hover {
+      background: #c8242f;
+      color: #fff;
+    }
+
+    .sqft-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .sqft-input {
+      width: 100%;
+      height: 48px;
+      border: 0;
+      background: #fff;
+      padding: 0 56px 0 14px;
       color: var(--text);
-      padding: 8px 10px;
       font-size: 15px;
       font-weight: 800;
       text-transform: none;
     }
 
-    .tile-project-input:focus {
+    .sqft-input:focus {
       outline: 2px solid #002868;
       outline-offset: -2px;
+    }
+
+    .sqft-unit {
+      position: absolute;
+      right: 14px;
+      color: #617083;
+      font-size: 13px;
+      font-weight: 900;
+      pointer-events: none;
+      text-transform: uppercase;
     }
 
     .tile-contingency {
@@ -7909,11 +7961,17 @@
       return `
         <div class="tile-calculator" data-tile-calculator>
           <div class="tile-calculator-header">
-            <strong>How much do you need?</strong>
-            <span>Calculate Square Footage</span>
+            <strong>Calculate Square Footage</strong>
           </div>
           <label class="tile-calculator-field">Size Of Your Project (sq ft):
-            <input class="tile-project-input" type="number" min="0" step="1" value="0" inputmode="numeric" placeholder="Enter square footage" data-option-role="project-square-feet">
+            <div class="sqft-stepper" data-product-id="${escapeHTML(product.id)}">
+              <button class="sqft-minus" type="button" aria-label="Decrease square footage">-</button>
+              <div class="sqft-input-wrap">
+                <input class="sqft-input" type="number" min="0" step="1" value="0" inputmode="numeric" placeholder="Enter square footage" data-option-role="project-square-feet">
+                <span class="sqft-unit">sq ft</span>
+              </div>
+              <button class="sqft-plus" type="button" aria-label="Increase square footage">+</button>
+            </div>
           </label>
           <label class="tile-contingency">
             <input type="checkbox" data-tile-contingency>
@@ -7978,6 +8036,15 @@
           const direction = button.classList.contains('quantity-plus') ? 1 : -1;
           const step = parseFloat(input.step) || 1;
           input.value = String(Math.max(0, currentValue + direction * step));
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+      });
+      card.querySelectorAll('.sqft-minus, .sqft-plus').forEach((button) => {
+        button.addEventListener('click', () => {
+          const input = button.closest('.sqft-stepper').querySelector('.sqft-input');
+          const currentValue = Math.ceil(Math.max(0, parseFloat(input.value) || 0));
+          const direction = button.classList.contains('sqft-plus') ? 1 : -1;
+          input.value = String(Math.max(0, currentValue + direction));
           input.dispatchEvent(new Event('input', { bubbles: true }));
         });
       });
