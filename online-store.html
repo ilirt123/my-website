@@ -7024,6 +7024,61 @@
     const getProductQuantityOption = (product) => product.options?.find(isQuantityOption);
     const getProductDetailOptions = (product) => product.options?.filter((option) => !isQuantityOption(option)) || [];
 
+    const normalizeSearchText = (value) => String(value || '')
+      .toLowerCase()
+      .replace(/&nbsp;/g, ' ')
+      .replace(/[\/_-]+/g, ' ')
+      .replace(/[^a-z0-9. ]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const singularizeToken = (token) => {
+      if (token.endsWith('ies')) return `${token.slice(0, -3)}y`;
+      if (token.endsWith('s') && token.length > 3) return token.slice(0, -1);
+      return token;
+    };
+
+    const buildProductSearchText = (product) => {
+      const optionText = (product.options || [])
+        .flatMap((option) => [
+          option.label,
+          ...(option.values || []).map((value) => [
+            value.label || '',
+            value.value || '',
+            typeof value.priceValue === 'number' ? money.format(value.priceValue) : ''
+          ].join(' '))
+        ])
+        .join(' ');
+
+      const normalizedText = normalizeSearchText([
+        product.name,
+        product.category,
+        product.description,
+        priceLabel(product),
+        optionText
+      ].join(' '));
+      const singularText = normalizedText
+        .split(' ')
+        .map(singularizeToken)
+        .filter(Boolean)
+        .join(' ');
+
+      return `${normalizedText} ${singularText}`;
+    };
+
+    const productMatchesSearch = (product, query) => {
+      const normalizedQuery = normalizeSearchText(query);
+      if (!normalizedQuery) return true;
+
+      const productText = buildProductSearchText(product);
+      const tokens = normalizedQuery.split(' ').filter(Boolean);
+
+      return tokens.every((token) => {
+        const singular = singularizeToken(token);
+        return productText.includes(token) || productText.includes(singular);
+      });
+    };
+
     const getSelectedQuantity = (card, product) => {
       const quantitySelect = card.querySelector('[data-option-role="quantity"]');
       if (quantitySelect) return Math.max(1, parseInt(quantitySelect.value, 10) || 1);
@@ -7055,7 +7110,8 @@
     const setActiveCategory = (categoryId) => {
       activeCategoryId = categoryId;
       document.querySelectorAll('[data-category-link]').forEach((link) => {
-        link.classList.toggle('active', link.dataset.categoryLink === categoryId);
+        const hasMatches = link.dataset.hasMatches !== 'false';
+        link.classList.toggle('active', link.dataset.categoryLink === categoryId && hasMatches);
       });
       document.querySelectorAll('.store-category').forEach((category) => {
         const isActive = category.dataset.categorySection === categoryId;
@@ -7072,11 +7128,7 @@
     };
 
     const getVisibleProducts = () => {
-      const search = productSearch.value.trim().toLowerCase();
-      return STORE_PRODUCTS.filter((product) => {
-        const optionText = (product.options || []).map((option) => `${option.label} ${option.values.map((value) => value.label).join(' ')}`).join(' ');
-        return !search || `${product.name} ${product.description} ${product.category} ${optionText}`.toLowerCase().includes(search);
-      });
+      return STORE_PRODUCTS.filter((product) => productMatchesSearch(product, productSearch.value));
     };
 
     const renderCategoryMenu = (visibleProducts) => {
@@ -7092,10 +7144,15 @@
         const link = document.createElement('a');
         link.href = `#category-${category.id}`;
         link.dataset.categoryLink = category.id;
+        link.dataset.hasMatches = String(Boolean(counts[category.id]));
         if (!counts[category.id]) link.classList.add('is-empty');
-        link.textContent = category.label;
+        link.innerHTML = `${escapeHTML(category.label)}${counts[category.id] ? `<span>${counts[category.id]}</span>` : ''}`;
         link.addEventListener('click', (event) => {
           event.preventDefault();
+          if (normalizeSearchText(productSearch.value) && !counts[category.id]) {
+            productSearch.value = '';
+            renderProducts();
+          }
           scrollToCategory(category.id);
         });
         categoryMenu.appendChild(link);
@@ -7178,9 +7235,21 @@
 
     const renderProducts = () => {
       const visibleProducts = getVisibleProducts();
+      const searchActive = Boolean(normalizeSearchText(productSearch.value));
       productGrid.innerHTML = '';
 
-      helperCategories.forEach((category) => {
+      const categoriesToRender = searchActive
+        ? helperCategories.filter((category) => visibleProducts.some((product) => product.storeCategory === category.id))
+        : helperCategories;
+
+      if (searchActive && !visibleProducts.length) {
+        const empty = document.createElement('p');
+        empty.className = 'category-empty';
+        empty.textContent = 'No matching products found.';
+        productGrid.appendChild(empty);
+      }
+
+      categoriesToRender.forEach((category) => {
         const categoryProducts = visibleProducts.filter((product) => product.storeCategory === category.id);
         const categoryName = category.label;
         const isActiveCategory = category.id === activeCategoryId;
