@@ -416,6 +416,46 @@
       text-transform: none;
     }
 
+    .quantity-stepper {
+      display: grid;
+      grid-template-columns: 42px 1fr 42px;
+      align-items: center;
+      border: 1px solid #9fb0c4;
+      background: #fff;
+      min-height: 44px;
+    }
+
+    .quantity-stepper button {
+      width: 42px;
+      height: 44px;
+      border: 0;
+      background: #eef3f8;
+      color: #002868;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .quantity-stepper button:hover {
+      background: #c8242f;
+      color: #fff;
+    }
+
+    .quantity-stepper input {
+      width: 100%;
+      height: 44px;
+      min-height: 44px;
+      border: 0;
+      text-align: center;
+      color: #263244;
+      font-weight: 800;
+    }
+
+    .quantity-stepper input:focus {
+      outline: 2px solid #002868;
+      outline-offset: -2px;
+    }
+
     .product-subtotal {
       display: flex;
       justify-content: space-between;
@@ -7310,12 +7350,8 @@
     };
 
     const getSelectedQuantity = (card, product) => {
-      if (isSquareFootProduct(product)) {
-        const squareFootInput = card.querySelector('[data-option-role="square-footage"]');
-        return Math.max(0, parseFloat(squareFootInput?.value) || 0);
-      }
-      const quantitySelect = card.querySelector('[data-option-role="quantity"]');
-      if (quantitySelect) return Math.max(0, parseInt(quantitySelect.value, 10) || 0);
+      const quantityInput = card.querySelector('[data-option-role="quantity"], [data-option-role="square-footage"]');
+      if (quantityInput) return Math.max(0, parseFloat(quantityInput.value) || 0);
       return 0;
     };
 
@@ -7476,24 +7512,27 @@
     };
 
     const renderOptionSelect = (option, index, role = 'detail') => {
-      const optionValues = role === 'quantity'
-        ? [{ value: '0', label: '0' }, ...option.values]
-        : option.values;
-      const options = optionValues.map((value) => {
+      const options = option.values.map((value) => {
         const priceSuffix = typeof value.priceValue === 'number' ? ` - ${money.format(value.priceValue)}` : '';
         return `<option value="${escapeHTML(value.value || value.label)}">${escapeHTML(value.label)}${escapeHTML(priceSuffix)}</option>`;
       }).join('');
       const label = option.label || 'Option';
-      const roleAttr = role === 'quantity' ? ' data-option-role="quantity"' : ` data-option-index="${index}"`;
-      return `<label class="product-option">${escapeHTML(label)}<select${roleAttr}>${options}</select></label>`;
+      return `<label class="product-option">${escapeHTML(label)}<select data-option-index="${index}">${options}</select></label>`;
     };
 
     const renderQuantityControl = (product, quantityOption) => {
-      if (isSquareFootProduct(product)) {
-        return '<label class="product-option">Quantity (sq ft)<input type="number" min="0" step="0.01" placeholder="Enter sq ft if known" data-option-role="square-footage"></label>';
-      }
-
-      return renderOptionSelect(quantityOption, 0, 'quantity');
+      const isSquareFoot = isSquareFootProduct(product);
+      const label = isSquareFoot ? 'Quantity (sq ft)' : 'Quantity';
+      const role = isSquareFoot ? 'square-footage' : 'quantity';
+      return `
+        <label class="product-option">${label}
+          <div class="quantity-stepper" data-product-id="${escapeHTML(product.id)}">
+            <button class="quantity-minus" type="button" aria-label="Decrease ${isSquareFoot ? 'square feet' : 'quantity'}">-</button>
+            <input class="quantity-input" type="number" min="0" step="1" value="0" inputmode="numeric" data-option-role="${role}">
+            <button class="quantity-plus" type="button" aria-label="Increase ${isSquareFoot ? 'square feet' : 'quantity'}">+</button>
+          </div>
+        </label>
+      `;
     };
 
     const buildProductCard = (product) => {
@@ -7534,6 +7573,15 @@
         detailsToggle.setAttribute('aria-expanded', String(!isExpanded));
         detailsToggle.textContent = isExpanded ? 'View Details' : 'Hide Details';
         productDetails.hidden = isExpanded;
+      });
+      card.querySelectorAll('.quantity-minus, .quantity-plus').forEach((button) => {
+        button.addEventListener('click', () => {
+          const input = button.closest('.quantity-stepper').querySelector('.quantity-input');
+          const currentValue = Math.max(0, parseFloat(input.value) || 0);
+          const direction = button.classList.contains('quantity-plus') ? 1 : -1;
+          input.value = String(Math.max(0, currentValue + direction));
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
       });
       card.querySelectorAll('select, input').forEach((field) => {
         const syncSubtotal = () => {
