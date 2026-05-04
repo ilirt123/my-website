@@ -526,6 +526,14 @@
       text-transform: uppercase;
     }
 
+    .tile-calculator-header .calculate-square-footage-title {
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin: 0 0 8px;
+    }
+
     .tile-calculator-header span {
       color: var(--red);
       font-size: 11px;
@@ -8001,7 +8009,7 @@
       return `
         <div class="tile-calculator" data-tile-calculator>
           <div class="tile-calculator-header">
-            <strong>Calculate Square Footage</strong>
+            <strong class="calculate-square-footage-title">Calculate Square Footage</strong>
           </div>
           <label class="tile-calculator-field">Size Of Your Project (sq ft):
             <div class="sqft-stepper" data-product-id="${escapeHTML(product.id)}">
