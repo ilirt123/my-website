@@ -830,8 +830,8 @@
 
     .cart-item-actions {
       display: flex;
-      gap: 8px;
       align-items: center;
+      gap: 12px;
       justify-content: space-between;
     }
 
@@ -844,9 +844,15 @@
     .remove-item {
       border: 0;
       background: transparent;
-      color: var(--red);
+      color: var(--navy);
       font-weight: 900;
       cursor: pointer;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .remove-item:hover {
+      color: var(--red);
     }
 
     .cart-total {
