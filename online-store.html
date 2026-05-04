@@ -578,7 +578,7 @@
     .tile-project-size-label {
       display: block;
       white-space: nowrap;
-      font-size: 70%;
+      font-size: 84%;
       line-height: 1.2;
       font-weight: 900;
       text-transform: uppercase;
@@ -861,18 +861,27 @@
     }
 
     .remove-item {
-      border: 0;
-      background: transparent;
-      color: var(--navy);
-      font-weight: 900;
-      cursor: pointer;
       flex: 0 0 auto;
       margin-left: auto;
-      text-align: right;
+      width: 38px;
+      height: 38px;
+      display: inline-grid;
+      place-items: center;
+      border: 0;
+      background: transparent;
+      color: #002868;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .remove-item svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
     }
 
     .remove-item:hover {
-      color: var(--red);
+      color: #c8242f;
     }
 
     .cart-total {
@@ -8328,7 +8337,11 @@
                 <small>Subtotal: ${lineTotal}</small>
                 ${selections ? `<small>${selections}</small>` : ''}
               </div>
-              <button class="remove-item" type="button">Remove</button>
+              <button class="remove-item" type="button" aria-label="Delete item" title="Delete item">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 3h6l1 2h5v2h-2v15H5V7H3V5h5l1-2Zm2 0-.5 2h3L13 3h-2ZM7 7v13h10V7H7Zm3 3h2v7h-2v-7Zm4 0h2v7h-2v-7Z"></path>
+                </svg>
+              </button>
             </div>
             ${isTileEntry ? '' : `
               <div class="cart-item-actions">
