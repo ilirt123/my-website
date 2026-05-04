@@ -575,9 +575,15 @@
       text-transform: uppercase;
     }
 
-    .sqft-label-small {
+    .tile-project-size-label {
+      display: block;
+      white-space: nowrap;
       font-size: 70%;
-      font-weight: inherit;
+      line-height: 1.2;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #002868;
+      margin-bottom: 8px;
     }
 
     .sqft-stepper {
@@ -8066,7 +8072,7 @@
       if (!isSquareFootProduct(product)) return '';
       return `
         <div class="tile-calculator" data-tile-calculator>
-          <label class="tile-calculator-field">Size Of Your Project <span class="sqft-label-small">(sq ft)</span>:
+          <label class="tile-calculator-field"><span class="tile-project-size-label">Size Of Your Project (sq ft):</span>
             <div class="sqft-stepper" data-product-id="${escapeHTML(product.id)}">
               <button class="sqft-minus" type="button" aria-label="Decrease square footage">-</button>
               <div class="sqft-input-wrap">
