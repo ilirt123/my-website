@@ -389,6 +389,13 @@
       font-family: "Montserrat", sans-serif;
       font-size: 18px;
       font-weight: 900;
+      white-space: pre-wrap;
+    }
+
+    .product-sku {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
     }
 
     .product-options {
@@ -456,35 +463,127 @@
       outline-offset: -2px;
     }
 
-    .tile-estimate {
+    .tile-size-option select[hidden] {
+      display: none;
+    }
+
+    .size-option-buttons {
       display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
       gap: 6px;
-      border: 1px solid #d8e2ee;
-      background: #f7faff;
+    }
+
+    .size-option-button {
+      min-height: 38px;
+      border: 1px solid #9fb0c4;
+      background: #fff;
+      color: var(--navy);
+      font-family: "Montserrat", sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .size-option-button:hover,
+    .size-option-button[aria-pressed="true"] {
+      border-color: var(--red);
+      background: #fff5f6;
+      color: var(--red);
+      box-shadow: inset 0 -3px 0 var(--red);
+    }
+
+    .tile-calculator {
+      display: grid;
+      gap: 12px;
+      border: 1px solid #d3dbe6;
+      border-top: 4px solid var(--red);
+      background: #f4f6f9;
       padding: 10px;
       color: var(--navy);
       font-size: 12px;
       line-height: 1.35;
     }
 
-    .tile-estimate[hidden] {
-      display: none;
+    .tile-calculator-header {
+      display: grid;
+      gap: 2px;
     }
 
-    .tile-estimate-row {
+    .tile-calculator-header strong {
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tile-calculator-header span {
+      color: var(--red);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tile-calculator-field {
+      display: grid;
+      gap: 6px;
+      color: var(--navy);
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tile-box-row,
+    .tile-summary-row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .tile-estimate-row span:first-child {
+    .tile-box-row > span,
+    .tile-summary-row span:first-child {
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tile-box-row .quantity-stepper {
+      width: min(170px, 100%);
+    }
+
+    .tile-contingency {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
       font-weight: 800;
+      text-transform: none;
     }
 
-    .tile-estimate-row strong {
+    .tile-contingency input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--red);
+    }
+
+    .tile-box-summary {
       color: var(--text);
       font-weight: 900;
-      text-align: right;
+    }
+
+    .tile-coverage-warning {
+      margin: 0;
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .tile-subtotal {
+      border-top: 1px solid #c8d3e0;
+      padding-top: 10px;
+    }
+
+    .tile-subtotal strong {
+      color: var(--red);
+      font-size: 19px;
     }
 
     .product-subtotal {
@@ -7425,6 +7524,16 @@
       return (width * height) / 144;
     };
 
+    const getSelectedTileSize = (productCard) => {
+      const sizeSelect = productCard?.querySelector('[data-tile-size-select]');
+      if (sizeSelect?.value) return sizeSelect.value;
+      const sizeOption = Array.from(productCard?.querySelectorAll('select') || []).find((select) => {
+        const label = select.closest('label')?.textContent || '';
+        return normalizeSearchText(label).includes('size');
+      });
+      return sizeOption?.value || '';
+    };
+
     const getSelectedSizeValue = (selectedOptions = {}) => {
       return selectedOptions.Size
         || selectedOptions.size
@@ -7433,20 +7542,62 @@
         || '';
     };
 
-    const getTileCoverageSqFt = (product, selectedOptions) => {
-      const selectedSize = getSelectedSizeValue(selectedOptions);
+    const getTileSearchText = (product, selectedSize = '') => {
+      return [selectedSize, product.name, product.description].join(' ');
+    };
+
+    const parseCoveragePerBox = (textValue) => {
+      const text = String(textValue || '').toLowerCase();
+      const patterns = [
+        /(\d+(?:\.\d+)?)\s*sq\.?\s*ft\.?\s*\/\s*(?:box|case|pack|carton)/i,
+        /(\d+(?:\.\d+)?)\s*sq\.?\s*ft\.?\s*(?:per|\/)\s*(?:box|case|pack|carton)/i,
+        /(?:covers|coverage)\s*(?:approximately|about|up to)?\s*(\d+(?:\.\d+)?)\s*sq\.?\s*ft/i
+      ];
+      const match = patterns.map((pattern) => text.match(pattern)).find(Boolean);
+      return match ? Number(match[1]) : null;
+    };
+
+    const parsePiecesPerBox = (textValue) => {
+      const text = String(textValue || '').toLowerCase();
+      const patterns = [
+        /(\d+)\s*[- ]?\s*(?:piece|pieces|pc|pcs)\b/i,
+        /(\d+)\s*(?:tiles|sheets)\s*(?:per|\/)\s*(?:box|case|pack|carton)/i
+      ];
+      const match = patterns.map((pattern) => text.match(pattern)).find(Boolean);
+      return match ? Number(match[1]) : null;
+    };
+
+    const parseSku = (product) => {
+      return product.sku || product.SKU || String(`${product.name || ''} ${product.description || ''}`).match(/\bSKU[:#\s-]*([A-Z0-9-]{4,})/i)?.[1] || '';
+    };
+
+    const getCoveragePerPiece = (product, selectedSize) => {
       return parseTileCoverageSqFt(selectedSize)
         || parseTileCoverageSqFt(product.name)
         || parseTileCoverageSqFt(product.description);
     };
 
-    const getEstimatedTileQuantity = (product, selectedOptions, squareFeet) => {
-      const coverage = getTileCoverageSqFt(product, selectedOptions);
-      const sqFt = Number(squareFeet || 0);
+    const getPiecesPerBox = (product, selectedSize) => {
+      return parsePiecesPerBox(getTileSearchText(product, selectedSize));
+    };
 
-      if (!coverage || !sqFt) return null;
+    const getCoveragePerBox = (product, selectedSize) => {
+      const searchText = getTileSearchText(product, selectedSize);
+      const directCoverage = parseCoveragePerBox(searchText);
+      if (directCoverage) return directCoverage;
 
-      return Math.ceil(sqFt / coverage);
+      const coveragePerPiece = getCoveragePerPiece(product, selectedSize);
+      const piecesPerBox = getPiecesPerBox(product, selectedSize);
+      return coveragePerPiece && piecesPerBox ? coveragePerPiece * piecesPerBox : null;
+    };
+
+    const getPricePerBox = (product, selectedSize, unitPrice = priceValue(product)) => {
+      const searchText = getTileSearchText(product, selectedSize);
+      const directPrice = String(searchText).match(/\$?\s*(\d+(?:\.\d+)?)\s*\/\s*(?:box|case|pack|carton)/i);
+      if (directPrice) return Number(directPrice[1]);
+
+      const coveragePerBox = getCoveragePerBox(product, selectedSize);
+      return coveragePerBox && unitPrice !== null ? coveragePerBox * unitPrice : null;
     };
 
     const getTileQuantityUnit = (product) => {
@@ -7470,42 +7621,91 @@
       return coverage ? `${formatCoverage(coverage)} per ${unit}` : 'N/A';
     };
 
-    const getTileEstimateDetails = (product, selectedOptions, squareFeet) => {
-      const coverage = getTileCoverageSqFt(product, selectedOptions);
-      const estimatedQuantity = getEstimatedTileQuantity(product, selectedOptions, squareFeet);
-      const unit = getTileQuantityUnit(product);
+    const getTileCalculation = (card, product, options = {}) => {
+      const selectedOptions = getSelectedOptions(card, product);
+      const selectedSize = getSelectedTileSize(card) || getSelectedSizeValue(selectedOptions);
+      const unitPrice = getSelectedUnitPrice(card, product);
+      const projectInput = card.querySelector('[data-option-role="project-square-feet"]');
+      const boxesInput = card.querySelector('[data-option-role="tile-boxes"]');
+      const contingencyInput = card.querySelector('[data-tile-contingency]');
+      const projectSqFt = Math.max(0, parseFloat(projectInput?.value) || 0);
+      const contingency = Boolean(contingencyInput?.checked);
+      const coverageNeeded = contingency ? projectSqFt * 1.1 : projectSqFt;
+      const coveragePerPiece = getCoveragePerPiece(product, selectedSize);
+      const piecesPerBox = getPiecesPerBox(product, selectedSize);
+      const coveragePerBox = getCoveragePerBox(product, selectedSize);
+      const pricePerBox = getPricePerBox(product, selectedSize, unitPrice);
+      const calculatedBoxes = coveragePerBox && coverageNeeded ? Math.ceil(coverageNeeded / coveragePerBox) : 0;
+
+      if (options.recalculateBoxes && boxesInput) {
+        boxesInput.value = String(calculatedBoxes || 0);
+      }
+
+      const boxes = Math.max(0, parseInt(boxesInput?.value, 10) || 0);
+      const usesBoxPricing = Boolean(coveragePerBox && pricePerBox !== null);
+      const coverageTotal = coveragePerBox && boxes ? boxes * coveragePerBox : null;
+      const piecesTotal = piecesPerBox && boxes ? boxes * piecesPerBox : null;
+      const fallbackLineTotal = unitPrice === null || !projectSqFt ? null : unitPrice * projectSqFt;
+      const lineTotal = usesBoxPricing ? boxes * pricePerBox : fallbackLineTotal;
+      const tileUnit = getTileQuantityUnit(product);
 
       return {
-        coverage,
-        estimatedQuantity,
-        unit,
-        estimateLabel: unit.label
+        selectedOptions,
+        selectedSize,
+        unitPrice,
+        projectSqFt,
+        contingency,
+        coverageNeeded,
+        coveragePerPiece,
+        piecesPerBox,
+        coveragePerBox,
+        pricePerBox,
+        calculatedBoxes,
+        boxes,
+        usesBoxPricing,
+        coverageTotal,
+        piecesTotal,
+        lineTotal,
+        tileUnit,
+        sku: parseSku(product)
       };
     };
 
     const buildCartEntry = (card, product) => {
-      const quantity = getSelectedQuantity(card, product);
       const selections = getSelectedOptions(card, product);
       const unitPrice = getSelectedUnitPrice(card, product);
       const unit = getProductUnit(product);
-      const entry = {
-        product,
-        quantity,
-        selections,
-        unitPrice,
-        unit
-      };
 
       if (isSquareFootProduct(product)) {
-        const tileEstimate = getTileEstimateDetails(product, selections, quantity);
-        entry.squareFeet = quantity;
-        entry.coverage = tileEstimate.coverage;
-        entry.estimatedTileQuantity = tileEstimate.estimatedQuantity;
-        entry.tileQuantityUnit = tileEstimate.unit;
-        entry.tileEstimateLabel = tileEstimate.estimateLabel;
+        const tileCalculation = getTileCalculation(card, product);
+        return {
+          product,
+          quantity: tileCalculation.boxes || tileCalculation.projectSqFt,
+          selections,
+          unitPrice,
+          unit,
+          projectSqFt: tileCalculation.projectSqFt,
+          contingency: tileCalculation.contingency,
+          boxes: tileCalculation.boxes,
+          coveragePerBox: tileCalculation.coveragePerBox,
+          coverageTotal: tileCalculation.coverageTotal,
+          piecesPerBox: tileCalculation.piecesPerBox,
+          piecesTotal: tileCalculation.piecesTotal,
+          pricePerBox: tileCalculation.pricePerBox,
+          pricePerSqFt: tileCalculation.unitPrice,
+          lineTotal: tileCalculation.lineTotal,
+          usesBoxPricing: tileCalculation.usesBoxPricing
+        };
       }
 
-      return entry;
+      return {
+        product,
+        quantity: getSelectedQuantity(card, product),
+        selections,
+        unitPrice,
+        unit,
+        lineTotal: unitPrice === null ? null : unitPrice * getSelectedQuantity(card, product)
+      };
     };
 
     const formatQuantity = (quantity, unit) => {
@@ -7581,31 +7781,85 @@
       });
     };
 
-    const updateProductSubtotal = (card, product) => {
+    const updateTileCalculator = (card, product, options = {}) => {
+      const calculation = getTileCalculation(card, product, options);
+      const price = card.querySelector('[data-product-price]');
+      const sku = card.querySelector('[data-product-sku]');
+      const boxPrice = card.querySelector('[data-tile-box-price]');
+      const boxSummary = card.querySelector('[data-tile-box-summary]');
+      const warning = card.querySelector('[data-tile-coverage-warning]');
+      const subtotal = card.querySelector('[data-product-subtotal]');
+
+      if (price) {
+        const boxText = calculation.pricePerBox !== null
+          ? `${money.format(calculation.pricePerBox)} / box`
+          : 'Box pricing unavailable';
+        price.textContent = `${formatPriceWithUnit(calculation.unitPrice, 'sq ft')}     ${boxText}`;
+      }
+
+      if (sku) {
+        sku.hidden = !calculation.sku;
+        sku.textContent = calculation.sku ? `SKU: ${calculation.sku}` : '';
+      }
+
+      if (boxPrice) {
+        boxPrice.textContent = calculation.pricePerBox !== null
+          ? `${money.format(calculation.pricePerBox)} / box`
+          : `${formatPriceWithUnit(calculation.unitPrice, 'sq ft')} fallback`;
+      }
+
+      if (boxSummary) {
+        if (calculation.usesBoxPricing) {
+          const coverageText = formatSquareFeet(calculation.coverageTotal || 0);
+          const piecesText = calculation.piecesTotal
+            ? ` | ${calculation.piecesTotal.toLocaleString('en-US')} pieces`
+            : '';
+          boxSummary.textContent = `${calculation.boxes} ${calculation.boxes === 1 ? 'box' : 'boxes'} = ${coverageText}${piecesText}`;
+        } else {
+          boxSummary.textContent = calculation.projectSqFt
+            ? `${formatSquareFeet(calculation.projectSqFt)} project size`
+            : 'Enter project square feet';
+        }
+      }
+
+      if (warning) {
+        warning.textContent = calculation.coveragePerBox
+          ? 'Box price unavailable'
+          : 'Coverage information unavailable';
+        warning.hidden = calculation.usesBoxPricing;
+      }
+
+      if (subtotal) {
+        subtotal.textContent = calculation.lineTotal === null ? 'Quote needed' : money.format(calculation.lineTotal);
+      }
+
+      return calculation;
+    };
+
+    const updateProductSubtotal = (card, product, options = {}) => {
+      if (isSquareFootProduct(product)) {
+        return updateTileCalculator(card, product, options);
+      }
+
       const quantity = getSelectedQuantity(card, product);
-      const selections = getSelectedOptions(card, product);
       const unitPrice = getSelectedUnitPrice(card, product);
       const subtotal = card.querySelector('[data-product-subtotal]');
       const price = card.querySelector('[data-product-price]');
-      const tileEstimate = card.querySelector('[data-tile-estimate]');
       if (price) price.textContent = formatUnitPrice(unitPrice, product);
       if (subtotal) subtotal.textContent = unitPrice === null ? 'Quote needed' : money.format(unitPrice * quantity);
-      if (tileEstimate && isSquareFootProduct(product)) {
-        const estimateDetails = getTileEstimateDetails(product, selections, quantity);
-        const quantityUnit = estimateDetails.unit;
-        const estimatedQuantity = estimateDetails.estimatedQuantity
-          ? `${estimateDetails.estimatedQuantity.toLocaleString('en-US')} ${quantityUnit.plural}`
-          : 'N/A';
-        tileEstimate.querySelector('[data-tile-estimate-label]').textContent = estimateDetails.estimateLabel;
-        tileEstimate.querySelector('[data-tile-estimate-value]').textContent = estimatedQuantity;
-        tileEstimate.querySelector('[data-tile-coverage-value]').textContent = formatCoveragePerUnit(estimateDetails.coverage, quantityUnit.singular);
-      }
+      return { quantity, unitPrice, lineTotal: unitPrice === null ? null : unitPrice * quantity };
     };
 
     const syncProductCardFromCart = (card, product) => {
       const entry = cart.get(product.id);
-      const quantityField = card.querySelector('[data-option-role="quantity"], [data-option-role="square-footage"]');
+      const quantityField = card.querySelector('[data-option-role="quantity"]');
+      const projectField = card.querySelector('[data-option-role="project-square-feet"]');
+      const boxesField = card.querySelector('[data-option-role="tile-boxes"]');
+      const contingencyField = card.querySelector('[data-tile-contingency]');
       if (quantityField) quantityField.value = entry ? entry.quantity : '0';
+      if (projectField) projectField.value = entry ? entry.projectSqFt || 0 : '0';
+      if (boxesField) boxesField.value = entry ? entry.boxes || 0 : '0';
+      if (contingencyField) contingencyField.checked = Boolean(entry?.contingency);
 
       getProductDetailOptions(product).forEach((option, index) => {
         const select = card.querySelector(`[data-option-index="${index}"]`);
@@ -7618,21 +7872,36 @@
 
     const resetProductFields = (productId, quantity = '0') => {
       document.querySelectorAll(`[data-product-id="${productId}"]`).forEach((card) => {
-        const quantityField = card.querySelector('[data-option-role="quantity"], [data-option-role="square-footage"]');
+        const quantityField = card.querySelector('[data-option-role="quantity"]');
+        const projectField = card.querySelector('[data-option-role="project-square-feet"]');
+        const boxesField = card.querySelector('[data-option-role="tile-boxes"]');
+        const contingencyField = card.querySelector('[data-tile-contingency]');
         if (quantityField) quantityField.value = String(quantity);
+        if (projectField) projectField.value = '0';
+        if (boxesField) boxesField.value = String(quantity);
+        if (contingencyField) contingencyField.checked = false;
         const product = STORE_PRODUCTS.find((item) => item.id === productId);
         if (product) updateProductSubtotal(card, product);
       });
     };
 
     const updateCartFromProductCard = (card, product) => {
+      if (isSquareFootProduct(product)) {
+        const calculation = getTileCalculation(card, product);
+        if (calculation.projectSqFt <= 0 && calculation.boxes <= 0) {
+          setStoreMessage('Please enter project square feet or box quantity before adding this tile to your cart.');
+          return;
+        }
+
+        cart.set(product.id, buildCartEntry(card, product));
+        clearStoreMessage();
+        renderCart();
+        return;
+      }
+
       const quantity = getSelectedQuantity(card, product);
       if (quantity <= 0) {
-        if (isSquareFootProduct(product)) {
-          setStoreMessage('Please enter square feet before adding this tile to your cart.');
-        } else {
-          setStoreMessage('Please choose a quantity before adding this item to your cart.');
-        }
+        setStoreMessage('Please choose a quantity before adding this item to your cart.');
         return;
       }
 
@@ -7655,6 +7924,27 @@
       return `<label class="product-option">${escapeHTML(label)}<select data-option-index="${index}">${options}</select></label>`;
     };
 
+    const renderTileOptionControl = (option, index, product) => {
+      const label = option.label || 'Option';
+      const isSize = normalizeSearchText(label).includes('size');
+      if (!isSize || option.values.length <= 1) return renderOptionSelect(option, index, product);
+
+      const options = option.values.map((value) => {
+        return `<option value="${escapeHTML(value.value || value.label)}">${escapeHTML(value.label)}</option>`;
+      }).join('');
+      const buttons = option.values.map((value, valueIndex) => {
+        const buttonValue = value.value || value.label;
+        return `<button class="size-option-button" type="button" data-size-option="${index}" data-size-value="${escapeHTML(buttonValue)}" aria-pressed="${valueIndex === 0 ? 'true' : 'false'}">${escapeHTML(value.label)}</button>`;
+      }).join('');
+
+      return `
+        <label class="product-option tile-size-option">${escapeHTML(label)}
+          <select data-option-index="${index}" data-tile-size-select hidden>${options}</select>
+          <div class="size-option-buttons">${buttons}</div>
+        </label>
+      `;
+    };
+
     const renderQuantityControl = (product, quantityOption) => {
       const isSquareFoot = isSquareFootProduct(product);
       const label = isSquareFoot ? 'Square Feet Needed' : 'Quantity';
@@ -7670,17 +7960,37 @@
       `;
     };
 
-    const renderTileEstimate = (product) => {
+    const renderTileCalculator = (product) => {
       if (!isSquareFootProduct(product)) return '';
       return `
-        <div class="tile-estimate" data-tile-estimate>
-          <div class="tile-estimate-row">
-            <span data-tile-estimate-label>Estimated Tile Quantity</span>
-            <strong data-tile-estimate-value>N/A</strong>
+        <div class="tile-calculator" data-tile-calculator>
+          <div class="tile-calculator-header">
+            <strong>How much do you need?</strong>
+            <span>Calculate Square Footage</span>
           </div>
-          <div class="tile-estimate-row">
-            <span>Coverage</span>
-            <strong data-tile-coverage-value>N/A</strong>
+          <label class="tile-calculator-field">Size Of Your Project:
+            <div class="quantity-stepper">
+              <button class="quantity-minus" type="button" aria-label="Decrease project square feet">-</button>
+              <input class="quantity-input" type="number" min="0" step="0.01" value="0" inputmode="decimal" data-option-role="project-square-feet">
+              <button class="quantity-plus" type="button" aria-label="Increase project square feet">+</button>
+            </div>
+          </label>
+          <label class="tile-contingency">
+            <input type="checkbox" data-tile-contingency>
+            Add 10% for contingency
+          </label>
+          <div class="tile-box-row">
+            <span>Quantity of boxes</span>
+            <div class="quantity-stepper">
+              <button class="quantity-minus" type="button" aria-label="Decrease box quantity">-</button>
+              <input class="quantity-input" type="number" min="0" step="1" value="0" inputmode="numeric" data-option-role="tile-boxes">
+              <button class="quantity-plus" type="button" aria-label="Increase box quantity">+</button>
+            </div>
+          </div>
+          <p class="tile-coverage-warning" data-tile-coverage-warning hidden>Coverage information unavailable</p>
+          <div class="tile-summary-row">
+            <span data-tile-box-price>Box pricing unavailable</span>
+            <strong class="tile-box-summary" data-tile-box-summary>Enter project square feet</strong>
           </div>
         </div>
       `;
@@ -7704,17 +8014,18 @@
           <span class="product-category">${escapeHTML(product.category)}</span>
           <h2>${escapeHTML(product.name)}</h2>
           <strong class="product-price" data-product-price>${escapeHTML(priceLabel(product))}</strong>
+          <small class="product-sku" data-product-sku hidden></small>
           <button class="details-toggle" type="button" aria-expanded="false" aria-controls="${escapeHTML(detailsId)}">View Details</button>
           <div class="product-details" id="${escapeHTML(detailsId)}" hidden>
             <p>${escapeHTML(truncate(product.description))}</p>
             ${detailOptions.length && !isSquareFootProduct(product) ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index, product)).join('')}</div>` : ''}
           </div>
           <div class="product-options">
-            ${detailOptions.length && isSquareFootProduct(product) ? detailOptions.map((option, index) => renderOptionSelect(option, index, product)).join('') : ''}
-            ${renderQuantityControl(product, quantityOption)}
+            ${detailOptions.length && isSquareFootProduct(product) ? detailOptions.map((option, index) => renderTileOptionControl(option, index, product)).join('') : ''}
+            ${isSquareFootProduct(product) ? '' : renderQuantityControl(product, quantityOption)}
           </div>
-          ${renderTileEstimate(product)}
-          <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(0)}</span></div>
+          ${renderTileCalculator(product)}
+          <div class="product-subtotal${isSquareFootProduct(product) ? ' tile-subtotal' : ''}"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(0)}</span></div>
           <button class="add-to-cart-button" type="button">Add to Cart</button>
         </div>
       `;
@@ -7732,15 +8043,32 @@
           const input = button.closest('.quantity-stepper').querySelector('.quantity-input');
           const currentValue = Math.max(0, parseFloat(input.value) || 0);
           const direction = button.classList.contains('quantity-plus') ? 1 : -1;
-          input.value = String(Math.max(0, currentValue + direction));
+          const step = parseFloat(input.step) || 1;
+          input.value = String(Math.max(0, currentValue + direction * step));
           input.dispatchEvent(new Event('input', { bubbles: true }));
         });
       });
+      card.querySelectorAll('[data-size-option]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const select = card.querySelector(`[data-option-index="${button.dataset.sizeOption}"]`);
+          if (!select) return;
+          select.value = button.dataset.sizeValue;
+          button.closest('.size-option-buttons').querySelectorAll('[data-size-option]').forEach((sizeButton) => {
+            sizeButton.setAttribute('aria-pressed', String(sizeButton === button));
+          });
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
       card.querySelectorAll('select, input').forEach((field) => {
-        const syncSubtotal = () => {
-          updateProductSubtotal(card, product);
+        const syncSubtotal = (event) => {
+          const recalculateBoxes = isSquareFootProduct(product)
+            && (field.matches('[data-option-role="project-square-feet"], [data-tile-contingency], select'));
+          updateProductSubtotal(card, product, { recalculateBoxes });
           if (!cart.has(product.id)) return;
-          if (getSelectedQuantity(card, product) <= 0) {
+          const shouldRemove = isSquareFootProduct(product)
+            ? getTileCalculation(card, product).projectSqFt <= 0 && getTileCalculation(card, product).boxes <= 0
+            : getSelectedQuantity(card, product) <= 0;
+          if (shouldRemove) {
             removeCartItemForProduct(product.id);
             return;
           }
@@ -7862,56 +8190,58 @@
         cart.forEach((entry, cartKey) => {
           const item = document.createElement('div');
           item.className = 'cart-item';
-          const lineTotal = entry.unitPrice === null ? 'Quote needed' : money.format(entry.unitPrice * entry.quantity);
+          const lineTotal = entry.lineTotal === null ? 'Quote needed' : money.format(entry.lineTotal);
           const selections = Object.entries(entry.selections)
             .map(([label, value]) => `${label}: ${value}`)
             .join(' | ');
           const unit = entry.unit || getProductUnit(entry.product);
-          const isTileEntry = unit === 'sq ft';
+          const isTileEntry = isSquareFootProduct(entry.product);
           const quantityLabel = formatQuantity(entry.quantity, unit);
-          const tileUnit = entry.tileQuantityUnit || getTileQuantityUnit(entry.product);
-          const tileQuantityLabel = entry.tileEstimateLabel || tileUnit.label;
-          const tileQuantity = entry.estimatedTileQuantity
-            ? `${entry.estimatedTileQuantity.toLocaleString('en-US')} ${tileUnit.plural}`
-            : 'N/A';
+          const coverageLabel = entry.coverageTotal ? formatSquareFeet(entry.coverageTotal) : 'N/A';
+          const piecesLabel = entry.piecesTotal ? entry.piecesTotal.toLocaleString('en-US') : 'N/A';
+          const boxPriceLabel = entry.pricePerBox !== null ? `${money.format(entry.pricePerBox)} / box` : 'Box price unavailable';
           const tileSummary = isTileEntry
             ? `
-              <small>Square Feet: ${formatSquareFeet(entry.squareFeet ?? entry.quantity)}</small>
-              <small>${tileQuantityLabel}: ${tileQuantity}</small>
-              <small>Coverage: ${formatCoveragePerUnit(entry.coverage, tileUnit.singular)}</small>
+              <small>Project size: ${formatSquareFeet(entry.projectSqFt || 0)}</small>
+              <small>Contingency: ${entry.contingency ? 'Yes' : 'No'}</small>
+              <small>Boxes: ${entry.boxes || 0}</small>
+              <small>Coverage: ${coverageLabel}</small>
+              <small>Pieces: ${piecesLabel}</small>
+              <small>Price per box: ${boxPriceLabel}</small>
             `
             : '';
           item.innerHTML = `
             <strong>${entry.product.name}${isTileEntry ? '' : ` &mdash; ${quantityLabel}`}</strong>
             ${tileSummary}
-            <small>${formatUnitPrice(entry.unitPrice, entry.product)} - ${lineTotal}</small>
+            <small>Subtotal: ${lineTotal}</small>
             ${selections ? `<small>${selections}</small>` : ''}
             <div class="cart-item-actions">
-              <input type="number" min="0" step="${unit === 'sq ft' ? '0.01' : '1'}" value="${entry.quantity}" aria-label="Update ${unit === 'sq ft' ? 'square feet' : 'quantity'} for ${entry.product.name}">
+              <input type="number" min="0" step="1" value="${isTileEntry ? entry.boxes || 0 : entry.quantity}" aria-label="Update ${isTileEntry ? 'boxes' : 'quantity'} for ${entry.product.name}">
               <button class="remove-item" type="button">Remove</button>
             </div>
           `;
           item.querySelector('input').addEventListener('input', (event) => {
-            const newQuantity = unit === 'sq ft'
-              ? Math.max(0, parseFloat(event.target.value) || 0)
-              : Math.max(0, parseInt(event.target.value, 10) || 0);
+            const newQuantity = Math.max(0, parseInt(event.target.value, 10) || 0);
             if (newQuantity <= 0) {
               cart.delete(cartKey);
               resetProductFields(entry.product.id);
               renderCart();
               return;
             }
-            entry.quantity = newQuantity;
-            if (unit === 'sq ft') {
-              const tileEstimate = getTileEstimateDetails(entry.product, entry.selections, newQuantity);
-              entry.squareFeet = newQuantity;
-              entry.coverage = tileEstimate.coverage;
-              entry.estimatedTileQuantity = tileEstimate.estimatedQuantity;
-              entry.tileQuantityUnit = tileEstimate.unit;
-              entry.tileEstimateLabel = tileEstimate.estimateLabel;
+            if (isTileEntry) {
+              entry.boxes = newQuantity;
+              entry.quantity = newQuantity;
+              entry.coverageTotal = entry.coveragePerBox ? entry.coveragePerBox * newQuantity : null;
+              entry.piecesTotal = entry.piecesPerBox ? entry.piecesPerBox * newQuantity : null;
+              entry.lineTotal = entry.pricePerBox !== null ? entry.pricePerBox * newQuantity : entry.lineTotal;
+            } else {
+              entry.quantity = newQuantity;
+              entry.lineTotal = entry.unitPrice === null ? null : entry.unitPrice * newQuantity;
             }
             cart.set(cartKey, entry);
-            resetProductFields(entry.product.id, entry.quantity);
+            document.querySelectorAll(`[data-product-id="${entry.product.id}"]`).forEach((card) => {
+              syncProductCardFromCart(card, entry.product);
+            });
             renderCart();
           });
           item.querySelector('button').addEventListener('click', () => {
@@ -7929,7 +8259,7 @@
     const updateTotal = () => {
       let total = 0;
       cart.forEach((entry) => {
-        if (entry.unitPrice !== null) total += entry.unitPrice * entry.quantity;
+        if (entry.lineTotal !== null) total += entry.lineTotal;
       });
       cartTotal.textContent = money.format(total);
     };
@@ -7946,19 +8276,14 @@
 
     const buildOrderDetails = () => {
       const items = [...cart.values()].map((entry) => {
-        const lineTotal = entry.unitPrice === null ? 'Quote needed' : money.format(entry.unitPrice * entry.quantity);
+        const lineTotal = entry.lineTotal === null ? 'Quote needed' : money.format(entry.lineTotal);
         const selections = Object.entries(entry.selections)
           .map(([label, value]) => `${label}: ${value}`)
           .join(' | ');
-        const unit = entry.unit || getProductUnit(entry.product);
-        const tileUnit = entry.tileQuantityUnit || getTileQuantityUnit(entry.product);
-        const tileQuantity = entry.estimatedTileQuantity
-          ? `${entry.estimatedTileQuantity} ${tileUnit.plural}`
-          : 'N/A';
-        const amountLabel = unit === 'sq ft'
-          ? `Square Feet: ${formatSquareFeet(entry.squareFeet ?? entry.quantity)} | ${entry.tileEstimateLabel || tileUnit.label}: ${tileQuantity} | Coverage: ${formatCoveragePerUnit(entry.coverage, tileUnit.singular)}`
+        const amountLabel = isSquareFootProduct(entry.product)
+          ? `Project size: ${formatSquareFeet(entry.projectSqFt || 0)} | Contingency: ${entry.contingency ? 'Yes' : 'No'} | Boxes: ${entry.boxes || 0} | Coverage: ${entry.coverageTotal ? formatSquareFeet(entry.coverageTotal) : 'N/A'} | Pieces: ${entry.piecesTotal ? entry.piecesTotal : 'N/A'} | Price per box: ${entry.pricePerBox !== null ? money.format(entry.pricePerBox) : 'N/A'}`
           : `Qty ${entry.quantity}`;
-        return `- ${entry.product.name} | Category: ${entry.product.category} | ${amountLabel} | Unit: ${formatUnitPrice(entry.unitPrice, entry.product)} | Line: ${lineTotal}${selections ? ` | ${selections}` : ''}`;
+        return `- ${entry.product.name} | Category: ${entry.product.category} | ${amountLabel} | Line: ${lineTotal}${selections ? ` | ${selections}` : ''}`;
       }).join('\n');
       return items || 'No items selected';
     };
