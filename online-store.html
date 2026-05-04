@@ -328,42 +328,6 @@
       background: #e9eff6;
     }
 
-    .product-image-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 34px;
-      height: 44px;
-      border: 0;
-      background: rgba(0, 40, 104, .82);
-      color: #fff;
-      font-size: 30px;
-      font-weight: 900;
-      line-height: 1;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .product-image-nav:hover {
-      background: var(--red);
-    }
-
-    .product-image-prev { left: 8px; }
-    .product-image-next { right: 8px; }
-
-    .product-image-count {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      z-index: 2;
-      background: rgba(0, 40, 104, .82);
-      color: #fff;
-      padding: 4px 7px;
-      font-family: "Montserrat", sans-serif;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
     .product-card-body {
       padding: 16px;
       display: grid;
@@ -709,18 +673,37 @@
       position: absolute;
       top: 50%;
       z-index: 3;
-      width: 46px;
-      height: 62px;
-      background: rgba(255, 255, 255, .75);
-      color: var(--navy);
-      font-size: 46px;
+      width: 34px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .88);
+      color: #002868;
+      font-size: 28px;
       line-height: 1;
+      box-shadow: 0 8px 22px rgba(0, 40, 104, .22);
       transform: translateY(-50%);
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+      animation: lightboxArrowPulse 1.8s ease-in-out infinite;
     }
 
-    .product-lightbox-prev { left: 14px; }
-    .product-lightbox-next { right: 14px; }
+    .product-lightbox-nav:hover {
+      background: #c8242f;
+      color: #fff;
+      transform: translateY(-50%) scale(1.06);
+    }
+
+    .product-lightbox-prev { left: 18px; }
+    .product-lightbox-next { right: 18px; }
     .product-lightbox-nav[hidden] { display: none; }
+
+    @keyframes lightboxArrowPulse {
+      0%, 100% {
+        box-shadow: 0 8px 22px rgba(0, 40, 104, .18);
+      }
+      50% {
+        box-shadow: 0 10px 28px rgba(200, 36, 47, .32);
+      }
+    }
 
     .product-lightbox-zoom {
       position: absolute;
@@ -840,7 +823,7 @@
       .category-helper h2 { font-size: 16px; }
       .product-lightbox { padding: 22px; }
       .product-lightbox-close { top: 10px; right: 10px; }
-      .product-lightbox-nav { width: 38px; height: 54px; font-size: 36px; }
+      .product-lightbox-nav { width: 32px; height: 40px; font-size: 26px; }
       .store-back-to-top { right: 16px; bottom: 18px; width: 44px; height: 44px; }
     }
   </style>
@@ -7492,17 +7475,11 @@
       const detailOptions = getProductDetailOptions(product);
       const detailsId = `product-details-${product.id}`;
       const productImages = product.images?.length ? product.images : [product.image];
-      let currentImageIndex = 0;
       card.innerHTML = `
         <div class="product-media">
           <button class="product-image-button" type="button" aria-label="View larger image of ${escapeHTML(product.name)}">
             <img class="product-image" src="${escapeHTML(productImages[0])}" alt="${escapeHTML(product.name)}" loading="lazy">
           </button>
-          ${productImages.length > 1 ? `
-            <button class="product-image-nav product-image-prev" type="button" aria-label="Previous image for ${escapeHTML(product.name)}">&lsaquo;</button>
-            <button class="product-image-nav product-image-next" type="button" aria-label="Next image for ${escapeHTML(product.name)}">&rsaquo;</button>
-            <span class="product-image-count" data-product-image-count>1 / ${productImages.length}</span>
-          ` : ''}
         </div>
         <div class="product-card-body">
           <span class="product-category">${escapeHTML(product.category)}</span>
@@ -7519,19 +7496,7 @@
           <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(isSquareFootProduct(product) ? 0 : priceValue(product))}</span></div>
         </div>
       `;
-      const cardImage = card.querySelector('.product-image');
-      const imageCount = card.querySelector('[data-product-image-count]');
-      const setCardImage = (index) => {
-        currentImageIndex = (index + productImages.length) % productImages.length;
-        cardImage.src = productImages[currentImageIndex];
-        if (imageCount) imageCount.textContent = `${currentImageIndex + 1} / ${productImages.length}`;
-      };
-      card.querySelector('.product-image-button').addEventListener('click', () => openProductLightbox(product.id, currentImageIndex));
-      card.querySelectorAll('.product-image-nav').forEach((button) => {
-        button.addEventListener('click', () => {
-          setCardImage(currentImageIndex + (button.classList.contains('product-image-next') ? 1 : -1));
-        });
-      });
+      card.querySelector('.product-image-button').addEventListener('click', () => openProductLightbox(product.id, 0));
       const detailsToggle = card.querySelector('.details-toggle');
       const productDetails = card.querySelector('.product-details');
       detailsToggle.addEventListener('click', () => {
