@@ -391,7 +391,8 @@
       text-transform: uppercase;
     }
 
-    .product-option select {
+    .product-option select,
+    .product-option input {
       width: 100%;
       min-height: 40px;
       border: 1px solid #9fb0c4;
@@ -6993,6 +6994,13 @@
     ];
 
     const CATEGORY_ORDER = helperCategories.map((category) => category.label);
+    const squareFootCategories = [
+      'Bathroom Floor Tiles',
+      'Shower Wall Tiles',
+      'Shower Floor Tiles',
+      'House Floor Tile',
+      'Fireplace Tiles'
+    ];
 
     const categoryIdByLabel = helperCategories.reduce((acc, category) => {
       acc[category.label] = category.id;
@@ -7010,7 +7018,13 @@
     let activeCategoryId = helperCategories[0].id;
 
     const priceValue = (product) => typeof product.priceValue === 'number' ? product.priceValue : null;
-    const priceLabel = (product) => priceValue(product) === null ? 'Request quote' : money.format(priceValue(product));
+    const isSquareFootProduct = (product) => squareFootCategories.includes(product.category);
+    const getProductUnit = (product) => isSquareFootProduct(product) ? 'sq ft' : 'each';
+    const priceLabel = (product) => {
+      const unitPrice = priceValue(product);
+      if (unitPrice === null) return 'Request quote';
+      return isSquareFootProduct(product) ? `${money.format(unitPrice)} / sq ft` : `${money.format(unitPrice)} each`;
+    };
     const getCategoryLabel = (categoryId) => helperCategories.find((category) => category.id === categoryId)?.label || 'Vanities';
     const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
@@ -7094,6 +7108,10 @@
     };
 
     const getSelectedQuantity = (card, product) => {
+      if (isSquareFootProduct(product)) {
+        const squareFootInput = card.querySelector('[data-option-role="square-footage"]');
+        return Math.max(0, parseFloat(squareFootInput?.value) || 0);
+      }
       const quantitySelect = card.querySelector('[data-option-role="quantity"]');
       if (quantitySelect) return Math.max(1, parseInt(quantitySelect.value, 10) || 1);
       return 1;
@@ -7119,7 +7137,16 @@
       return selectedPrice ?? priceValue(product);
     };
 
-    const formatUnitPrice = (unitPrice) => unitPrice === null ? 'Request quote' : money.format(unitPrice);
+    const formatQuantity = (quantity, unit) => {
+      if (unit === 'sq ft') return `${Number(quantity).toLocaleString('en-US', { maximumFractionDigits: 2 })} sq ft`;
+      return `Qty ${Math.max(1, parseInt(quantity, 10) || 1)}`;
+    };
+
+    const formatUnitPrice = (unitPrice, product) => {
+      if (unitPrice === null) return 'Request quote';
+      const unit = product ? getProductUnit(product) : 'each';
+      return unit === 'sq ft' ? `${money.format(unitPrice)} / sq ft` : `${money.format(unitPrice)} each`;
+    };
 
     const setActiveCategory = (categoryId) => {
       activeCategoryId = categoryId;
@@ -7190,7 +7217,7 @@
       const unitPrice = getSelectedUnitPrice(card, product);
       const subtotal = card.querySelector('[data-product-subtotal]');
       const price = card.querySelector('[data-product-price]');
-      if (price) price.textContent = formatUnitPrice(unitPrice);
+      if (price) price.textContent = formatUnitPrice(unitPrice, product);
       if (subtotal) subtotal.textContent = unitPrice === null ? 'Quote needed' : money.format(unitPrice * quantity);
     };
 
@@ -7202,6 +7229,14 @@
       const label = option.label || 'Option';
       const roleAttr = role === 'quantity' ? ' data-option-role="quantity"' : ` data-option-index="${index}"`;
       return `<label class="product-option">${escapeHTML(label)}<select${roleAttr}>${options}</select></label>`;
+    };
+
+    const renderQuantityControl = (product, quantityOption) => {
+      if (isSquareFootProduct(product)) {
+        return '<label class="product-option">Quantity (sq ft)<input type="number" min="0" step="0.01" placeholder="Enter sq ft if known" data-option-role="square-footage"></label>';
+      }
+
+      return renderOptionSelect(quantityOption, 0, 'quantity');
     };
 
     const buildProductCard = (product) => {
@@ -7224,9 +7259,9 @@
             ${detailOptions.length ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index)).join('')}</div>` : ''}
           </div>
           <div class="product-options">
-            ${renderOptionSelect(quantityOption, 0, 'quantity')}
+            ${renderQuantityControl(product, quantityOption)}
           </div>
-          <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(priceValue(product))}</span></div>
+          <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(isSquareFootProduct(product) ? 0 : priceValue(product))}</span></div>
           <div class="product-controls">
             <button class="add-button" type="button">Add to Order</button>
           </div>
@@ -7241,14 +7276,20 @@
         detailsToggle.textContent = isExpanded ? 'View Details' : 'Hide Details';
         productDetails.hidden = isExpanded;
       });
-      card.querySelectorAll('select').forEach((select) => {
-        select.addEventListener('change', () => updateProductSubtotal(card, product));
+      card.querySelectorAll('select, input').forEach((field) => {
+        field.addEventListener('change', () => updateProductSubtotal(card, product));
+        field.addEventListener('input', () => updateProductSubtotal(card, product));
       });
       card.querySelector('.add-button').addEventListener('click', () => {
         const quantity = getSelectedQuantity(card, product);
+        if (isSquareFootProduct(product) && quantity <= 0) {
+          setStoreMessage('Please enter square feet before adding this tile to your order.');
+          return;
+        }
+        clearStoreMessage();
         const selections = getSelectedOptions(card, product);
         const unitPrice = getSelectedUnitPrice(card, product);
-        addToCart(product.id, quantity, selections, unitPrice);
+        addToCart(product.id, quantity, selections, unitPrice, getProductUnit(product));
       });
       updateProductSubtotal(card, product);
       return card;
@@ -7343,14 +7384,14 @@
       sections.forEach((section) => sectionObserver.observe(section));
     };
 
-    const getCartKey = (productId, selections, unitPrice) => `${productId}:${JSON.stringify(selections)}:${unitPrice ?? 'quote'}`;
+    const getCartKey = (productId, selections, unitPrice, unit) => `${productId}:${JSON.stringify(selections)}:${unitPrice ?? 'quote'}:${unit}`;
 
-    const addToCart = (productId, quantity, selections = {}, unitPrice = null) => {
+    const addToCart = (productId, quantity, selections = {}, unitPrice = null, unit = 'each') => {
       const product = STORE_PRODUCTS.find((item) => item.id === productId);
       if (!product) return;
-      const key = getCartKey(productId, selections, unitPrice);
+      const key = getCartKey(productId, selections, unitPrice, unit);
       const existing = cart.get(key);
-      cart.set(key, { product, quantity: (existing?.quantity || 0) + quantity, selections, unitPrice });
+      cart.set(key, { product, quantity: (existing?.quantity || 0) + quantity, selections, unitPrice, unit });
       renderCart();
     };
 
@@ -7366,19 +7407,23 @@
           const selections = Object.entries(entry.selections)
             .map(([label, value]) => `${label}: ${value}`)
             .join(' | ');
+          const unit = entry.unit || getProductUnit(entry.product);
+          const quantityLabel = formatQuantity(entry.quantity, unit);
           item.innerHTML = `
-            <strong>${entry.product.name}</strong>
-            <small>${formatUnitPrice(entry.unitPrice)} each - ${lineTotal}</small>
+            <strong>${entry.product.name} &mdash; ${quantityLabel}</strong>
+            <small>${formatUnitPrice(entry.unitPrice, entry.product)} - ${lineTotal}</small>
             ${selections ? `<small>${selections}</small>` : ''}
             <div class="cart-item-actions">
-              <input type="number" min="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">
+              <input type="number" min="${unit === 'sq ft' ? '0' : '1'}" step="${unit === 'sq ft' ? '0.01' : '1'}" value="${entry.quantity}" aria-label="Update ${unit === 'sq ft' ? 'square feet' : 'quantity'} for ${entry.product.name}">
               <button class="remove-item" type="button">Remove</button>
             </div>
           `;
           item.querySelector('input').addEventListener('input', (event) => {
-            entry.quantity = Math.max(1, parseInt(event.target.value, 10) || 1);
+            entry.quantity = unit === 'sq ft'
+              ? Math.max(0, parseFloat(event.target.value) || 0)
+              : Math.max(1, parseInt(event.target.value, 10) || 1);
             cart.set(cartKey, entry);
-            updateTotal();
+            renderCart();
           });
           item.querySelector('button').addEventListener('click', () => {
             cart.delete(cartKey);
@@ -7414,7 +7459,9 @@
         const selections = Object.entries(entry.selections)
           .map(([label, value]) => `${label}: ${value}`)
           .join(' | ');
-        return `- ${entry.product.name} | Category: ${entry.product.category} | Qty: ${entry.quantity} | Unit: ${formatUnitPrice(entry.unitPrice)} | Line: ${lineTotal}${selections ? ` | ${selections}` : ''}`;
+        const unit = entry.unit || getProductUnit(entry.product);
+        const amountLabel = unit === 'sq ft' ? `${entry.quantity} sq ft` : `Qty ${entry.quantity}`;
+        return `- ${entry.product.name} | Category: ${entry.product.category} | ${amountLabel} | Unit: ${formatUnitPrice(entry.unitPrice, entry.product)} | Line: ${lineTotal}${selections ? ` | ${selections}` : ''}`;
       }).join('\n');
       return items || 'No items selected';
     };
