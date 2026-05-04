@@ -825,6 +825,19 @@
       gap: 8px;
     }
 
+    .cart-item-main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cart-item-details {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
     .cart-item strong { color: var(--navy); font-size: 14px; }
     .cart-item small { color: var(--muted); }
 
@@ -832,7 +845,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      justify-content: space-between;
+      justify-content: flex-start;
     }
 
     .cart-item-actions input {
@@ -847,6 +860,7 @@
       color: var(--navy);
       font-weight: 900;
       cursor: pointer;
+      flex: 0 0 auto;
       margin-left: auto;
       text-align: right;
     }
@@ -8302,14 +8316,20 @@
             `
             : '';
           item.innerHTML = `
-            <strong>${entry.product.name}${isTileEntry ? '' : ` &mdash; ${quantityLabel}`}</strong>
-            ${tileSummary}
-            <small>Subtotal: ${lineTotal}</small>
-            ${selections ? `<small>${selections}</small>` : ''}
-            <div class="cart-item-actions">
-              ${isTileEntry ? '' : `<input type="number" min="0" step="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">`}
+            <div class="cart-item-main">
+              <div class="cart-item-details">
+                <strong>${entry.product.name}${isTileEntry ? '' : ` &mdash; ${quantityLabel}`}</strong>
+                ${tileSummary}
+                <small>Subtotal: ${lineTotal}</small>
+                ${selections ? `<small>${selections}</small>` : ''}
+              </div>
               <button class="remove-item" type="button">Remove</button>
             </div>
+            ${isTileEntry ? '' : `
+              <div class="cart-item-actions">
+                <input type="number" min="0" step="1" value="${entry.quantity}" aria-label="Update quantity for ${entry.product.name}">
+              </div>
+            `}
           `;
           const quantityInput = item.querySelector('input');
           if (quantityInput) {
