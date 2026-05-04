@@ -7824,7 +7824,7 @@
       const effectiveSqFt = contingency ? projectSqFt * 1.15 : projectSqFt;
       const tileSqFt = getTileSqFt(product, selectedSize);
       const estimatedPieces = getEstimatedTilePieces(product, selectedSize, projectSqFt, contingency);
-      const lineTotal = unitPrice === null || !effectiveSqFt
+      const lineTotal = unitPrice === null
         ? null
         : calculateTileSubtotal(projectSqFt, unitPrice, contingency);
       const tileUnit = getTileQuantityUnit(product);
@@ -7880,7 +7880,7 @@
 
     const formatQuantity = (quantity, unit) => {
       if (unit === 'sq ft') return formatSquareFeet(quantity);
-      return `Qty ${Math.max(1, parseInt(quantity, 10) || 1)}`;
+      return `Qty ${Math.max(0, parseInt(quantity, 10) || 0)}`;
     };
 
     const formatUnitPrice = (unitPrice, product) => {
@@ -8216,13 +8216,6 @@
             && (field.matches('[data-option-role="project-square-feet"], [data-tile-contingency], select'));
           updateProductSubtotal(card, product, { recalculateTileEstimate });
           if (!cart.has(product.id)) return;
-          const shouldRemove = isSquareFootProduct(product)
-            ? getTileCalculation(card, product).projectSqFt <= 0
-            : getSelectedQuantity(card, product) <= 0;
-          if (shouldRemove) {
-            removeCartItemForProduct(product.id);
-            return;
-          }
           cart.set(product.id, buildCartEntry(card, product));
           renderCart();
         };
@@ -8385,12 +8378,6 @@
           if (quantityInput) {
             quantityInput.addEventListener('input', (event) => {
               const newQuantity = Math.max(0, parseInt(event.target.value, 10) || 0);
-              if (newQuantity <= 0) {
-                cart.delete(cartKey);
-                resetProductFields(entry.product.id);
-                renderCart();
-                return;
-              }
               entry.quantity = newQuantity;
               entry.lineTotal = entry.unitPrice === null ? null : entry.unitPrice * newQuantity;
               cart.set(cartKey, entry);
