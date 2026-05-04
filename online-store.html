@@ -347,8 +347,8 @@
       margin: 0;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
-      font-size: 8.5px;
-      line-height: 1.2;
+      font-size: 11px;
+      line-height: 1.22;
     }
 
     .product-card p {
@@ -715,15 +715,21 @@
 
     .product-lightbox-close {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      z-index: 3;
-      width: 42px;
-      height: 42px;
-      background: var(--red);
-      color: #fff;
-      font-size: 28px;
+      top: -18px;
+      right: -18px;
+      z-index: 10;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: #c8242f;
+      color: #ffffff;
+      font-size: 26px;
       line-height: 1;
+      box-shadow: 0 8px 22px rgba(0, 40, 104, .24);
+    }
+
+    .product-lightbox-close:hover {
+      background: #a91d27;
     }
 
     .product-lightbox-nav {
@@ -882,7 +888,7 @@
       .category-helper { margin: 0 -22px; border-left: 0; border-right: 0; }
       .category-helper h2 { font-size: 16px; }
       .product-lightbox { padding: 22px; }
-      .product-lightbox-close { top: 10px; right: 10px; }
+      .product-lightbox-close { top: -14px; right: -14px; }
       .product-lightbox-nav { width: 32px; height: 40px; font-size: 26px; }
       .product-lightbox-prev { left: 8px; }
       .product-lightbox-next { right: 8px; }
@@ -969,8 +975,8 @@
   </main>
 
   <div id="product-lightbox" class="product-lightbox" aria-hidden="true" role="dialog" aria-label="Expanded product image">
-    <button class="product-lightbox-close" type="button" aria-label="Close product image">&times;</button>
     <div class="product-lightbox-frame">
+      <button class="product-lightbox-close" type="button" aria-label="Close product image">&times;</button>
       <button class="product-lightbox-nav product-lightbox-prev" type="button" aria-label="Previous product image">&lsaquo;</button>
       <img src="" alt="">
       <button class="product-lightbox-nav product-lightbox-next" type="button" aria-label="Next product image">&rsaquo;</button>
@@ -7262,11 +7268,12 @@
     const priceValue = (product) => typeof product.priceValue === 'number' ? product.priceValue : null;
     const isSquareFootProduct = (product) => squareFootCategories.includes(product.category);
     const getProductUnit = (product) => isSquareFootProduct(product) ? 'sq ft' : 'each';
-    const priceLabel = (product) => {
-      const unitPrice = priceValue(product);
+    const formatPriceWithUnit = (unitPrice, unit) => {
       if (unitPrice === null) return 'Request quote';
-      return isSquareFootProduct(product) ? `${money.format(unitPrice)} / sq ft` : `${money.format(unitPrice)} each`;
+      return `${money.format(unitPrice)} / ${unit}`;
     };
+    const formatProductPrice = (product) => formatPriceWithUnit(priceValue(product), getProductUnit(product));
+    const priceLabel = formatProductPrice;
     const getCategoryLabel = (categoryId) => helperCategories.find((category) => category.id === categoryId)?.label || 'Vanities';
     const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char];
@@ -7381,9 +7388,7 @@
     };
 
     const formatUnitPrice = (unitPrice, product) => {
-      if (unitPrice === null) return 'Request quote';
-      const unit = product ? getProductUnit(product) : 'each';
-      return unit === 'sq ft' ? `${money.format(unitPrice)} / sq ft` : `${money.format(unitPrice)} each`;
+      return formatPriceWithUnit(unitPrice, product ? getProductUnit(product) : 'each');
     };
 
     const setActiveCategory = (categoryId) => {
