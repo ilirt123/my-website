@@ -301,7 +301,7 @@
       margin: 0;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
-      font-size: 24px;
+      font-size: 19.2px;
       text-transform: uppercase;
     }
 
@@ -801,6 +801,10 @@
       text-transform: uppercase;
     }
 
+    .category-menu-label {
+      font-size: 8.8px;
+    }
+
     .category-menu a:hover,
     .category-menu a.active {
       border-color: var(--red);
@@ -1229,7 +1233,7 @@
       }
       .store-toolbar select { width: 100%; flex: none; }
       .mobile-category-select { display: block; }
-      .store-category h2 { font-size: 20px; }
+      .store-category h2 { font-size: 16px; }
       .category-helper { margin: 0 -22px; border-left: 0; border-right: 0; }
       .category-helper h2 { font-size: 16px; }
       .product-lightbox { padding: 22px; }
@@ -7948,7 +7952,7 @@
         link.dataset.categoryLink = category.id;
         link.dataset.hasMatches = String(Boolean(counts[category.id]));
         if (!counts[category.id]) link.classList.add('is-empty');
-        link.innerHTML = `${escapeHTML(category.label)}${counts[category.id] ? `<span>${counts[category.id]}</span>` : ''}`;
+        link.innerHTML = `<span class="category-menu-label">${escapeHTML(category.label)}</span>${counts[category.id] ? `<span>${counts[category.id]}</span>` : ''}`;
         link.addEventListener('click', (event) => {
           event.preventDefault();
           if (normalizeSearchText(productSearch.value) && !counts[category.id]) {
