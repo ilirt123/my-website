@@ -959,6 +959,42 @@
     .product-lightbox-next { right: -46px; }
     .product-lightbox-nav[hidden] { display: none; }
 
+    .product-lightbox-dots {
+      position: absolute;
+      left: 50%;
+      bottom: -34px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .product-lightbox-dots[hidden] {
+      display: none;
+    }
+
+    .product-lightbox-dot {
+      width: 9px;
+      height: 9px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .65);
+      cursor: pointer;
+      padding: 0;
+      box-shadow: 0 4px 12px rgba(0, 40, 104, .25);
+    }
+
+    .product-lightbox-dot.is-active {
+      background: #c8242f;
+      transform: scale(1.25);
+    }
+
+    .product-lightbox-dot:hover {
+      background: #fff;
+    }
+
     @keyframes lightboxArrowPulse {
       0%, 100% {
         box-shadow: 0 8px 22px rgba(0, 40, 104, .20);
@@ -1089,6 +1125,8 @@
       .product-lightbox-nav { width: 32px; height: 40px; font-size: 26px; }
       .product-lightbox-prev { left: 8px; }
       .product-lightbox-next { right: 8px; }
+      .product-lightbox-dots { bottom: -28px; gap: 7px; }
+      .product-lightbox-dot { width: 8px; height: 8px; }
       .store-back-to-top { right: 16px; bottom: 18px; width: 44px; height: 44px; }
     }
   </style>
@@ -1177,6 +1215,7 @@
       <button class="product-lightbox-nav product-lightbox-prev" type="button" aria-label="Previous product image">&lsaquo;</button>
       <img src="" alt="">
       <button class="product-lightbox-nav product-lightbox-next" type="button" aria-label="Next product image">&rsaquo;</button>
+      <div class="product-lightbox-dots" aria-label="Product photo thumbnails" hidden></div>
       <div class="product-lightbox-zoom" aria-label="Image zoom controls">
         <button type="button" data-zoom="out" aria-label="Zoom out">-</button>
         <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
@@ -7418,6 +7457,7 @@
     const productLightboxClose = productLightbox.querySelector('.product-lightbox-close');
     const productLightboxPrev = productLightbox.querySelector('.product-lightbox-prev');
     const productLightboxNext = productLightbox.querySelector('.product-lightbox-next');
+    const productLightboxDots = productLightbox.querySelector('.product-lightbox-dots');
     const storeBackToTop = document.querySelector('#store-back-to-top');
     const cart = new Map();
 
@@ -8293,15 +8333,47 @@
       return items || 'No items selected';
     };
 
+    const getLightboxImages = () => {
+      if (!lightboxProduct) return [];
+      return lightboxProduct.images?.length ? lightboxProduct.images : [lightboxProduct.image];
+    };
+
+    const renderLightboxDots = () => {
+      if (!productLightboxDots) return;
+      const images = getLightboxImages();
+      productLightboxDots.innerHTML = '';
+
+      if (images.length <= 1) {
+        productLightboxDots.hidden = true;
+        return;
+      }
+
+      productLightboxDots.hidden = false;
+      images.forEach((image, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'product-lightbox-dot';
+        dot.setAttribute('aria-label', `View photo ${index + 1}`);
+        dot.classList.toggle('is-active', index === lightboxImageIndex);
+        dot.addEventListener('click', () => {
+          lightboxImageIndex = index;
+          lightboxZoom = 1;
+          updateLightboxImage();
+        });
+        productLightboxDots.appendChild(dot);
+      });
+    };
+
     const updateLightboxImage = () => {
       if (!lightboxProduct) return;
-      const images = lightboxProduct.images?.length ? lightboxProduct.images : [lightboxProduct.image];
+      const images = getLightboxImages();
       productLightboxImage.src = images[lightboxImageIndex];
       productLightboxImage.alt = lightboxProduct.name;
       productLightboxImage.style.transform = `scale(${lightboxZoom})`;
       const hasMultipleImages = images.length > 1;
       productLightboxPrev.hidden = !hasMultipleImages;
       productLightboxNext.hidden = !hasMultipleImages;
+      renderLightboxDots();
     };
 
     const openProductLightbox = (productId, index = 0) => {
@@ -8318,12 +8390,16 @@
     const closeProductLightbox = () => {
       productLightbox.classList.remove('open');
       productLightbox.setAttribute('aria-hidden', 'true');
+      if (productLightboxDots) {
+        productLightboxDots.hidden = true;
+        productLightboxDots.innerHTML = '';
+      }
       document.body.style.overflow = '';
     };
 
     const moveProductLightbox = (direction) => {
       if (!lightboxProduct) return;
-      const images = lightboxProduct.images?.length ? lightboxProduct.images : [lightboxProduct.image];
+      const images = getLightboxImages();
       if (images.length <= 1) return;
       lightboxImageIndex = (lightboxImageIndex + direction + images.length) % images.length;
       lightboxZoom = 1;
