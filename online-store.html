@@ -126,8 +126,7 @@
     }
 
     .store-button,
-    .submit-order,
-    .add-button {
+    .submit-order {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -145,7 +144,7 @@
 
     .store-button { min-height: 52px; padding: 15px 28px; box-shadow: 0 16px 34px rgba(200, 36, 47, .24); }
     .store-button.secondary { background: var(--navy); box-shadow: none; }
-    .store-button:hover, .submit-order:hover, .add-button:hover { background: var(--red-dark); }
+    .store-button:hover, .submit-order:hover { background: var(--red-dark); }
     .store-button.secondary:hover { background: #001d4a; }
 
     .phone-link {
@@ -193,6 +192,14 @@
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
       font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .store-cart-count {
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-size: 13px;
       font-weight: 900;
       text-transform: uppercase;
     }
@@ -458,21 +465,6 @@
       text-transform: uppercase;
     }
 
-    .product-controls {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .product-controls input {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid #9fb0c4;
-      padding: 8px;
-      text-align: center;
-    }
-
     .store-side-panel {
       position: sticky;
       top: 20px;
@@ -549,6 +541,15 @@
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
       font-size: 24px;
+      text-transform: uppercase;
+    }
+
+    .cart-count {
+      margin: -10px 0 0;
+      color: var(--red);
+      font-family: "Montserrat", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
       text-transform: uppercase;
     }
 
@@ -894,6 +895,7 @@
         <div class="store-panel">
           <div class="store-toolbar">
             <strong id="product-count" class="product-count">All Materials</strong>
+            <span id="store-cart-count" class="store-cart-count">Cart: 0 items</span>
             <select id="mobile-category-select" class="mobile-category-select" aria-label="Jump to product category">
               <option value="">Jump to Category</option>
             </select>
@@ -903,6 +905,7 @@
 
         <aside class="store-panel cart-panel" aria-label="Order summary">
           <h2>Order Summary</h2>
+          <p id="cart-count" class="cart-count">0 items selected</p>
           <div id="cart-list" class="cart-list">
             <p class="cart-empty">Select materials to build your order request.</p>
           </div>
@@ -7158,6 +7161,8 @@
     const productCount = document.querySelector('#product-count');
     const productSearch = document.querySelector('#product-search');
     const cartList = document.querySelector('#cart-list');
+    const cartCount = document.querySelector('#cart-count');
+    const storeCartCount = document.querySelector('#store-cart-count');
     const cartTotal = document.querySelector('#cart-total');
     const orderForm = document.querySelector('#material-order-form');
     const storeMessage = document.querySelector('#store-message');
@@ -7306,8 +7311,8 @@
         return Math.max(0, parseFloat(squareFootInput?.value) || 0);
       }
       const quantitySelect = card.querySelector('[data-option-role="quantity"]');
-      if (quantitySelect) return Math.max(1, parseInt(quantitySelect.value, 10) || 1);
-      return 1;
+      if (quantitySelect) return Math.max(0, parseInt(quantitySelect.value, 10) || 0);
+      return 0;
     };
 
     const getSelectedOptions = (card, product) => {
@@ -7414,8 +7419,55 @@
       if (subtotal) subtotal.textContent = unitPrice === null ? 'Quote needed' : money.format(unitPrice * quantity);
     };
 
+    const syncProductCardFromCart = (card, product) => {
+      const entry = cart.get(product.id);
+      const quantityField = card.querySelector('[data-option-role="quantity"], [data-option-role="square-footage"]');
+      if (quantityField) quantityField.value = entry ? entry.quantity : '0';
+
+      getProductDetailOptions(product).forEach((option, index) => {
+        const select = card.querySelector(`[data-option-index="${index}"]`);
+        const value = entry?.selections?.[option.label || 'Option'];
+        if (select && value) select.value = value;
+      });
+
+      updateProductSubtotal(card, product);
+    };
+
+    const resetProductFields = (productId, quantity = '0') => {
+      document.querySelectorAll(`[data-product-id="${productId}"]`).forEach((card) => {
+        const quantityField = card.querySelector('[data-option-role="quantity"], [data-option-role="square-footage"]');
+        if (quantityField) quantityField.value = String(quantity);
+        const product = STORE_PRODUCTS.find((item) => item.id === productId);
+        if (product) updateProductSubtotal(card, product);
+      });
+    };
+
+    const updateCartFromProductCard = (card, product) => {
+      const quantity = getSelectedQuantity(card, product);
+      if (quantity <= 0) {
+        cart.delete(product.id);
+        renderCart();
+        return;
+      }
+
+      const selections = getSelectedOptions(card, product);
+      const unitPrice = getSelectedUnitPrice(card, product);
+      cart.set(product.id, {
+        product,
+        quantity,
+        selections,
+        unitPrice,
+        unit: getProductUnit(product)
+      });
+      clearStoreMessage();
+      renderCart();
+    };
+
     const renderOptionSelect = (option, index, role = 'detail') => {
-      const options = option.values.map((value) => {
+      const optionValues = role === 'quantity'
+        ? [{ value: '0', label: '0' }, ...option.values]
+        : option.values;
+      const options = optionValues.map((value) => {
         const priceSuffix = typeof value.priceValue === 'number' ? ` - ${money.format(value.priceValue)}` : '';
         return `<option value="${escapeHTML(value.value || value.label)}">${escapeHTML(value.label)}${escapeHTML(priceSuffix)}</option>`;
       }).join('');
@@ -7435,6 +7487,7 @@
     const buildProductCard = (product) => {
       const card = document.createElement('article');
       card.className = 'product-card';
+      card.dataset.productId = product.id;
       const quantityOption = getProductQuantityOption(product) || { label: 'Quantity', values: [{ value: '1', label: '1' }] };
       const detailOptions = getProductDetailOptions(product);
       const detailsId = `product-details-${product.id}`;
@@ -7464,9 +7517,6 @@
             ${renderQuantityControl(product, quantityOption)}
           </div>
           <div class="product-subtotal"><span>Subtotal</span><span data-product-subtotal>${priceValue(product) === null ? 'Quote needed' : money.format(isSquareFootProduct(product) ? 0 : priceValue(product))}</span></div>
-          <div class="product-controls">
-            <button class="add-button" type="button">Add to Order</button>
-          </div>
         </div>
       `;
       const cardImage = card.querySelector('.product-image');
@@ -7491,21 +7541,14 @@
         productDetails.hidden = isExpanded;
       });
       card.querySelectorAll('select, input').forEach((field) => {
-        field.addEventListener('change', () => updateProductSubtotal(card, product));
-        field.addEventListener('input', () => updateProductSubtotal(card, product));
+        const syncCart = () => {
+          updateProductSubtotal(card, product);
+          updateCartFromProductCard(card, product);
+        };
+        field.addEventListener('change', syncCart);
+        field.addEventListener('input', syncCart);
       });
-      card.querySelector('.add-button').addEventListener('click', () => {
-        const quantity = getSelectedQuantity(card, product);
-        if (isSquareFootProduct(product) && quantity <= 0) {
-          setStoreMessage('Please enter square feet before adding this tile to your order.');
-          return;
-        }
-        clearStoreMessage();
-        const selections = getSelectedOptions(card, product);
-        const unitPrice = getSelectedUnitPrice(card, product);
-        addToCart(product.id, quantity, selections, unitPrice, getProductUnit(product));
-      });
-      updateProductSubtotal(card, product);
+      syncProductCardFromCart(card, product);
       return card;
     };
 
@@ -7598,15 +7641,11 @@
       sections.forEach((section) => sectionObserver.observe(section));
     };
 
-    const getCartKey = (productId, selections, unitPrice, unit) => `${productId}:${JSON.stringify(selections)}:${unitPrice ?? 'quote'}:${unit}`;
-
-    const addToCart = (productId, quantity, selections = {}, unitPrice = null, unit = 'each') => {
-      const product = STORE_PRODUCTS.find((item) => item.id === productId);
-      if (!product) return;
-      const key = getCartKey(productId, selections, unitPrice, unit);
-      const existing = cart.get(key);
-      cart.set(key, { product, quantity: (existing?.quantity || 0) + quantity, selections, unitPrice, unit });
-      renderCart();
+    const updateCartCount = () => {
+      const count = cart.size;
+      const selectedLabel = count === 1 ? '1 item selected' : `${count} items selected`;
+      if (cartCount) cartCount.textContent = selectedLabel;
+      if (storeCartCount) storeCartCount.textContent = `Cart: ${count === 1 ? '1 item' : `${count} items`}`;
     };
 
     const renderCart = () => {
@@ -7628,24 +7667,34 @@
             <small>${formatUnitPrice(entry.unitPrice, entry.product)} - ${lineTotal}</small>
             ${selections ? `<small>${selections}</small>` : ''}
             <div class="cart-item-actions">
-              <input type="number" min="${unit === 'sq ft' ? '0' : '1'}" step="${unit === 'sq ft' ? '0.01' : '1'}" value="${entry.quantity}" aria-label="Update ${unit === 'sq ft' ? 'square feet' : 'quantity'} for ${entry.product.name}">
+              <input type="number" min="0" step="${unit === 'sq ft' ? '0.01' : '1'}" value="${entry.quantity}" aria-label="Update ${unit === 'sq ft' ? 'square feet' : 'quantity'} for ${entry.product.name}">
               <button class="remove-item" type="button">Remove</button>
             </div>
           `;
           item.querySelector('input').addEventListener('input', (event) => {
-            entry.quantity = unit === 'sq ft'
+            const newQuantity = unit === 'sq ft'
               ? Math.max(0, parseFloat(event.target.value) || 0)
-              : Math.max(1, parseInt(event.target.value, 10) || 1);
+              : Math.max(0, parseInt(event.target.value, 10) || 0);
+            if (newQuantity <= 0) {
+              cart.delete(cartKey);
+              resetProductFields(entry.product.id);
+              renderCart();
+              return;
+            }
+            entry.quantity = newQuantity;
             cart.set(cartKey, entry);
+            resetProductFields(entry.product.id, entry.quantity);
             renderCart();
           });
           item.querySelector('button').addEventListener('click', () => {
             cart.delete(cartKey);
+            resetProductFields(entry.product.id);
             renderCart();
           });
           cartList.appendChild(item);
         });
       }
+      updateCartCount();
       updateTotal();
     };
 
@@ -7759,6 +7808,11 @@
       event.preventDefault();
       clearStoreMessage();
 
+      if (!cart.size) {
+        setStoreMessage('Please select at least one material before submitting your order.');
+        return;
+      }
+
       if (!orderForm.checkValidity()) {
         setStoreMessage('Please complete all required fields before submitting your order.');
         orderForm.reportValidity();
@@ -7771,11 +7825,6 @@
       const email = String(formData.get('email') || '').trim();
       const addressZip = String(formData.get('addressZip') || '').trim();
       const notes = String(formData.get('notes') || '').trim();
-
-      if (!cart.size) {
-        setStoreMessage('Please select at least one material before submitting your order.');
-        return;
-      }
 
       const [firstName, ...lastParts] = customerName.split(/\s+/);
       const lastName = lastParts.join(' ') || 'Customer';
