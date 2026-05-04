@@ -793,13 +793,6 @@
       gap: 10px;
     }
 
-    .category-helper-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
     .category-helper h2 {
       margin: 0;
       color: var(--navy);
@@ -856,20 +849,18 @@
       z-index: 20;
     }
 
+    .cart-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .cart-panel h2 {
       margin: 0;
       color: var(--navy);
       font-family: "Montserrat", sans-serif;
       font-size: 24px;
-      text-transform: uppercase;
-    }
-
-    .cart-count {
-      margin: -10px 0 0;
-      color: var(--red);
-      font-family: "Montserrat", sans-serif;
-      font-size: 13px;
-      font-weight: 900;
       text-transform: uppercase;
     }
 
@@ -1312,15 +1303,7 @@
       <div class="store-shell">
         <div class="store-side-panel">
           <nav class="store-panel category-helper" aria-label="Online store category menu">
-            <div class="category-helper-title">
-              <h2>Select an Item</h2>
-              <div class="store-cart-indicator" aria-label="Selected cart items">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 18a2 2 0 1 1-.1 0H7Zm10 0a2 2 0 1 1-.1 0h.1ZM5.2 4l.8 2h15l-2.2 8H8.1L5.3 4H2V2h4.7l.6 2h-2.1Zm3.5 8h8.6l1.1-4H7.6l1.1 4Z"></path>
-                </svg>
-                <span id="store-cart-count">0</span>
-              </div>
-            </div>
+            <h2>Select an Item</h2>
             <div id="category-menu" class="category-menu"></div>
           </nav>
         </div>
@@ -1336,8 +1319,15 @@
         </div>
 
         <aside class="store-panel cart-panel" aria-label="Order summary">
-          <h2>Order Summary</h2>
-          <p id="cart-count" class="cart-count">0 items selected</p>
+          <div class="cart-heading-row">
+            <h2>Order Summary</h2>
+            <div class="store-cart-indicator" aria-label="Cart item count">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 18a2 2 0 1 1-.1 0H7Zm10 0a2 2 0 1 1-.1 0h.1ZM5.2 4l.8 2h15l-2.2 8H8.1L5.3 4H2V2h4.7l.6 2h-2.1Zm3.5 8h8.6l1.1-4H7.6l1.1 4Z"></path>
+              </svg>
+              <span id="store-cart-count">0</span>
+            </div>
+          </div>
           <div id="cart-list" class="cart-list">
             <p class="cart-empty">Select materials to build your order request.</p>
           </div>
@@ -7594,7 +7584,6 @@
     const productCount = document.querySelector('#product-count');
     const productSearch = document.querySelector('#product-search');
     const cartList = document.querySelector('#cart-list');
-    const cartCount = document.querySelector('#cart-count');
     const storeCartCount = document.querySelector('#store-cart-count');
     const cartTotal = document.querySelector('#cart-total');
     const orderForm = document.querySelector('#material-order-form');
@@ -8358,8 +8347,6 @@
 
     const updateCartCount = () => {
       const count = cart.size;
-      const selectedLabel = count === 1 ? '1 item selected' : `${count} items selected`;
-      if (cartCount) cartCount.textContent = selectedLabel;
       if (storeCartCount) storeCartCount.textContent = String(count);
     };
 
