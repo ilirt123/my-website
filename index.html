@@ -37,7 +37,14 @@
     </a>
     <nav class="desktop-nav" aria-label="Desktop navigation">
       <a href="#home">Home</a>
-      <a href="#bathrooms">Bathrooms</a>
+      <div class="nav-dropdown">
+        <a href="#bathrooms" aria-haspopup="true">Bathrooms <span class="dropdown-arrow" aria-hidden="true">&#9662;</span></a>
+        <div class="dropdown-menu">
+          <a href="#full-bathroom">Full Bathroom</a>
+          <a href="#half-bathroom">Half Bathroom</a>
+          <a href="#shower">Shower</a>
+        </div>
+      </div>
       <a href="https://www.allamericantilesmi.com/online-store" target="_blank" rel="noopener">Online Store</a>
     </nav>
     <nav id="primary-navigation" class="nav mobile-header-menu header-card-menu" aria-label="Primary navigation">
@@ -198,7 +205,6 @@
       <div class="bathroom-page-hero">
         <div class="bathroom-page-hero-copy">
           <p class="mini-title">ALL AMERICAN TILES</p>
-          <h2>Bathroom Remodeling Services</h2>
           <p>Beautiful tile. Expert craftsmanship. Built to last.</p>
           <a class="red-btn" href="#quote">Schedule Free Estimate</a>
         </div>
@@ -215,28 +221,28 @@
 
       <div class="section bathroom-service-options">
         <div class="section-head">
-          <h2>Bathroom Services We Offer</h2>
+          <h2>Bathroom Services</h2>
           <div class="line"></div>
         </div>
         <div class="bathroom-service-grid">
           <article id="full-bathroom" class="bathroom-service-card">
             <img src="assets/full-bathroom-remodel-service.jpg" alt="Full bathroom remodel tile work">
             <div>
-              <h3>Full Bathroom Remodel</h3>
+              <h3>Full Bathroom</h3>
               <p>Complete bathroom updates including floor tile, shower tile, waterproofing, vanity coordination, toilet replacement, trim, grout, and finishing details.</p>
             </div>
           </article>
           <article id="shower" class="bathroom-service-card">
             <img src="assets/bathroom-shower-img-1272.jpg" alt="Custom tiled shower remodel">
             <div>
-              <h3>Shower Remodel</h3>
+              <h3>Shower</h3>
               <p>Custom tiled showers with waterproofing systems, niches, curbs, shower floors, wall tile, and clean tile layout.</p>
             </div>
           </article>
           <article id="half-bathroom" class="bathroom-service-card">
             <img src="assets/half-bathroom-powder-room.png" alt="Half bathroom powder room remodel">
             <div>
-              <h3>Half Bathroom Remodel</h3>
+              <h3>Half Bathroom</h3>
               <p>Powder room updates with floor tile, accent walls, backsplash details, and polished transitions.</p>
             </div>
           </article>
@@ -256,7 +262,7 @@
 
       <div id="process" class="section bathroom-process-section">
         <div class="section-head">
-          <h2>Our Bathroom Remodeling Process</h2>
+          <h2>Process</h2>
           <div class="line"></div>
         </div>
         <div class="bathroom-process-list">
