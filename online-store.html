@@ -6992,6 +6992,8 @@
       { id: 'light-fixtures', label: 'Light Fixtures' },
     ];
 
+    const CATEGORY_ORDER = helperCategories.map((category) => category.label);
+
     const categoryIdByLabel = helperCategories.reduce((acc, category) => {
       acc[category.label] = category.id;
       return acc;
@@ -7038,7 +7040,28 @@
       return token;
     };
 
-    const buildProductSearchText = (product) => {
+    const categoryMatchesQuery = (categoryName, query) => {
+      const category = normalizeSearchText(categoryName);
+      const categoryTerms = `${category} ${category.split(' ').map(singularizeToken).join(' ')}`;
+      const tokens = normalizeSearchText(query).split(' ').filter(Boolean);
+
+      return tokens.every((rawToken) => {
+        const token = singularizeToken(rawToken);
+        return category.includes(rawToken) || categoryTerms.includes(token);
+      });
+    };
+
+    const getMatchingCategoriesFromQuery = (query) => {
+      const normalizedQuery = normalizeSearchText(query);
+      if (!normalizedQuery) return [];
+
+      return CATEGORY_ORDER.filter((categoryName) => categoryMatchesQuery(categoryName, normalizedQuery));
+    };
+
+    const productMatchesText = (product, query) => {
+      const normalizedQuery = normalizeSearchText(query);
+      if (!normalizedQuery) return true;
+
       const optionText = (product.options || [])
         .flatMap((option) => [
           option.label,
@@ -7057,25 +7080,16 @@
         priceLabel(product),
         optionText
       ].join(' '));
-      const singularText = normalizedText
+      const productText = `${normalizedText} ${normalizedText
         .split(' ')
         .map(singularizeToken)
         .filter(Boolean)
-        .join(' ');
-
-      return `${normalizedText} ${singularText}`;
-    };
-
-    const productMatchesSearch = (product, query) => {
-      const normalizedQuery = normalizeSearchText(query);
-      if (!normalizedQuery) return true;
-
-      const productText = buildProductSearchText(product);
+        .join(' ')}`;
       const tokens = normalizedQuery.split(' ').filter(Boolean);
 
-      return tokens.every((token) => {
-        const singular = singularizeToken(token);
-        return productText.includes(token) || productText.includes(singular);
+      return tokens.every((rawToken) => {
+        const token = singularizeToken(rawToken);
+        return productText.includes(rawToken) || productText.includes(token);
       });
     };
 
@@ -7128,7 +7142,14 @@
     };
 
     const getVisibleProducts = () => {
-      return STORE_PRODUCTS.filter((product) => productMatchesSearch(product, productSearch.value));
+      const searchQuery = productSearch.value;
+      const matchingCategories = getMatchingCategoriesFromQuery(searchQuery);
+
+      if (matchingCategories.length) {
+        return STORE_PRODUCTS.filter((product) => matchingCategories.includes(product.category));
+      }
+
+      return STORE_PRODUCTS.filter((product) => productMatchesText(product, searchQuery));
     };
 
     const renderCategoryMenu = (visibleProducts) => {
