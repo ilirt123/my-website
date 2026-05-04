@@ -7608,7 +7608,7 @@
     let lightboxProduct = null;
     let lightboxImageIndex = 0;
     let lightboxZoom = 1;
-    let activeCategoryId = helperCategories[0].id;
+    let activeCategoryId = null;
 
     const priceValue = (product) => typeof product.priceValue === 'number' ? product.priceValue : null;
     const isSquareFootProduct = (product) => squareFootCategories.includes(product.category);
@@ -7888,20 +7888,38 @@
       activeCategoryId = categoryId;
       document.querySelectorAll('[data-category-link]').forEach((link) => {
         const hasMatches = link.dataset.hasMatches !== 'false';
-        link.classList.toggle('active', link.dataset.categoryLink === categoryId && hasMatches);
+        link.classList.toggle('active', Boolean(categoryId) && link.dataset.categoryLink === categoryId && hasMatches);
       });
       document.querySelectorAll('.store-category').forEach((category) => {
         const isActive = category.dataset.categorySection === categoryId;
         category.classList.toggle('is-active', isActive);
       });
+      if (mobileCategorySelect) {
+        mobileCategorySelect.value = categoryId || '';
+      }
+    };
+
+    const openOnlyCategory = (categoryId, options = {}) => {
+      const { scroll = true } = options;
+      document.querySelectorAll('.store-category').forEach((category) => {
+        const isSelected = category.dataset.categorySection === categoryId;
+        category.open = isSelected;
+        category.classList.toggle('is-active', isSelected);
+      });
+      setActiveCategory(categoryId);
+
+      if (scroll) {
+        document.getElementById(`category-${categoryId}`)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     };
 
     const scrollToCategory = (categoryId) => {
       const target = document.getElementById(`category-${categoryId}`);
       if (!target) return;
-      target.open = true;
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveCategory(categoryId);
+      openOnlyCategory(categoryId);
     };
 
     const getVisibleProducts = () => {
@@ -8246,13 +8264,13 @@
       categoriesToRender.forEach((category) => {
         const categoryProducts = visibleProducts.filter((product) => product.storeCategory === category.id);
         const categoryName = category.label;
-        const isActiveCategory = category.id === activeCategoryId;
+        const isActiveCategory = !searchActive && category.id === activeCategoryId;
         const section = document.createElement('details');
         section.id = `category-${category.id}`;
         section.className = `store-category${isActiveCategory ? ' is-active' : ''}`;
         section.dataset.categorySection = category.id;
         section.dataset.category = categoryName;
-        section.open = true;
+        section.open = searchActive || isActiveCategory;
         section.innerHTML = `
           <summary class="store-category-header">
             <div>
@@ -8287,33 +8305,16 @@
 
       productCount.textContent = `${visibleProducts.length} Materials`;
       renderCategoryMenu(visibleProducts);
-      setActiveCategory(activeCategoryId);
+      if (searchActive) {
+        setActiveCategory(null);
+      } else {
+        setActiveCategory(activeCategoryId);
+      }
       observeCategorySections();
     };
 
     const observeCategorySections = () => {
       if (sectionObserver) sectionObserver.disconnect();
-
-      const sections = document.querySelectorAll('[data-category-section]');
-      if (!sections.length || !('IntersectionObserver' in window)) {
-        setActiveCategory(helperCategories[0].id);
-        return;
-      }
-
-      sectionObserver = new IntersectionObserver((entries) => {
-        const activeEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (activeEntry) {
-          setActiveCategory(activeEntry.target.dataset.categorySection);
-        }
-      }, {
-        rootMargin: '-20% 0px -55% 0px',
-        threshold: [0.1, 0.25, 0.5],
-      });
-
-      sections.forEach((section) => sectionObserver.observe(section));
     };
 
     const updateCartCount = () => {
