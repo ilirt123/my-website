@@ -252,12 +252,33 @@
       text-transform: uppercase;
     }
 
-    .store-cart-count {
-      color: var(--red);
+    .store-cart-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--navy);
       font-family: "Montserrat", sans-serif;
-      font-size: 13px;
       font-weight: 900;
-      text-transform: uppercase;
+    }
+
+    .store-cart-indicator svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    #store-cart-count {
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1;
     }
 
     .store-toolbar select { flex: 0 1 220px; }
@@ -772,6 +793,13 @@
       gap: 10px;
     }
 
+    .category-helper-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
     .category-helper h2 {
       margin: 0;
       color: var(--navy);
@@ -1284,7 +1312,15 @@
       <div class="store-shell">
         <div class="store-side-panel">
           <nav class="store-panel category-helper" aria-label="Online store category menu">
-            <h2>Select Product</h2>
+            <div class="category-helper-title">
+              <h2>Select an Item</h2>
+              <div class="store-cart-indicator" aria-label="Selected cart items">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 18a2 2 0 1 1-.1 0H7Zm10 0a2 2 0 1 1-.1 0h.1ZM5.2 4l.8 2h15l-2.2 8H8.1L5.3 4H2V2h4.7l.6 2h-2.1Zm3.5 8h8.6l1.1-4H7.6l1.1 4Z"></path>
+                </svg>
+                <span id="store-cart-count">0</span>
+              </div>
+            </div>
             <div id="category-menu" class="category-menu"></div>
           </nav>
         </div>
@@ -1292,7 +1328,6 @@
         <div class="store-panel">
           <div class="store-toolbar">
             <strong id="product-count" class="product-count">All Materials</strong>
-            <span id="store-cart-count" class="store-cart-count">Cart: 0 items</span>
             <select id="mobile-category-select" class="mobile-category-select" aria-label="Jump to product category">
               <option value="">Jump to Category</option>
             </select>
@@ -8325,7 +8360,7 @@
       const count = cart.size;
       const selectedLabel = count === 1 ? '1 item selected' : `${count} items selected`;
       if (cartCount) cartCount.textContent = selectedLabel;
-      if (storeCartCount) storeCartCount.textContent = `Cart: ${count === 1 ? '1 item' : `${count} items`}`;
+      if (storeCartCount) storeCartCount.textContent = String(count);
     };
 
     const renderCart = () => {
