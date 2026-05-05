@@ -761,6 +761,10 @@ document.querySelectorAll('.bathroom-service-card').forEach((card, cardIndex) =>
 document.querySelectorAll('.bathroom-card').forEach((card, cardIndex) => {
   setupLightboxGroup(card.querySelectorAll('img'), `bathroom-card-${cardIndex}`);
 });
+document.querySelectorAll('.service-gallery-preview').forEach((gallery, galleryIndex) => {
+  const groupName = gallery.querySelector('[data-lightbox-group]')?.dataset.lightboxGroup || `service-preview-${galleryIndex}`;
+  setupLightboxGroup(gallery.querySelectorAll('img'), groupName);
+});
 setupRecentProjectsGalleryLightbox();
 
 const recentProjectsCarousel = document.querySelector('#bathroom-gallery .bathroom-gallery');
