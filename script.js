@@ -270,19 +270,27 @@ siteSearch?.addEventListener('click', (event) => {
   }
 });
 
-const reviewList = document.querySelector('.google-review-list');
-const previousReview = document.querySelector('.review-prev');
-const nextReview = document.querySelector('.review-next');
-
-const scrollReviews = (direction) => {
+document.querySelectorAll('.google-review-carousel').forEach((carousel) => {
+  const reviewList = carousel.querySelector('.google-review-list');
+  const previousReview = carousel.querySelector('.review-prev');
+  const nextReview = carousel.querySelector('.review-next');
   if (!reviewList) return;
-  const card = reviewList.querySelector('.google-review-card');
-  const distance = card ? card.offsetWidth + 22 : 340;
-  reviewList.scrollBy({ left: direction * distance, behavior: 'smooth' });
-};
 
-previousReview?.addEventListener('click', () => scrollReviews(-1));
-nextReview?.addEventListener('click', () => scrollReviews(1));
+  const scrollReviews = (direction) => {
+    const card = reviewList.querySelector('.google-review-card');
+    const distance = card ? card.offsetWidth + 22 : 340;
+    const maxScroll = reviewList.scrollWidth - reviewList.clientWidth - 4;
+    if (direction > 0 && reviewList.scrollLeft >= maxScroll) {
+      reviewList.scrollTo({ left: 0, behavior: 'smooth' });
+      return;
+    }
+    reviewList.scrollBy({ left: direction * distance, behavior: 'smooth' });
+  };
+
+  previousReview?.addEventListener('click', () => scrollReviews(-1));
+  nextReview?.addEventListener('click', () => scrollReviews(1));
+  window.setInterval(() => scrollReviews(1), 5200);
+});
 
 const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
 
