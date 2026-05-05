@@ -8,6 +8,8 @@ const siteSearchInput = document.querySelector('#site-search-input');
 const siteSearchResults = document.querySelector('.site-search-results');
 const siteSearchClose = document.querySelector('.site-search-close');
 const submenuToggles = document.querySelectorAll('.submenu-toggle, .more-menu-toggle');
+const desktopBathroomsDropdown = document.querySelector('.desktop-nav .bathrooms-dropdown');
+const desktopBathroomsTrigger = desktopBathroomsDropdown?.querySelector('.nav-dropdown-trigger');
 const hero = document.querySelector('.hero');
 
 const heroImages = [
@@ -79,6 +81,17 @@ const closeMoreMenu = () => {
   setMenuButtonState(false);
 };
 
+const closeDesktopBathroomsDropdown = () => {
+  desktopBathroomsDropdown?.classList.remove('open');
+  desktopBathroomsTrigger?.setAttribute('aria-expanded', 'false');
+};
+
+const toggleDesktopBathroomsDropdown = () => {
+  if (!desktopBathroomsDropdown || !desktopBathroomsTrigger) return;
+  const isOpen = desktopBathroomsDropdown.classList.toggle('open');
+  desktopBathroomsTrigger.setAttribute('aria-expanded', String(isOpen));
+};
+
 button?.addEventListener('click', (event) => {
   if (window.innerWidth > 900) {
     event.stopPropagation();
@@ -99,6 +112,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closePrimaryMenu();
     closeMoreMenu();
+    closeDesktopBathroomsDropdown();
     closeSearch();
   }
 });
@@ -108,6 +122,7 @@ document.querySelectorAll('.nav a').forEach((link) => {
 });
 
 window.addEventListener('resize', () => {
+  closeDesktopBathroomsDropdown();
   if (window.innerWidth > 900) {
     closePrimaryMenu();
   } else {
@@ -120,6 +135,23 @@ moreToggle?.addEventListener('click', (event) => {
   const isOpen = rightMenu.classList.toggle('open');
   if (isOpen) closeSubmenus(rightMenu);
   moreToggle.setAttribute('aria-expanded', String(isOpen));
+});
+
+desktopBathroomsTrigger?.addEventListener('click', (event) => {
+  if (window.innerWidth <= 900) return;
+  event.preventDefault();
+  event.stopPropagation();
+  closePrimaryMenu();
+  closeMoreMenu();
+  toggleDesktopBathroomsDropdown();
+});
+
+desktopBathroomsDropdown?.addEventListener('mouseleave', () => {
+  if (window.innerWidth > 900) closeDesktopBathroomsDropdown();
+});
+
+desktopBathroomsDropdown?.querySelectorAll('.dropdown-menu a').forEach((link) => {
+  link.addEventListener('click', closeDesktopBathroomsDropdown);
 });
 
 submenuToggles.forEach((toggle) => {
@@ -138,6 +170,10 @@ document.querySelectorAll('.more-menu a').forEach((link) => {
 });
 
 document.addEventListener('click', (event) => {
+  if (desktopBathroomsDropdown && !desktopBathroomsDropdown.contains(event.target)) {
+    closeDesktopBathroomsDropdown();
+  }
+
   if (rightMenu && !rightMenu.contains(event.target)) {
     closeMoreMenu();
   }
