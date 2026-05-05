@@ -186,10 +186,10 @@ document.addEventListener('click', (event) => {
 const siteSearchItems = [
   { title: 'Home', keywords: 'home all american tiles', target: '#home' },
   { title: 'Services', keywords: 'services bathroom kitchen flooring fireplace tile', target: '#services' },
-  { title: 'Bathroom Services', keywords: 'bathroom services remodel tile shower half bathroom waterproofing', target: '#bathrooms' },
-  { title: 'Full Bathroom', keywords: 'full bathroom remodel vanity toilet tile shower', target: '#full-bathroom' },
-  { title: 'Shower', keywords: 'shower remodel glass shower waterproofing tile', target: '#shower' },
-  { title: 'Half Bathroom', keywords: 'half bathroom powder room', target: '#half-bathroom' },
+  { title: 'Bathroom Services', keywords: 'bathroom services remodel tile shower half bathroom waterproofing', target: 'index.html#bathrooms' },
+  { title: 'Full Bathroom', keywords: 'full bathroom remodel vanity toilet tile shower', target: 'full-bathroom.html' },
+  { title: 'Shower', keywords: 'shower remodel glass shower waterproofing tile', target: 'shower.html' },
+  { title: 'Half Bathroom', keywords: 'half bathroom powder room', target: 'half-bathroom.html' },
   { title: 'Tile & Waterproofing', keywords: 'tile waterproofing schluter kerdi ditra heat', target: '#bathrooms' },
   { title: 'Projects Gallery', keywords: 'gallery recent projects photos bathroom shower', target: '#bathroom-gallery' },
   { title: 'Contact / Get a Quote', keywords: 'contact quote estimate get a quote phone form', target: '#quote' },
@@ -221,6 +221,10 @@ function renderSiteSearchResults(query = '') {
     result.textContent = item.title;
     result.addEventListener('click', (event) => {
       event.preventDefault();
+      if (!item.target.startsWith('#')) {
+        window.location.href = item.target;
+        return;
+      }
       const target = document.querySelector(item.target);
       closeSearch();
       target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
