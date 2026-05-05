@@ -270,6 +270,86 @@ siteSearch?.addEventListener('click', (event) => {
   }
 });
 
+const googleReviewReadMoreUrl = 'https://g.page/r/CXTZE2d_sM_ZEBI/review';
+
+const escapeHtml = (value) => String(value || '')
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;');
+
+const renderGoogleStars = (rating) => {
+  const starCount = Math.max(1, Math.min(5, Math.round(Number(rating) || 5)));
+  return '&#9733;'.repeat(starCount);
+};
+
+const renderGoogleReviewCard = (review) => {
+  const reviewerName = escapeHtml(review.reviewerName || 'Google reviewer');
+  const comment = escapeHtml(review.comment || '');
+  const reviewDate = review.updateTime || review.createTime
+    ? new Date(review.updateTime || review.createTime).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })
+    : 'Posted on Google';
+  const photo = review.reviewerPhoto
+    ? `<img class="reviewer-photo" src="${escapeHtml(review.reviewerPhoto)}" alt="" loading="lazy">`
+    : '';
+
+  return `
+    <article class="google-review-card">
+      <div class="review-card-head">
+        <div class="reviewer-identity">${photo}<strong>${reviewerName}</strong></div>
+        <span>${escapeHtml(reviewDate)}</span>
+      </div>
+      <div class="stars" aria-label="${Number(review.starRating) || 5} star rating">${renderGoogleStars(review.starRating)}</div>
+      <p>${comment}</p>
+    </article>
+  `;
+};
+
+const showGoogleReviewsFallback = (section) => {
+  const ratingCard = section.querySelector('.google-rating-card');
+  if (!ratingCard || ratingCard.querySelector('.google-review-more-link')) return;
+
+  const fallbackLink = document.createElement('a');
+  fallbackLink.className = 'google-review-link google-review-more-link';
+  fallbackLink.href = googleReviewReadMoreUrl;
+  fallbackLink.target = '_blank';
+  fallbackLink.rel = 'noopener';
+  fallbackLink.textContent = 'Read More Google Reviews';
+  ratingCard.appendChild(fallbackLink);
+};
+
+const loadGoogleBusinessReviews = async () => {
+  const reviewSections = Array.from(document.querySelectorAll('.reviews-section'));
+  if (!reviewSections.length) return;
+
+  try {
+    const response = await fetch('/api/google-reviews', { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error(`Google reviews API returned ${response.status}`);
+
+    const data = await response.json();
+    const reviews = Array.isArray(data.reviews) ? data.reviews.filter((review) => review.comment) : [];
+    if (!reviews.length) throw new Error('Google reviews API returned no review comments.');
+
+    reviewSections.forEach((section) => {
+      const reviewList = section.querySelector('.google-review-list');
+      const ratingCard = section.querySelector('.google-rating-card');
+      if (!reviewList) return;
+
+      reviewList.innerHTML = reviews.map(renderGoogleReviewCard).join('');
+      reviewList.scrollTo({ left: 0 });
+      ratingCard?.querySelector('strong')?.replaceChildren(document.createTextNode(`Based on ${data.totalReviewCount || reviews.length} reviews`));
+      if (data.averageRating) {
+        ratingCard?.querySelector('.stars')?.setAttribute('aria-label', `${Number(data.averageRating).toFixed(1)} star rating`);
+      }
+    });
+  } catch (error) {
+    reviewSections.forEach(showGoogleReviewsFallback);
+  }
+};
+
+loadGoogleBusinessReviews();
+
 document.querySelectorAll('.google-review-carousel').forEach((carousel) => {
   const reviewList = carousel.querySelector('.google-review-list');
   const previousReview = carousel.querySelector('.review-prev');
