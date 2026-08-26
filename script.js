@@ -28,29 +28,40 @@ const heroImages = [
 const setupHeroRotation = () => {
   if (!hero || heroImages.length < 2) return;
 
-  heroImages.forEach((src) => {
-    const image = new Image();
-    image.src = src;
-  });
-
   const layers = [document.createElement('div'), document.createElement('div')];
   layers.forEach((layer, index) => {
     layer.className = `hero-bg-layer${index === 0 ? ' active' : ''}`;
-    layer.style.backgroundImage = `url("${heroImages[index]}")`;
     hero.prepend(layer);
   });
+  layers[0].style.backgroundImage = `url("${heroImages[0]}")`;
+
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (connection?.saveData || prefersReducedMotion) return;
 
   let imageIndex = 0;
   let activeLayer = 0;
+  let isLoading = false;
 
   window.setInterval(() => {
-    imageIndex = (imageIndex + 1) % heroImages.length;
-    activeLayer = activeLayer === 0 ? 1 : 0;
-    const nextLayer = layers[activeLayer];
-    const previousLayer = layers[activeLayer === 0 ? 1 : 0];
-    nextLayer.style.backgroundImage = `url("${heroImages[imageIndex]}")`;
-    nextLayer.classList.add('active');
-    previousLayer.classList.remove('active');
+    if (document.hidden || isLoading) return;
+    isLoading = true;
+    const nextImageIndex = (imageIndex + 1) % heroImages.length;
+    const nextLayerIndex = activeLayer === 0 ? 1 : 0;
+    const image = new Image();
+    image.decoding = 'async';
+    image.onload = () => {
+      const nextLayer = layers[nextLayerIndex];
+      const previousLayer = layers[activeLayer];
+      nextLayer.style.backgroundImage = `url("${heroImages[nextImageIndex]}")`;
+      nextLayer.classList.add('active');
+      previousLayer.classList.remove('active');
+      imageIndex = nextImageIndex;
+      activeLayer = nextLayerIndex;
+      isLoading = false;
+    };
+    image.onerror = () => { isLoading = false; };
+    image.src = heroImages[nextImageIndex];
   }, 5000);
 };
 
@@ -308,7 +319,7 @@ const renderGoogleReviewCard = (review) => {
 
 const showGoogleReviewsFallback = (section) => {
   const ratingCard = section.querySelector('.google-rating-card');
-  if (!ratingCard || ratingCard.querySelector('.google-review-more-link')) return;
+  if (!ratingCard || ratingCard.querySelector('.google-review-link-secondary, .google-review-more-link')) return;
 
   const fallbackLink = document.createElement('a');
   fallbackLink.className = 'google-review-link google-review-more-link';
@@ -338,7 +349,8 @@ const loadGoogleBusinessReviews = async () => {
 
       reviewList.innerHTML = reviews.map(renderGoogleReviewCard).join('');
       reviewList.scrollTo({ left: 0 });
-      ratingCard?.querySelector('strong')?.replaceChildren(document.createTextNode(`Based on ${data.totalReviewCount || reviews.length} reviews`));
+      const rating = Number(data.averageRating || 5).toFixed(1);
+      ratingCard?.querySelector('strong')?.replaceChildren(document.createTextNode(`${rating} rating from ${data.totalReviewCount || reviews.length} Google reviews`));
       if (data.averageRating) {
         ratingCard?.querySelector('.stars')?.setAttribute('aria-label', `${Number(data.averageRating).toFixed(1)} star rating`);
       }
@@ -349,6 +361,24 @@ const loadGoogleBusinessReviews = async () => {
 };
 
 loadGoogleBusinessReviews();
+
+if (!document.querySelector('.mobile-action-bar')) {
+  const mobileActionBar = document.createElement('nav');
+  mobileActionBar.className = 'mobile-action-bar';
+  mobileActionBar.setAttribute('aria-label', 'Quick contact');
+  mobileActionBar.innerHTML = '<a href="tel:7346577965">Call Now</a><a href="#quote">Free Estimate</a>';
+  document.body.appendChild(mobileActionBar);
+}
+
+document.querySelectorAll('a[href^="tel:"], a[href="#quote"]').forEach((link) => {
+  link.addEventListener('click', () => {
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('event', link.getAttribute('href')?.startsWith('tel:') ? 'phone_click' : 'estimate_click', {
+      event_category: 'lead',
+      event_label: link.textContent?.trim() || 'website CTA',
+    });
+  });
+});
 
 document.querySelectorAll('.google-review-carousel').forEach((carousel) => {
   const reviewList = carousel.querySelector('.google-review-list');
@@ -514,7 +544,7 @@ if (quoteSection && quoteHeading && quickQuoteBar) {
 const quoteForm = document.querySelector('.quote-form');
 const quoteFormMessage = quoteForm?.querySelector('.form-message');
 
-const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'preferredDate', 'projectName', 'projectType', 'serviceNeeded', 'message'];
+const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const fireLeadConversion = () => {
@@ -561,8 +591,7 @@ const validateQuoteForm = () => {
   }
 
   const termsFields = quoteForm?.querySelectorAll('input[name="termsAndConditions"]') ?? [];
-  const termsValue = quoteForm?.elements.namedItem('termsAndConditions')?.value;
-  const termsAccepted = termsValue === 'Agree';
+  const termsAccepted = Array.from(termsFields).some((field) => field.checked && field.value === 'Agree');
   termsFields.forEach((field) => field.setAttribute('aria-invalid', String(!termsAccepted)));
   if (!termsAccepted) {
     setQuoteFormMessage('Please agree to the Terms and Conditions.');
@@ -602,12 +631,6 @@ quoteForm?.addEventListener('submit', async (event) => {
 
   const payload = Object.fromEntries(new FormData(quoteForm).entries());
   payload.contactConsent = payload.termsAndConditions === 'Agree';
-  payload.message = [
-    `Preferred Date: ${payload.preferredDate}`,
-    `Project Name: ${payload.projectName}`,
-    '',
-    payload.message,
-  ].join('\n');
 
   try {
     const response = await fetch('/api/lead', {
