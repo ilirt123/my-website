@@ -7288,36 +7288,42 @@
           {
             "value": "Brushed Titanium",
             "label": "Brushed Titanium",
+            "imageIndex": 0,
             "priceValue": 29.99,
             "price": "29.99"
           },
           {
             "value": "Matte White 5/16",
             "label": "Matte White 5/16",
+            "imageIndex": 1,
             "priceValue": 17.49,
             "price": "17.49"
           },
           {
             "value": "Silver Satin 5/16",
             "label": "Silver Satin 5/16",
+            "imageIndex": 2,
             "priceValue": 14.99,
             "price": "14.99"
           },
           {
             "value": "Brushed Mercury 5/16",
             "label": "Brushed Mercury 5/16",
+            "imageIndex": 3,
             "priceValue": 27.99,
             "price": "27.99"
           },
           {
             "value": "Gloss Titanium 5/16",
             "label": "Gloss Titanium 5/16",
+            "imageIndex": 4,
             "priceValue": 27.99,
             "price": "27.99"
           },
           {
             "value": "Bronze Satin Brushed 5/16",
             "label": "Bronze Satin Brushed 5/16",
+            "imageIndex": 5,
             "priceValue": 23.29,
             "price": "23.29"
           }
@@ -7748,6 +7754,33 @@
       return selectedPrice ?? priceValue(product);
     };
 
+    const updateProductImageFromOptions = (card, product) => {
+      const productImages = product.images?.length ? product.images : [product.image];
+      let selectedImageIndex = 0;
+      let selectedImageLabel = '';
+
+      getProductDetailOptions(product).forEach((option, optionIndex) => {
+        const select = card.querySelector(`[data-option-index="${optionIndex}"]`);
+        if (!select?.value) return;
+        const selectedValue = option.values.find((item) => item.value === select.value || item.label === select.value);
+        if (!Number.isInteger(selectedValue?.imageIndex)) return;
+        selectedImageIndex = selectedValue.imageIndex;
+        selectedImageLabel = selectedValue.label || selectedValue.value || '';
+      });
+
+      const image = card.querySelector('.product-image');
+      const imageButton = card.querySelector('.product-image-button');
+      const selectedImage = productImages[selectedImageIndex] || productImages[0];
+      card.dataset.activeImageIndex = String(selectedImageIndex);
+      if (image && selectedImage) {
+        image.src = selectedImage;
+        image.alt = selectedImageLabel ? `${product.name} in ${selectedImageLabel}` : product.name;
+      }
+      if (imageButton) {
+        imageButton.setAttribute('aria-label', `View larger image of ${product.name}${selectedImageLabel ? ` in ${selectedImageLabel}` : ''}`);
+      }
+    };
+
     const parseTileAreaSqFt = (sizeValue) => {
       const text = String(sizeValue || '').toLowerCase();
       const match = text.match(/(\d+(?:\.\d+)?)\s*(?:in\.?|inch|inches)?\s*x\s*(\d+(?:\.\d+)?)/i);
@@ -8055,6 +8088,7 @@
         if (select && value) select.value = value;
       });
 
+      updateProductImageFromOptions(card, product);
       updateProductSubtotal(card, product);
     };
 
@@ -8225,7 +8259,15 @@
           <button class="add-to-cart-button" type="button">Add to Cart</button>
         </div>
       `;
-      card.querySelector('.product-image-button').addEventListener('click', () => openProductLightbox(product.id, 0));
+      if (isTrimProduct(product)) {
+        productImages.slice(1).forEach((source) => {
+          const image = new Image();
+          image.src = source;
+        });
+      }
+      card.querySelector('.product-image-button').addEventListener('click', () => {
+        openProductLightbox(product.id, Number(card.dataset.activeImageIndex) || 0);
+      });
       const detailsToggle = card.querySelector('.details-toggle');
       const productDetails = card.querySelector('.product-details');
       detailsToggle.addEventListener('click', () => {
@@ -8278,6 +8320,7 @@
         };
         field.addEventListener('change', () => {
           if (field.matches('select[required]') && field.value) field.setAttribute('aria-invalid', 'false');
+          updateProductImageFromOptions(card, product);
           syncSubtotal();
         });
         field.addEventListener('input', syncSubtotal);
