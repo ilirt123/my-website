@@ -479,6 +479,16 @@
       text-transform: none;
     }
 
+    .product-option select[aria-invalid="true"] {
+      border-color: var(--red);
+      outline: 2px solid rgb(207 32 46 / 18%);
+      outline-offset: 1px;
+    }
+
+    .required-option-star {
+      color: var(--red);
+    }
+
     .quantity-stepper {
       display: grid;
       grid-template-columns: 42px 1fr 42px;
@@ -7282,14 +7292,14 @@
             "price": "29.99"
           },
           {
-            "value": "Mate White 5/16",
-            "label": "Mate White 5/16",
+            "value": "Matte White 5/16",
+            "label": "Matte White 5/16",
             "priceValue": 17.49,
             "price": "17.49"
           },
           {
-            "value": "Silver Saitin 5/16",
-            "label": "Silver Saitin 5/16",
+            "value": "Silver Satin 5/16",
+            "label": "Silver Satin 5/16",
             "priceValue": 14.99,
             "price": "14.99"
           },
@@ -7639,6 +7649,11 @@
 
     const getProductQuantityOption = (product) => product.options?.find(isQuantityOption);
     const getProductDetailOptions = (product) => product.options?.filter((option) => !isQuantityOption(option)) || [];
+    const isTrimProduct = (product) => String(product.category || '').trim().toLowerCase() === 'trims';
+    const isColorOption = (option) => String(option.label || '').trim().toLowerCase() === 'color';
+    const getRequiredProductOptions = (product) => isTrimProduct(product)
+      ? getProductDetailOptions(product).filter(isColorOption)
+      : [];
 
     const normalizeSearchText = (value) => String(value || '')
       .toLowerCase()
@@ -7717,7 +7732,7 @@
       const selections = {};
       getProductDetailOptions(product).forEach((option, index) => {
         const select = card.querySelector(`[data-option-index="${index}"]`);
-        if (select) selections[option.label || 'Option'] = select.value;
+        if (select?.value) selections[option.label || 'Option'] = select.value;
       });
       return selections;
     };
@@ -8070,6 +8085,22 @@
         return;
       }
 
+      const detailOptions = getProductDetailOptions(product);
+      const missingRequiredOption = getRequiredProductOptions(product).find((option) => {
+        const optionIndex = detailOptions.indexOf(option);
+        const select = card.querySelector(`[data-option-index="${optionIndex}"]`);
+        const isMissing = !select?.value;
+        if (select) select.setAttribute('aria-invalid', String(isMissing));
+        return isMissing;
+      });
+      if (missingRequiredOption) {
+        const optionIndex = detailOptions.indexOf(missingRequiredOption);
+        const select = card.querySelector(`[data-option-index="${optionIndex}"]`);
+        setStoreMessage(`Please select a ${String(missingRequiredOption.label || 'product option').toLowerCase()} before adding this trim to your cart.`);
+        select?.focus();
+        return;
+      }
+
       const quantity = getSelectedQuantity(card, product);
       if (quantity <= 0) {
         setStoreMessage('Please choose a quantity before adding this item to your cart.');
@@ -8086,13 +8117,16 @@
       renderCart();
     };
 
-    const renderOptionSelect = (option, index, product, role = 'detail') => {
+    const renderOptionSelect = (option, index, product, { required = false } = {}) => {
       const options = option.values.map((value) => {
         const priceSuffix = typeof value.priceValue === 'number' ? ` - ${formatPriceWithUnit(value.priceValue, getProductUnit(product))}` : '';
         return `<option value="${escapeHTML(value.value || value.label)}">${escapeHTML(value.label)}${escapeHTML(priceSuffix)}</option>`;
       }).join('');
       const label = option.label || 'Option';
-      return `<label class="product-option">${escapeHTML(label)}<select data-option-index="${index}">${options}</select></label>`;
+      const placeholder = required ? `<option value="" selected>Select a ${escapeHTML(label.toLowerCase())}</option>` : '';
+      const requiredLabel = required ? ' <span class="required-option-star" aria-hidden="true">*</span>' : '';
+      const requiredAttributes = required ? ' required aria-required="true"' : '';
+      return `<label class="product-option"><span>${escapeHTML(label)}${requiredLabel}</span><select data-option-index="${index}"${requiredAttributes}>${placeholder}${options}</select></label>`;
     };
 
     const renderTileOptionControl = (option, index, product) => {
@@ -8162,6 +8196,8 @@
       card.dataset.productId = product.id;
       const quantityOption = getProductQuantityOption(product) || { label: 'Quantity', values: [{ value: '1', label: '1' }] };
       const detailOptions = getProductDetailOptions(product);
+      const requiredOptions = getRequiredProductOptions(product);
+      const hiddenDetailOptions = detailOptions.filter((option) => !requiredOptions.includes(option));
       const detailsId = `product-details-${product.id}`;
       const productImages = product.images?.length ? product.images : [product.image];
       card.innerHTML = `
@@ -8177,10 +8213,11 @@
           <button class="details-toggle" type="button" aria-expanded="false" aria-controls="${escapeHTML(detailsId)}">View Details</button>
           <div class="product-details" id="${escapeHTML(detailsId)}" hidden>
             <p>${escapeHTML(truncate(product.description))}</p>
-            ${detailOptions.length && !isSquareFootProduct(product) ? `<div class="product-options">${detailOptions.map((option, index) => renderOptionSelect(option, index, product)).join('')}</div>` : ''}
+            ${hiddenDetailOptions.length && !isSquareFootProduct(product) ? `<div class="product-options">${hiddenDetailOptions.map((option) => renderOptionSelect(option, detailOptions.indexOf(option), product)).join('')}</div>` : ''}
           </div>
           <div class="product-options">
             ${detailOptions.length && isSquareFootProduct(product) ? detailOptions.map((option, index) => renderTileOptionControl(option, index, product)).join('') : ''}
+            ${requiredOptions.map((option) => renderOptionSelect(option, detailOptions.indexOf(option), product, { required: true })).join('')}
             ${isSquareFootProduct(product) ? '' : renderQuantityControl(product, quantityOption)}
           </div>
           ${renderTileCalculator(product)}
@@ -8239,7 +8276,10 @@
           cart.set(product.id, buildCartEntry(card, product));
           renderCart();
         };
-        field.addEventListener('change', syncSubtotal);
+        field.addEventListener('change', () => {
+          if (field.matches('select[required]') && field.value) field.setAttribute('aria-invalid', 'false');
+          syncSubtotal();
+        });
         field.addEventListener('input', syncSubtotal);
       });
       card.querySelector('.add-to-cart-button').addEventListener('click', () => {
