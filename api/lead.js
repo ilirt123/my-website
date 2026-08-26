@@ -1,4 +1,4 @@
-const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
+const REQUIRED_FIELDS = ['firstName', 'lastName', 'email', 'phone', 'zipCode', 'projectType', 'serviceNeeded', 'message'];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const clean = (value) => String(value || '').trim();
@@ -14,7 +14,7 @@ const buildLeadText = (lead) => {
     ['Name', `${lead.firstName} ${lead.lastName}`],
     ['Phone', lead.phone],
     ['Email', lead.email],
-    ['ZIP Code', lead.zipCode || 'Not provided'],
+    ['ZIP Code', lead.zipCode],
     ['Project Type', lead.projectType],
     ['Service Needed', lead.serviceNeeded],
     ['How They Heard About Us', lead.referralSource || 'Not provided'],

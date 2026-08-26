@@ -46,9 +46,9 @@
         ],
         "openingHoursSpecification": [{
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
           "opens": "08:00",
-          "closes": "18:00"
+          "closes": "17:00"
         }]
       },
       {
@@ -686,7 +686,7 @@
           <div class="quote-info-grid">
             <div>
               <h4>Hours of Operation</h4>
-              <p>Monday - Saturday: 8:00 AM - 6:00 PM<br>Sunday: Closed</p>
+              <p>Monday - Sunday: 8:00 AM - 5:00 PM</p>
             </div>
           </div>
           <div class="map-card quote-map-card">
@@ -711,7 +711,7 @@
           <label><span>Last Name <span class="required-star" aria-hidden="true">*</span></span><input type="text" name="lastName" autocomplete="family-name" required aria-required="true"></label>
           <label><span>Email <span class="required-star" aria-hidden="true">*</span></span><input type="email" name="email" autocomplete="email" required aria-required="true"></label>
           <label><span>Phone Number <span class="required-star" aria-hidden="true">*</span></span><input type="tel" name="phone" autocomplete="tel" required aria-required="true"></label>
-          <label><span>ZIP Code</span><input type="text" name="zipCode" autocomplete="postal-code"></label>
+          <label><span>ZIP Code <span class="required-star" aria-hidden="true">*</span></span><input type="text" name="zipCode" autocomplete="postal-code" inputmode="numeric" required aria-required="true"></label>
           <label><span>Service Needed <span class="required-star" aria-hidden="true">*</span></span>
             <select name="serviceNeeded" required aria-required="true">
               <option>Full Bathroom</option>
@@ -747,7 +747,7 @@
     <label>Last Name<input type="text" name="lastName" autocomplete="family-name" required aria-required="true"></label>
     <label>Phone<input type="tel" name="phone" autocomplete="tel" required aria-required="true"></label>
     <label>Email<input type="email" name="email" autocomplete="email" required aria-required="true"></label>
-    <label>ZIP Code<input type="text" name="zipCode" autocomplete="postal-code" inputmode="numeric" required aria-required="true"></label>
+    <label>ZIP Code *<input type="text" name="zipCode" autocomplete="postal-code" inputmode="numeric" required aria-required="true"></label>
     <button type="submit">Free Estimate</button>
     <p class="quick-quote-message" role="status" aria-live="polite"></p>
   </form>

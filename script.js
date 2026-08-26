@@ -544,7 +544,7 @@ if (quoteSection && quoteHeading && quickQuoteBar) {
 const quoteForm = document.querySelector('.quote-form');
 const quoteFormMessage = quoteForm?.querySelector('.form-message');
 
-const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'projectType', 'serviceNeeded', 'message'];
+const requiredLeadFields = ['firstName', 'lastName', 'email', 'phone', 'zipCode', 'projectType', 'serviceNeeded', 'message'];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const fireLeadConversion = () => {
