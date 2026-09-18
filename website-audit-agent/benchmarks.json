@@ -1,0 +1,42 @@
+{
+  "site": {
+    "name": "All American Tiles",
+    "url": "https://www.allamericantilesmi.com/"
+  },
+  "benchmarks": [
+    {
+      "name": "Kaja Construction",
+      "url": "https://kajaconstruction.com/",
+      "reason": "Metro Detroit bathroom remodeling specialist"
+    },
+    {
+      "name": "RenovationsNOW",
+      "url": "https://renovationsnow.com/",
+      "reason": "Metro Detroit conversion-focused remodeler"
+    },
+    {
+      "name": "Motor City Shower & Bath",
+      "url": "https://www.motorcityshowerandbath.com/",
+      "reason": "Metro Detroit bath specialist"
+    },
+    {
+      "name": "Home Pro USA",
+      "url": "https://homeprousa.com/bathroom-remodeling/",
+      "reason": "Established Metro Detroit bathroom remodeler"
+    },
+    {
+      "name": "Maloney Tile & Marble",
+      "url": "https://maloneytileandmarble.com/",
+      "reason": "Local tile-focused contractor"
+    }
+  ],
+  "priorities": [
+    "Lead conversion and estimate requests",
+    "Trust and credibility",
+    "Bathroom-remodeling positioning",
+    "Project photography and before/after storytelling",
+    "Local SEO and service-area clarity",
+    "Mobile usability",
+    "Page clarity and information hierarchy"
+  ]
+}
