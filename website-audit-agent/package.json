@@ -1,0 +1,11 @@
+{
+  "name": "all-american-tiles-website-audit-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audit": "node audit.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
