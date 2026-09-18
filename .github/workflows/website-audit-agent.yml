@@ -1,0 +1,38 @@
+name: Website Audit Agent
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: gpt-5.6-luna
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run website audit
+        working-directory: website-audit-agent
+        run: node audit.mjs
+
+      - name: Create audit issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Website Audit — $(date -u +'%Y-%m-%d')"
+          gh issue create \
+            --title "$TITLE" \
+            --body-file website-audit-agent/REPORT.md \
+            --label "website-audit" || \
+          gh issue create \
+            --title "$TITLE" \
+            --body-file website-audit-agent/REPORT.md
